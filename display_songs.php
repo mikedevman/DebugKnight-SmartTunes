@@ -1,26 +1,20 @@
 <?php
-header("Content-Type: application/json");
-
-$conn = new mysqli("127.0.0.1", "root", "", "song_dtb");
+$conn = new mysqli("127.0.0.1", "root", "", "music_db");
 
 if ($conn->connect_error) {
-    echo json_encode(["error" => "DB connection failed"]);
-    exit();
+    die("Connection failed: " . $conn->connect_error);
 }
 
-$result = $conn->query("SELECT song_id, name, content, album, time_played FROM song ORDER BY song_id DESC");
+$result = $conn->query("SELECT * FROM song ORDER BY song_id DESC");
 
-$songs = [];
+$songs = array();
 while ($row = $result->fetch_assoc()) {
-    $base = pathinfo($row["content"], PATHINFO_FILENAME);
-
-    $songs[] = [
+    $songs[] = array(
+        "id" => $row["song_id"],
         "title" => $row["name"],
-        "artist" => "Album #" . $row["album"],
-        "video" => "uploads/" . $row["content"]
-    ];
+        "video" => (!empty($row["content"]) ? "uploads/" . $row["content"] : null)
+    );
 }
 
 echo json_encode($songs);
 $conn->close();
-?>

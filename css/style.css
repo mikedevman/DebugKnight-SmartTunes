@@ -1816,6 +1816,12 @@ Responsive
 
 /* Add Song */
 .upload-container {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
   background-color: #08192d;
   padding: 2rem;
   border-radius: 12px;
@@ -1824,8 +1830,26 @@ Responsive
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   color: #fff;
   font-family: 'Poppins', sans-serif;
+  overflow-y: auto;
 }
 
+  .overlay-blur {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+  }  
+
+  .upload-overlay-active {
+    position: relative;
+  }
+    .upload-overlay-active::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+  }
 .upload-container h2 {
   color: #3c3c90;
   margin-bottom: 1.5rem;
