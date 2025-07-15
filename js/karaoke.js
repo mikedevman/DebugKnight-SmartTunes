@@ -117,36 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
- document.getElementById("show-upload-btn").addEventListener("click", function () {
-    document.querySelector(".upload-container").style.display = "block";
-    document.body.classList.add("upload-overlay-active");
+document.addEventListener("DOMContentLoaded", function () {
+  const uploadBtn = document.getElementById("show-upload-btn");
+  const uploadContainer = document.querySelector(".upload-container");
+  const mainContent = document.querySelector(".main-karaoke-content");
 
-    // Làm mờ phần chính
-    document.querySelector("header").classList.add("overlay-blur");
-    document.querySelector(".main-karaoke-content").classList.add("overlay-blur");
-    document.querySelector("footer").classList.add("overlay-blur");
+  uploadBtn.addEventListener("click", function () {
+    uploadContainer.style.display = "block";
+    mainContent.classList.add("blur-background");
   });
-
-  // Đóng form khi bấm ra ngoài hoặc nhấn Esc
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      closeUploadForm();
-    }
-  });
-
-  document.addEventListener("click", function (e) {
-    const form = document.querySelector(".upload-container");
-    const button = document.getElementById("show-upload-btn");
-    if (!form.contains(e.target) && !button.contains(e.target)) {
-      closeUploadForm();
-    }
-  });
-
-  function closeUploadForm() {
-    document.querySelector(".upload-container").style.display = "none";
-    document.body.classList.remove("upload-overlay-active");
-
-    document.querySelector("header").classList.remove("overlay-blur");
-    document.querySelector(".main-karaoke-content").classList.remove("overlay-blur");
-    document.querySelector("footer").classList.remove("overlay-blur");
-  }
+});

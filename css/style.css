@@ -1833,7 +1833,7 @@ Responsive
   overflow-y: auto;
 }
 
-  .overlay-blur {
+  .blur-background {
     filter: blur(5px);
     pointer-events: none;
     user-select: none;
