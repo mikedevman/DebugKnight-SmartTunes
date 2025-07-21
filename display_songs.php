@@ -12,7 +12,15 @@ while ($row = $result->fetch_assoc()) {
     $songs[] = array(
         "id" => $row["song_id"],
         "title" => $row["name"],
+<<<<<<< HEAD
         "video" => (!empty($row["content"]) ? "uploads/" . $row["content"] : null)
+=======
+<<<<<<< HEAD
+        "video" => (!empty($row["content"]) ? "uploads/" . $row["content"] : null)
+=======
+        "video" => !empty($row["content"]) ? $row["content"] : null
+>>>>>>> e6b527800edbc214783ce1dedd7863d11126a88c
+>>>>>>> 88297a178f433cc9af75a3cc4968285973f196da
     );
 }
 

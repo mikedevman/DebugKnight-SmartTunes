@@ -14,6 +14,10 @@ $tempo       = $_POST['tempo'] ?? '';
 $songkey     = $_POST['songkey'] ?? '';
 $timeplayed  = $_POST['timeplayed'] ?? '';
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 88297a178f433cc9af75a3cc4968285973f196da
 
 if (!preg_match('/^(https?:\\/\\/)?(www\\.)?(youtube\\.com|youtu\\.be)\\/.+$/', $content)) {
     die("Link YouTube không hợp lệ.");
@@ -29,6 +33,25 @@ $stmt = $conn->prepare("INSERT INTO song (name, content, genre, year_publish, al
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 $stmt->bind_param("sssisiis", $title, $content, $genre, $year, $albumID, $tempo, $songkey, $durationSec);
 
+<<<<<<< HEAD
+=======
+=======
+if (!preg_match('/^(https?:\\/\\/)?(www\\.)?(youtube\\.com|youtu\\.be)\\/.+$/', $content)) {
+    die("Link YouTube không hợp lệ.");
+}
+
+function convertToSeconds($timeStr) {
+    list($min, $sec) = explode(':', $timeStr);
+    return ((int)$min * 60) + (int)$sec;
+}
+$durationSec = convertToSeconds($timeplayed);
+
+$stmt = $conn->prepare("INSERT INTO song (name, content, genre, year_publish, album, tempo, `key`, time_played)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssisiis", $title, $content, $genre, $year, $albumID, $tempo, $songkey, $durationSec);
+
+>>>>>>> e6b527800edbc214783ce1dedd7863d11126a88c
+>>>>>>> 88297a178f433cc9af75a3cc4968285973f196da
 if ($stmt->execute()) {
     header("Location: karaoke.html?upload=success");
     exit();
@@ -38,4 +61,12 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+<<<<<<< HEAD
 ?>
+=======
+<<<<<<< HEAD
+?>
+=======
+?>
+>>>>>>> e6b527800edbc214783ce1dedd7863d11126a88c
+>>>>>>> 88297a178f433cc9af75a3cc4968285973f196da
