@@ -12,21 +12,6 @@ if ($songId !== null) {
     $conn->begin_transaction();
 
     try {
-        $stmt = $conn->prepare("DELETE FROM playlist_song WHERE song_id = ?");
-        $stmt->bind_param("i", $songId);
-        $stmt->execute();
-        $stmt->close();
-
-        $stmt = $conn->prepare("DELETE FROM song_author WHERE song_id = ?");
-        $stmt->bind_param("i", $songId);
-        $stmt->execute();
-        $stmt->close();
-
-        $stmt = $conn->prepare("DELETE FROM song_played WHERE song_id = ?");
-        $stmt->bind_param("i", $songId);
-        $stmt->execute();
-        $stmt->close();
-
         $stmt = $conn->prepare("DELETE FROM song WHERE song_id = ?");
         $stmt->bind_param("i", $songId);
         $stmt->execute();

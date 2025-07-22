@@ -1,22 +1,27 @@
 <?php
-$conn = new mysqli("127.0.0.1", "root", "", "music_db");
+session_start();
 
+$conn = new mysqli("127.0.0.1", "root", "", "music_db");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$title       = $_POST['title'] ?? '';
-$content     = $_POST['content'] ?? '';
-$genre       = $_POST['genre'] ?? '';
-$year        = $_POST['year'] ?? '';
-$albumID     = $_POST['album'] ?? '';
-$tempo       = $_POST['tempo'] ?? '';
-$songkey     = $_POST['songkey'] ?? '';
-$timeplayed  = $_POST['timeplayed'] ?? '';
-$authorName  = $_POST['author'] ?? '';
+if (!isset($_SESSION['user_id'])) {
+    die("You must be logged in to upload songs.");
+}
+$user_id = $_SESSION['user_id'];
 
-if (!preg_match('/^(https?:\\/\\/)?(www\\.)?(youtube\\.com|youtu\\.be)\\/.+$/', $content)) {
-    die("Link YouTube không hợp lệ.");
+$title      = $_POST['title'] ?? '';
+$content    = $_POST['content'] ?? '';
+$genre      = $_POST['genre'] ?? '';
+$year       = $_POST['year'] ?? '';
+$albumID    = $_POST['album'] ?? '';
+$tempo      = $_POST['tempo'] ?? '';
+$songkey    = $_POST['songkey'] ?? '';
+$timeplayed = $_POST['timeplayed'] ?? '';
+
+if (!preg_match('/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/', $content)) {
+    die("Invalid YouTube link.");
 }
 
 function convertToSeconds($timeStr) {
@@ -25,7 +30,6 @@ function convertToSeconds($timeStr) {
 }
 $durationSec = convertToSeconds($timeplayed);
 
-// START TRANSACTION
 $conn->begin_transaction();
 
 try {
@@ -33,32 +37,24 @@ try {
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("sssisiis", $title, $content, $genre, $year, $albumID, $tempo, $songkey, $durationSec);
     if (!$stmt->execute()) {
-        throw new Exception("Lỗi khi thêm bài hát: " . $stmt->error);
+        throw new Exception("Error inserting song: " . $stmt->error);
     }
     $song_id = $stmt->insert_id;
     $stmt->close();
 
-    $stmt2 = $conn->prepare("INSERT INTO author (name) VALUES (?)");
-    $stmt2->bind_param("s", $authorName);
+    $stmt2 = $conn->prepare("INSERT INTO song_author (song_id, author_id) VALUES (?, ?)");
+    $stmt2->bind_param("ii", $song_id, $user_id);
     if (!$stmt2->execute()) {
-        throw new Exception("Lỗi khi thêm tác giả: " . $stmt2->error);
+        throw new Exception("Error linking song to author: " . $stmt2->error);
     }
-    $author_id = $stmt2->insert_id;
     $stmt2->close();
 
-    $stmt3 = $conn->prepare("INSERT INTO song_author (song_id, author_id) VALUES (?, ?)");
-    $stmt3->bind_param("ii", $song_id, $author_id);
-    if (!$stmt3->execute()) {
-        throw new Exception("Lỗi khi gán tác giả cho bài hát: " . $stmt3->error);
-    }
-    $stmt3->close();
-    
     $conn->commit();
-    header("Location: karaoke.html?upload=success");
+    header("Location: karaoke.php?upload=success");
     exit();
 } catch (Exception $e) {
     $conn->rollback();
-    echo $e->getMessage();
+    echo "Upload failed: " . $e->getMessage();
 }
 
 $conn->close();
