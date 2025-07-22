@@ -67,8 +67,8 @@
         <label for="title">Song Title:</label>
         <input type="text" name="title" placeholder="Enter song title" required>
 
-        <label for="artist">Artist:</label>
-        <input type="text" name="artist" placeholder="Enter artist" required>
+        <label for="artist">Author:</label>
+        <input type="text" name="author" placeholder="Enter author" required>
 
         <label for="tempo">Tempo (BPM):</label>
         <input type="number" name="tempo" placeholder="Enter tempo" required>

@@ -8,14 +8,37 @@ if ($conn->connect_error) {
 $songId = $_POST["id"] ?? null;
 
 if ($songId !== null) {
-    $stmt = $conn->prepare("DELETE FROM song WHERE song_id = ?");
-    $stmt->bind_param("i", $songId);
-    if ($stmt->execute()) {
+    // Begin transaction
+    $conn->begin_transaction();
+
+    try {
+        $stmt = $conn->prepare("DELETE FROM playlist_song WHERE song_id = ?");
+        $stmt->bind_param("i", $songId);
+        $stmt->execute();
+        $stmt->close();
+
+        $stmt = $conn->prepare("DELETE FROM song_author WHERE song_id = ?");
+        $stmt->bind_param("i", $songId);
+        $stmt->execute();
+        $stmt->close();
+
+        $stmt = $conn->prepare("DELETE FROM song_played WHERE song_id = ?");
+        $stmt->bind_param("i", $songId);
+        $stmt->execute();
+        $stmt->close();
+
+        $stmt = $conn->prepare("DELETE FROM song WHERE song_id = ?");
+        $stmt->bind_param("i", $songId);
+        $stmt->execute();
+        $stmt->close();
+
+        $conn->commit();
+
         echo json_encode(["status" => "success"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => $stmt->error]);
+    } catch (Exception $e) {
+        $conn->rollback();
+        echo json_encode(["status" => "error", "message" => $e->getMessage()]);
     }
-    $stmt->close();
 } else {
     echo json_encode(["status" => "error", "message" => "Invalid ID"]);
 }

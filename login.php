@@ -4,31 +4,33 @@ session_start();
 $host = "127.0.0.1";
 $user = "root";
 $password = "";
-$dbname = "user";
+$dbname = "music_db";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
-    $stmt = $conn->prepare("SELECT * FROM user WHERE Username = ?");
+    $stmt = $conn->prepare("SELECT id, password_hash FROM user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->store_result();
 
-    if ($row = $result->fetch_assoc()) {
-        if ($row['Password'] === $password) {
-            $_SESSION['user_id'] = $row['ID'];
-            $_SESSION['username'] = $row['Username'];
-            echo "Login successful! Redirecting...";
+    if ($stmt->num_rows === 1) {
+        $stmt->bind_result($id, $hash);
+        $stmt->fetch();
+
+        if (password_verify($password, $hash)) {
+            $_SESSION["user_id"] = $id;
+            $_SESSION["username"] = $username;
             header("Location: index.php");
             exit;
         } else {
-            echo "Incorrect password!";
+            $error = "Invalid password.";
         }
     } else {
-        echo "User not found!";
+        $error = "User not found.";
     }
 }
 ?>

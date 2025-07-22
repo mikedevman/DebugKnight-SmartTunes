@@ -3,7 +3,7 @@ session_start();
     $host = "127.0.0.1";
     $user = "root";
     $password = "";
-    $dbname = "user";
+    $dbname = "music_db";
 
     $conn = new mysqli($host, $user, $password, $dbname);
 
@@ -11,36 +11,56 @@ session_start();
         die("Connection failed: " . $conn->connect_error);
     }
 
-if (!isset($_SESSION['user_id'])) {
-    die("You must be logged in to create a playlist.");
-}
+function createPlaylistWithSongs($userId, $playlistName, $description, $songIds) {
+    global $pdo;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $playlistName = $_POST['playlist_name'];
-    $desc = $_POST['description'];
-    $userID = $_SESSION['user_id'];
+    try {
+        $pdo->beginTransaction();
 
-    $stmt = $conn->prepare("INSERT INTO Playlist (UserCreated, PlaylistName, Description) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $userID, $playlistName, $desc);
-    $stmt->execute();
-    $playlistID = $stmt->insert_id;
+        $stmt = $pdo->prepare("INSERT INTO playlist (user_created, playlist_name, description) VALUES (:userId, :name, :desc)");
+        $stmt->execute([
+            ':userId' => $userId,
+            ':name' => $playlistName,
+            ':desc' => $description
+        ]);
+        $playlistId = $pdo->lastInsertId();
 
-    foreach ($_FILES['songs']['tmp_name'] as $index => $tmpName) {
-        $name = $_FILES['songs']['name'][$index];
-        $targetPath = "uploads/" . basename($name);
-
-        if (move_uploaded_file($tmpName, $targetPath)) {
-            $stmt = $conn->prepare("INSERT INTO Song (Name, Content) VALUES (?, ?)");
-            $stmt->bind_param("ss", $name, $targetPath);
-            $stmt->execute();
-            $songID = $stmt->insert_id;
-
-            $stmt2 = $conn->prepare("INSERT INTO PlaylistSong (PlaylistID, SongID, DateAdded) VALUES (?, ?, NOW())");
-            $stmt2->bind_param("ii", $playlistID, $songID);
-            $stmt2->execute();
+        $linkStmt = $pdo->prepare("INSERT INTO playlist_song (playlist_id, song_id) VALUES (:playlistId, :songId)");
+        foreach ($songIds as $songId) {
+            $linkStmt->execute([
+                ':playlistId' => $playlistId,
+                ':songId' => trim($songId)
+            ]);
         }
-    }
 
-    echo "Playlist created and songs uploaded!";
+        $pdo->commit();
+        return $playlistId;
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+    $playlistName = $_POST['playlist_name'];
+    $description = $_POST['description'] ?? '';
+    $songIds = explode(',', $_POST['song_ids']);
+
+    try {
+        $playlistId = createPlaylistWithSongs($userId, $playlistName, $description, $songIds);
+        echo "Playlist '$playlistName' created successfully!";
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+?>
+
+<form method="post" action="create_playlist.php">
+    <input type="text" name="playlist_name" placeholder="Playlist Name" required>
+    <textarea name="description" placeholder="Description (optional)"></textarea>
+    <input type="text" name="song_ids" placeholder="Comma-separated Song IDs (e.g., 1,2,3)" required>
+    <button type="submit">Create Playlist</button>
+</form>
+
 ?>

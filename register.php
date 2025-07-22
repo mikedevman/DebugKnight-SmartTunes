@@ -2,7 +2,7 @@
     $host = "127.0.0.1";
     $user = "root";
     $password = "";
-    $dbname = "user";
+    $dbname = "music_db";
 
     $conn = new mysqli($host, $user, $password, $dbname);
 
@@ -10,27 +10,32 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
 
-    $check = $conn->prepare("SELECT ID FROM user WHERE Username = ?");
-    $check->bind_param("s", $username);
-    $check->execute();
-    $check->store_result();
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $username = trim($_POST['username']);
+        $password = trim($_POST['password']);
 
-    if ($check->num_rows > 0) {
-        echo "Username already exists.";
-    } else {
-        $stmt = $conn->prepare("INSERT INTO user (Username, Password, PlaylistsCreated, Created) VALUES (?, ?, 0, NOW())");
-        $stmt->bind_param("ss", $username, $password);
+    if (!empty($username) && !empty($password)) {
+        $check = $conn->prepare("SELECT id FROM user WHERE username = ?");
+        $check->bind_param("s", $username);
+        $check->execute();
+        $check->store_result();
 
-        if ($stmt->execute()) {
-            echo "";
-            header("Location: login.php");
+        if ($check->num_rows > 0) {
+            echo "Username already exists!";
         } else {
-            echo "Error: " . $stmt->error;
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("INSERT INTO user (username, password_hash, playlists_created) VALUES (?, ?, 0)");
+            $stmt->bind_param("ss", $username, $hash);
+            if ($stmt->execute()) {
+                header("Location: login.php");
+                exit;
+            } else {
+                echo "Registration failed: " . $conn->error;
+            }
         }
+    } else {
+        echo "All fields required.";
     }
 }
 ?>

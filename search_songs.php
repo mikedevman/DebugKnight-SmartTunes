@@ -14,10 +14,12 @@ $searchTerm = '%' . trim($_GET['q']) . '%';
 
 try {
     $stmt = $conn->prepare("
-        SELECT song_id, name, content
-        FROM song
-        WHERE name LIKE ? OR artist LIKE ?
-        ORDER BY title ASC
+        SELECT s.song_id, s.name, s.content
+        FROM song s
+        LEFT JOIN song_author sa ON s.song_id = sa.song_id
+        LEFT JOIN author a ON sa.author_id = a.author_id
+        WHERE s.name LIKE ? OR a.name LIKE ?
+        ORDER BY s.name ASC
     ");
     $stmt->bind_param("ss", $searchTerm, $searchTerm);
     $stmt->execute();
