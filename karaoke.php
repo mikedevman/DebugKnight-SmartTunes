@@ -70,21 +70,16 @@ if (!isset($_SESSION['username'])) {
 
         <div
           class="song-list-wrapper"
-          style="max-height: 530px; overflow-y: auto"
+          style="max-height: 690px; overflow-y: auto"
         >
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            "
-          >
+        <div class="song-list-header">
+          <button id="show-upload-btn" class="btn btn-outline-light">
+            Upload Song
+            </button>
+
             <h2>Song List</h2>
-            <button
-              id="delete-selected-btn"
-              style="font-size: 14px; padding: 4px 8px"
-            >
-              🗑️ Delete
+            <button id="delete-selected-btn" class="btn btn-danger">
+            Delete
             </button>
           </div>
           <ul id="song-list"></ul>
@@ -117,6 +112,48 @@ if (!isset($_SESSION['username'])) {
 </div>
       </div>
     </div>
+
+    <!-- Upload Form Popup -->
+    <div class="upload-container" style="display: none" id="uploadContainer">
+  <button class="close-upload" id="closeUploadBtn">&times;</button>
+  <h2>Upload a YouTube Song</h2>
+  <form class="upload-form" action="upload_song.php" method="POST">
+    <label for="title">Song Title:</label>
+    <input type="text" name="title" placeholder="Enter song title" required />
+
+    <label for="authorName">Song Author:</label>
+    <input type="text" name="authorName" placeholder="Enter song author" required />
+
+    <label for="content">YouTube Link:</label>
+    <input type="text" name="content" placeholder="https://www.youtube.com/watch?v=..." required />
+
+    <label for="tempo">Tempo (BPM):</label>
+    <input type="number" name="tempo" placeholder="Enter tempo" required />
+
+    <label for="songkey">Key:</label>
+    <input type="text" name="songkey" placeholder="Enter song key (e.g. C, Gm)" required />
+
+    <label for="genre">Genre:</label>
+    <input type="text" name="genre" placeholder="Enter genre" required />
+
+    <label for="year">Year Published:</label>
+    <input type="number" name="year" placeholder="2020" required />
+
+    <label for="timeplayed">Duration (mm:ss):</label>
+    <input type="text" name="timeplayed" placeholder="4:30" required />
+
+    <label for="album">Album:</label>
+    <select name="album" required>
+      <option value="" disabled selected>Select album</option>
+      <option value="1">Album 1</option>
+      <option value="2">Album 2</option>
+    </select>
+
+    <button type="submit" class="site-btn">Upload</button>
+  </form>
+</div>
+
+    <!-- Form Upload ẩn -->
 
     <footer class="footer-section">
       <div class="container">
