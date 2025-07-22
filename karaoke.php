@@ -121,9 +121,6 @@ if (!isset($_SESSION['username'])) {
     <label for="title">Song Title:</label>
     <input type="text" name="title" placeholder="Enter song title" required />
 
-    <label for="authorName">Song Author:</label>
-    <input type="text" name="authorName" placeholder="Enter song author" required />
-
     <label for="content">YouTube Link:</label>
     <input type="text" name="content" placeholder="https://www.youtube.com/watch?v=..." required />
 
