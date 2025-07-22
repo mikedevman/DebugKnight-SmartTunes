@@ -59,76 +59,45 @@
     </header>
 
     <div class="upload-container">
-<<<<<<<< HEAD:AddSong.php
     <h2>Upload A Song</h2>
     <form class="upload-form" action="upload_song.php" method="POST" enctype="multipart/form-data">
         <label for="songfile">Choose MP4 file:</label>
         <input type="file" name="songfile" accept=".mp4" required>
-========
-      <h2>Upload A Song</h2>
-      <form
-        class="upload-form"
-        action="upload_song.php"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <label for="songfile">Choose MP4 file:</label>
-        <input type="file" name="songfile" accept=".mp4" required />
->>>>>>>> 88297a178f433cc9af75a3cc4968285973f196da:AddSong.html
 
         <label for="title">Song Title:</label>
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter song title"
-          required
-        />
+        <input type="text" name="title" placeholder="Enter song title" required>
 
         <label for="artist">Author:</label>
         <input type="text" name="author" placeholder="Enter author" required>
 
         <label for="tempo">Tempo (BPM):</label>
-        <input type="number" name="tempo" placeholder="Enter tempo" required />
+        <input type="number" name="tempo" placeholder="Enter tempo" required>
 
         <label for="songkey">Key:</label>
-        <input
-          type="text"
-          name="songkey"
-          placeholder="Enter song key (e.g. C, Gm)"
-          required
-        />
+        <input type="text" name="songkey" placeholder="Enter song key (e.g. C, Gm)" required>
 
         <label for="genre">Genre:</label>
-        <input type="text" name="genre" placeholder="Enter genre" required />
+        <input type="text" name="genre" placeholder="Enter genre" required>
 
         <label for="year">Year Published:</label>
-        <input
-          type="number"
-          name="year"
-          placeholder="Enter year (e.g. 2020)"
-          required
-        />
+        <input type="number" name="year" placeholder="Enter year (e.g. 2020)" required>
 
         <label for="timeplayed">Duration (mm:ss):</label>
-        <input
-          type="text"
-          name="timeplayed"
-          placeholder="Enter song duration (e.g. 4:30)"
-          required
-        />
+        <input type="text" name="timeplayed" placeholder="Enter song duration (e.g. 4:30)" required>
 
         <label for="album">Album:</label>
         <select name="album" required>
-          <option value="" disabled selected>Select album</option>
-          <option value="1">Album 1</option>
-          <option value="2">Album 2</option>
+            <option value="" disabled selected>Select album</option>
+            <option value="1">Album 1</option>
+            <option value="2">Album 2</option>
+
         </select>
 
         <button type="submit">Upload</button>
-      </form>
+    </form>
     </div>
 
-    <!-- Footer section -->
+   <!-- Footer section -->
     <footer class="footer-section">
       <div class="container">
         <div class="row">
@@ -200,3 +169,5 @@
     <script src="js/main.js"></script>
   </body>
 </html>
+
+
