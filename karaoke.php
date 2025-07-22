@@ -93,10 +93,28 @@ if (!isset($_SESSION['username'])) {
 
       <div class="right-panel">
         <div id="karaoke-container">
-          <video id="karaoke-video" controls></video>
-          <div id="lyrics" class="lyrics-container"></div>
-          <button id="fullscreen-btn">⛶</button>
-        </div>
+  <video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>
+
+  <div id="lyrics" class="lyrics-container" style="margin-top: 15px;"></div>
+
+  <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+    <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Vocal Recorder</h3>
+    
+    <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
+      <button id="start-recording" class="btn btn-success">
+        <i class="fa fa-circle"></i> Start Recording
+      </button>
+      <button id="stop-recording" class="btn btn-danger" disabled>
+        <i class="fa fa-stop"></i> Stop
+      </button>
+      <span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
+    </div>
+
+    <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
+  </div>
+
+  <button id="fullscreen-btn" style="margin-top: 15px;">⛶</button>
+</div>
       </div>
     </div>
 
@@ -174,5 +192,7 @@ if (!isset($_SESSION['username'])) {
 
     <script src="js/WaveSurferInit.js"></script>
     <script src="js/jplayerInit.js"></script>
+    <script src="js/karaoke-recorder.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pitchy@1.2.0/dist/pitchy.umd.js"></script>
   </body>
 </html>
