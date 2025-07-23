@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function loadSong(song) {
   if (!song || !song.video) {
-    document.getElementById("karaoke-container").innerHTML = '<video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>';
+    document.getElementById("karaoke-container").innerHTML = "";
     return;
   }
 
@@ -102,22 +102,16 @@ function loadSong(song) {
 
   if (videoID) {
     container.innerHTML = `
-      <div class="video-wrapper">
+      <div class="video-container">
         <iframe
-          id="karaoke-video"
           src="https://www.youtube.com/embed/${videoID}?autoplay=1&rel=0&modestbranding=1&showinfo=0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowfullscreen
-          style="width: 100%; height: 315px; border-radius: 8px; border: none;"
         ></iframe>
       </div>
     `;
   } else {
-    container.innerHTML = `
-      <div style="padding: 20px; text-align: center; color: white; background: #333; border-radius: 8px;">
-        <p>Không thể phát video. Link không hợp lệ.</p>
-      </div>
-    `;
+    container.innerHTML = `<p style='color:white;'>Không thể phát video. Link không hợp lệ.</p>`;
   }
 }
 
