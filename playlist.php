@@ -1,7 +1,15 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+  header("Location: login.php");
+  exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
   <head>
-    <title>SmartTunes - Songs</title>
+    <title>SmartTunes - Artists</title>
     <meta charset="UTF-8" />
     <meta name="description" content="SmartTunes" />
     <meta name="keywords" content="music, html" />
@@ -52,98 +60,80 @@
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
-        <li><a href="artists.html">Artists</a></li>
-        <li><a href="AddSong.html">Add Song</a></li>
-        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="playlists.php">Playlists</a></li>
+        <li><a href="contact.php">Contact Us</a></li>
       </ul>
     </header>
     <!-- Header section end -->
-<!-- Artist Detail Section -->
-<section class="artist-detail" style="position: relative; height: 500px; overflow: hidden;">
-  <!-- Background image -->
-  <div style="
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('img/banner1.jpg');
-    background-size: cover;
-    background-position: center;
-    filter: brightness(0.5);
-    z-index: 1;">
-  </div>
 
-  <!-- Overlay content -->
-  <div class="container h-100" style="position: relative; z-index: 2;">
-    <div class="row h-100 align-items-end">
-      <div class="col-lg-12 d-flex align-items-center">
-        <div>
-          <h2 style="
-            color: white;
-            font-size: 50px;
-            font-weight: bold;
-            margin-bottom: 120px;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-          ">Soobin Hoàng Sơn</h2>
-          <!-- Nút Play All -->
-          <button class="btn btn-success shadow" style="padding: 10px 24px; font-weight: 500;">
-            ▶ Play All
-          </button>
-        </div>
+    <!-- Playlist section -->
+    <div class="playlist-1">
+      <div class="d-flex h-100 align-items-end">
+        <form class="search-form">
+          <input type="text" placeholder=" Add Song Into Playlist" />
+          <button>Add</button>
+        </form>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- Danh sách bài hát -->
-<section class="song-list" style="margin-top: -100px; position: relative; z-index: 3;">
-  <div class="container bg-white p-5 rounded shadow" style="border-radius: 16px;">
-    <h3 class="mb-4" style="font-weight: 600;">Popular Songs</h3>
-    <div class="row">
       
-      <!-- Repeat for each song -->
-      <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm song-card" style="transition: 0.3s; cursor: pointer;">
-          <img src="uploads/song1.jpg" class="card-img-top" alt="..." style="border-top-left-radius: 12px; border-top-right-radius: 12px;" />
-          <div class="card-body">
-            <h5 class="card-title mb-3">ABC</h5>
-            <audio controls style="width: 100%;">
-              <source src="uploads/song1.mp3" type="audio/mpeg" />
-              Trình duyệt của bạn không hỗ trợ audio.
-            </audio>
+    <div class="main-karaoke-content">
+      <div class="left-panel">
+        <div class="song-search-area">
+          <div class="search-input-wrapper">
+            <input
+              type="text"
+              id="song-search"
+              placeholder="Enter song name or artirst"
+            />
+            <i class="fa fa-search search-icon" id="search-icon-btn"></i>
           </div>
+        </div>
+
+        <div
+          class="song-list-wrapper"
+          style="max-height: 690px; overflow-y: auto"
+        >
+        <div class="song-list-header">
+          <button id="show-upload-btn" class="btn btn-outline-light">
+            Upload Song
+            </button>
+
+            <h2>Song List</h2>
+            <button id="delete-selected-btn" class="btn btn-danger">
+            Delete
+            </button>
+          </div>
+          <ul id="song-list"></ul>
         </div>
       </div>
 
-      <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm song-card">
-          <img src="uploads/song2.jpg" class="card-img-top" alt="..." />
-          <div class="card-body">
-            <h5 class="card-title mb-3">CDE</h5>
-            <audio controls style="width: 100%;">
-              <source src="uploads/song2.mp3" type="audio/mpeg" />
-            </audio>
-          </div>
-        </div>
-      </div>
+      <div class="right-panel">
+        <div id="karaoke-container">
+  <video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>
 
-      <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm song-card">
-          <img src="uploads/song3.jpg" class="card-img-top" alt="..." />
-          <div class="card-body">
-            <h5 class="card-title mb-3">ABC</h5>
-            <audio controls style="width: 100%;">
-              <source src="uploads/song3.mp3" type="audio/mpeg" />
-            </audio>
-          </div>
-        </div>
-      </div>
+  <div id="lyrics" class="lyrics-container" style="margin-top: 15px;"></div>
 
+  <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+    <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Vocal Recorder</h3>
+    
+    <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
+      <button id="start-recording" class="btn btn-success">
+        <i class="fa fa-circle"></i> Start Recording
+      </button>
+      <button id="stop-recording" class="btn btn-danger" disabled>
+        <i class="fa fa-stop"></i> Stop
+      </button>
+      <span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
     </div>
-  </div>
-</section>
 
+    <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
+  </div>
+
+  <button id="fullscreen-btn" style="margin-top: 15px;">⛶</button>
+</div>
+      </div>
+    </div>
+</div>
+    <!-- Playlist section end -->
 
     <!-- Footer section -->
     <footer class="footer-section">

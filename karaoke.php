@@ -49,9 +49,8 @@ if (!isset($_SESSION['username'])) {
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
-        <li><a href="artists.php">Artists</a></li>
-        <li><a href="AddSong.php">Add Song</a></li>
-        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="playlists.php">Playlists</a></li>
+        <li><a href="contact.php">Contact Us</a></li>
       </ul>
     </header>
 

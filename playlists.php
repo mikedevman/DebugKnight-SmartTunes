@@ -1,9 +1,17 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+  header("Location: login.php");
+  exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
   <head>
-    <title>SolMusic | HTML Template</title>
+    <title>SmartTunes - Artists</title>
     <meta charset="UTF-8" />
-    <meta name="description" content="SolMusic HTML Template" />
+    <meta name="description" content="SmartTunes" />
     <meta name="keywords" content="music, html" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -38,11 +46,11 @@
 
     <!-- Header section -->
     <header class="header-section clearfix">
-      <a href="index.html" class="site-logo">
+      <a href="index.php" class="site-logo">
         <img src="img/logo.png" alt="" />
       </a>
       <div class="header-right">
-        <a href="logout.php" class="hr-btn">Logout</a>
+        <a href="contact.html" class="hr-btn">Help</a>
         <span>|</span>
         <div class="user-panel">
           <a href="" class="login">Login</a>
@@ -52,52 +60,72 @@
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
-        <li><a href="artists.php">Artists</a></li>
-        <li><a href="AddSong.php">Add Song</a></li>
-        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="playlists.php">Playlists</a></li>
+        <li><a href="contact.php">Contact Us</a></li>
       </ul>
     </header>
+    <!-- Header section end -->
 
-    <div class="upload-container">
-    <h2>Upload A Song</h2>
-    <form class="upload-form" action="upload_song.php" method="POST" enctype="multipart/form-data">
-        <label for="songfile">Choose MP4 file:</label>
-        <input type="file" name="songfile" accept=".mp4" required>
+    <!-- Playlist section -->
+    <section class="playlist-section spad">
+      <div class="container-fluid">
+        <div class="section-title">
+          <h2>Playlists</h2>
+        </div>
 
-        <label for="title">Song Title:</label>
-        <input type="text" name="title" placeholder="Enter song title" required>
+        <div class="clearfix"></div>
+        <div class="row playlist-area">
+          <div class="mix col-lg-3 col-md-4 col-sm-6 genres">
+            <div class="playlist-item">
+              <a href="playlist.php">
+                <img
+                  src="D:\Download\DatabaseProject\img\Soobin-H.jpg"
+                  alt=""
+                />
+                <h5>Soobin Hoàng Sơn</h5>
+              </a>
+            </div>
+          </div>
 
-        <label for="artist">Author:</label>
-        <input type="text" name="author" placeholder="Enter author" required>
+          <div class="mix col-lg-3 col-md-4 col-sm-6 movies">
+            <div class="playlist-item">
+              <img
+                src="D:\Download\DatabaseProject\img\playlist\J97.webp"
+                alt=""
+              />
+              <h5>Trịnh Trần Phương Tuấn</h5>
+            </div>
+          </div>
 
-        <label for="tempo">Tempo (BPM):</label>
-        <input type="number" name="tempo" placeholder="Enter tempo" required>
+          <div class="mix col-lg-3 col-md-4 col-sm-6 artists">
+            <div class="playlist-item">
+              <a href="playlist.php">
+                <img
+                  src="D:\Download\DatabaseProject\img\Soobin-H.jpg"
+                  alt=""
+                />
+                <h5>Soobin Hoàng Sơn</h5>
+              </a>
+            </div>
+          </div>
 
-        <label for="songkey">Key:</label>
-        <input type="text" name="songkey" placeholder="Enter song key (e.g. C, Gm)" required>
+          <div class="mix col-lg-3 col-md-4 col-sm-6 labels">
+            <div class="playlist-item">
+              <a href="playlist.php">
+                <img
+                  src="D:\Download\DatabaseProject\img\Soobin-H.jpg"
+                  alt=""
+                />
+                <h5>Soobin Hoàng Sơn</h5>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Playlist section end -->
 
-        <label for="genre">Genre:</label>
-        <input type="text" name="genre" placeholder="Enter genre" required>
-
-        <label for="year">Year Published:</label>
-        <input type="number" name="year" placeholder="Enter year (e.g. 2020)" required>
-
-        <label for="timeplayed">Duration (mm:ss):</label>
-        <input type="text" name="timeplayed" placeholder="Enter song duration (e.g. 4:30)" required>
-
-        <label for="album">Album:</label>
-        <select name="album" required>
-            <option value="" disabled selected>Select album</option>
-            <option value="1">Album 1</option>
-            <option value="2">Album 2</option>
-
-        </select>
-
-        <button type="submit">Upload</button>
-    </form>
-    </div>
-
-   <!-- Footer section -->
+    <!-- Footer section -->
     <footer class="footer-section">
       <div class="container">
         <div class="row">
@@ -107,7 +135,7 @@
                 <div class="footer-widget">
                   <h2>About us</h2>
                   <ul>
-                    <li><a href="">Our Story</a></li>
+                    <li><a href="index.php">Our Story</a></li>
                     <li><a href="">Sol Music Blog</a></li>
                     <li><a href="">History</a></li>
                   </ul>
@@ -115,12 +143,12 @@
               </div>
               <div class="col-sm-4">
                 <div class="footer-widget">
-                  <h2>Products</h2>
+                  <h2>Ultilities</h2>
                   <ul>
-                    <li><a href="">Music</a></li>
-                    <li><a href="">Subscription</a></li>
-                    <li><a href="">Custom Music</a></li>
-                    <li><a href="">Footage</a></li>
+                    <li><a href="karaoke.php">Music</a></li>
+                    <li><a href="artists.html">Artists</a></li>
+                    <li><a href="karaoke.php">Karaoke</a></li>
+                    <li><a href="karaoke.php">Add Song</a></li>
                   </ul>
                 </div>
               </div>
@@ -140,19 +168,12 @@
           <div class="col-xl-6 col-lg-5 order-lg-1">
             <img src="img/logo.png" alt="" />
             <div class="copyright">
-              Made in
-              <script>
-                document.write(new Date().getFullYear());
-              </script>
-              | This website is made with
-              <i class="fa fa-heart-o" aria-hidden="true"></i>
+                Music from the heart
             </div>
             <div class="social-links">
-              <a href=""><i class="fa fa-instagram"></i></a>
-              <a href=""><i class="fa fa-pinterest"></i></a>
-              <a href=""><i class="fa fa-facebook"></i></a>
-              <a href=""><i class="fa fa-twitter"></i></a>
-              <a href=""><i class="fa fa-youtube"></i></a>
+              <a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
+              <a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
             </div>
           </div>
         </div>
@@ -169,5 +190,3 @@
     <script src="js/main.js"></script>
   </body>
 </html>
-
-
