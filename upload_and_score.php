@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 $uploadDir = __DIR__ . "/uploads/";
 $rawUploadPath = $uploadDir . "user_recording.webm";
 $convertedWavPath = $uploadDir . "user_recording.wav";
-$referenceAudioPath = __DIR__ . "/reference_song.mp3"; // 🔁 CHANGE to your reference file
+$referenceAudioPath = __DIR__ . "/Recording.mp3"; 
 $pythonScript = __DIR__ . "/soundalgo.py";
 
 // === SETUP ===
