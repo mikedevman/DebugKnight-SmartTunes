@@ -1,3 +1,145 @@
+#recording-panel {
+  margin-top: 0;
+  padding: 24px 20px;
+  border-radius: 12px;
+  background: #222;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  font-size: 1.1em;
+}
+
+#karaoke-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #111; 
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#karaoke-video-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#karaoke-video, #karaoke-video-wrapper iframe {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  background: #222;
+}
+
+.lyrics-container {
+  margin-top: 18px;
+  width: 100%;
+  background: #222;
+  border-radius: 8px;
+  padding: 16px;
+  color: #fff;
+  font-size: 1.1em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+#fullscreen-btn {
+  margin-top: 18px;
+  background: #222;
+  color: #fff;
+  border: none;
+  font-size: 1.7rem;
+  border-radius: 8px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#fullscreen-btn:hover {
+  background: #fc0254;
+  color: #fff;
+}
+
+#record-controls button {
+  font-size: 1em;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#record-controls .btn-success {
+  background: linear-gradient(90deg, #28a745 60%, #43e97b 100%);
+  border: none;
+}
+
+#record-controls .btn-danger {
+  background: linear-gradient(90deg, #fc0254 60%, #ff6a6a 100%);
+  border: none;
+}
+
+#record-controls .btn-success:hover, #record-controls .btn-danger:hover {
+  filter: brightness(1.1);
+}
+
+#recording-status {
+  font-size: 1em;
+  font-weight: 600;
+  color: #fc0254;
+}
+
+.song-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  padding: 20px;
+  position: absolute;
+  z-index: 10;
+  background: #181818;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.song-list-header h2 {
+  color: #fc0254;
+  font-size: 1.7em;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.btn-danger {
+  background: linear-gradient(90deg, #fc0254 60%, #ff6a6a 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 22px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.btn-outline-light {
+  border: 2px solid #fc0254;
+  color: #fc0254;
+  background: transparent;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 22px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+}
+
+.btn-outline-light:hover {
+  background: #fc0254;
+  color: #fff;
+}
 
 /*=================================
 -----------------------------------
@@ -1184,50 +1326,55 @@ Category page
 /* Add Song */
 
 .main-karaoke-content {
-    display: flex;
-    min-height: calc(100vh - var(--header-height, 100px) - var(--footer-height, 200px) - 80px);
-    margin-top: 40px;
-    margin-bottom: 40px;
-    gap: 10px;
-    padding: 0 40px;
-    box-sizing: border-box;
+	display: flex;
+	min-height: calc(100vh - var(--header-height, 100px) - var(--footer-height, 200px) - 80px);
+	margin-top: 40px;
+	margin-bottom: 40px;
+	gap: 30px;
+	padding: 0 40px;
+	box-sizing: border-box;
 }
 
 .left-panel {
-    flex: 1;
-    width: 25%;
-    padding: 24px;
-    background: #121212;
-    color: #eee;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
+	flex: 1;
+	width: 25%;
+	padding: 32px 24px;
+	background: #181818;
+	color: #eee;
+	border-radius: 12px;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
 
 .right-panel {
 	min-height: 400px;
-    flex: 3;
-    width: 75%;
-    background: #121212;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+	flex: 3;
+	width: 75%;
+	background: #181818;
+	border-radius: 12px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	position: relative;
+	overflow: hidden;
+	gap: 24px;
+	padding: 32px 24px;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
 
 .song-search-area {
-    margin-bottom: 24px;
-    display: flex;
-    flex-direction: column;
+	margin-bottom: 24px;
+	display: flex;
+	flex-direction: column;
 }
 
 .song-search-area label {
-    display: none; 
-    margin-bottom: 8px;
-    font-size: 1.1em;
-    color: #b3b3b3;
+	display: none; 
+	margin-bottom: 8px;
+	font-size: 1.1em;
+	color: #b3b3b3;
 }
 
 .search-input-wrapper {
@@ -1268,27 +1415,27 @@ Category page
 }
 
 .song-list-wrapper {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-right: 10px;
-    margin-top: 5px;
+	flex-grow: 1;
+	overflow-y: auto;
+	padding-right: 10px;
+	margin-top: 5px;
 }
 .song-list-wrapper::-webkit-scrollbar {
-    width: 8px;
+	width: 8px;
 }
 
 .song-list-wrapper::-webkit-scrollbar-track {
-    background: #282828;
-    border-radius: 4px;
+	background: #282828;
+	border-radius: 4px;
 }
 
 .song-list-wrapper::-webkit-scrollbar-thumb {
-    background: #535353;
-    border-radius: 4px;
+	background: #535353;
+	border-radius: 4px;
 }
 
 .song-list-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #6c6c6c;
+	background: #6c6c6c;
 }
 .song-list-header {  
   display: flex;
@@ -1298,21 +1445,23 @@ Category page
   padding: 20px;
   position: absolute;
   z-index: 10;
-  background: #121212;
+  background: #181818;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .song-list-wrapper h2 {
-    color: #fff;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-    text-align: left;
-    padding-left: 8px;
+	color: #fff;
+	margin-bottom: 15px;
+	font-size: 1.5em;
+	text-align: left;
+	padding-left: 8px;
 }
 
 #song-list {
-    list-style: none;
-    padding: 0;
-    margin-top: 100px;
+	list-style: none;
+	padding: 0;
+	margin-top: 100px;
 }
 
 .song-item {
@@ -1326,16 +1475,6 @@ Category page
 .song-item.active {
   background-color: #d6575d;
   color: #fff;
-}
-
-#karaoke-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background-color: #111; 
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 20px;
-  position: relative;
 }
 
 .video-container {
@@ -1353,30 +1492,39 @@ Category page
   border-radius: 12px;
 }
 
-/* Fullscreen button */
-#fullscreen-btn {
-  background: transparent;
-  color: white;
-  border: none;
-  font-size: 1.5rem;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
-  cursor: pointer;
+/* Responsive Adjustments */
+@media screen and (max-width: 1024px) {
+  .main-karaoke-content {
+    flex-direction: column;
+    padding: 0 10px;
+    gap: 18px;
+  }
+  .left-panel, .right-panel {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+  }
+  #karaoke-container {
+    aspect-ratio: 16 / 9;
+    min-height: 220px;
+  }
 }
 
-/* Responsive Adjustments */
 @media screen and (max-width: 768px) {
   .main-karaoke-content {
     flex-direction: column;
+    padding: 0 4px;
+    gap: 10px;
   }
-  .left-panel,
-  .right-panel {
+  .left-panel, .right-panel {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
+    border-radius: 6px;
+  }
+  #karaoke-container {
+    aspect-ratio: 16 / 9;
+    min-height: 160px;
   }
 }
 
-
-/* Karaoke */
+/* --- End General Karaoke Page Styling Improvements --- */

@@ -89,35 +89,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 function loadSong(song) {
-  if (!song || !song.video) {
-    document.getElementById("karaoke-container").innerHTML = '<video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>';
-    return;
-  }
-
   selectedSong = song;
   deleteBtn.style.display = "inline-block";
-
-  const videoID = getYouTubeVideoID(song.video);
-  const container = document.getElementById("karaoke-container");
-
+  const videoID = song && song.video ? getYouTubeVideoID(song.video) : null;
+  let videoWrapper = document.getElementById("karaoke-video-wrapper");
+  if (!videoWrapper) {
+    // If missing, recreate it inside #karaoke-container, before the recorder box
+    const container = document.getElementById("karaoke-container");
+    videoWrapper = document.createElement("div");
+    videoWrapper.id = "karaoke-video-wrapper";
+    container.insertBefore(videoWrapper, document.getElementById("recording-panel"));
+  }
   if (videoID) {
-    container.innerHTML = `
-      <div class="video-wrapper">
-        <iframe
-          id="karaoke-video"
-          src="https://www.youtube.com/embed/${videoID}?autoplay=1&rel=0&modestbranding=1&showinfo=0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-          allowfullscreen
-          style="width: 100%; height: 315px; border-radius: 8px; border: none;"
-        ></iframe>
-      </div>
+    videoWrapper.innerHTML = `
+      <iframe
+        id="karaoke-video"
+        src="https://www.youtube.com/embed/${videoID}?autoplay=1&rel=0&modestbranding=1&showinfo=0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+        allowfullscreen
+        style="width: 100%; height: 315px; border-radius: 8px; border: none;"
+      ></iframe>
     `;
+  } else if (song && song.video) {
+    videoWrapper.innerHTML = `<video id="karaoke-video" src="${song.video}" controls style="width: 100%; border-radius: 8px;"></video>`;
   } else {
-    container.innerHTML = `
-      <div style="padding: 20px; text-align: center; color: white; background: #333; border-radius: 8px;">
-        <p>Không thể phát video. Link không hợp lệ.</p>
-      </div>
-    `;
+    videoWrapper.innerHTML = `<video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>`;
   }
 }
 

@@ -87,15 +87,12 @@ if (!isset($_SESSION['username'])) {
 
       <div class="right-panel">
         <div id="karaoke-container">
-          <video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>
+          <div id="karaoke-video-wrapper">
+            <video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>
+          </div>
         </div>
-
-        <!-- Moved karaoke controls outside of karaoke-container -->
-        <div id="lyrics" class="lyrics-container" style="margin-top: 15px;"></div>
-
-        <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+        <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); width: 100%;">
           <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Vocal Recorder</h3>
-          
           <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
             <button id="start-recording" class="btn btn-success">
               <i class="fa fa-circle"></i> Start Recording
@@ -105,13 +102,11 @@ if (!isset($_SESSION['username'])) {
             </button>
             <span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
           </div>
-
           <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
         </div>
+        
+      </div>
 
-        <button id="fullscreen-btn" style="margin-top: 15px;">⛶</button>
-      </div>
-      </div>
     </div>
 
     <!-- Upload Form Popup -->
