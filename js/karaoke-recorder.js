@@ -18,19 +18,44 @@ startBtn.addEventListener("click", async () => {
 
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: "audio/webm" });
+
+      // Playback
       const url = URL.createObjectURL(blob);
       playback.src = url;
       playback.style.display = "block";
 
-      status.textContent = "Analyzing pitch... 🎧";
+      // Display upload status
+      status.textContent = "Uploading and scoring... ⏳";
 
-      analyzePitch(blob); // Call vocal scoring
+      // Upload to PHP
+      const formData = new FormData();
+      formData.append("audio", blob, "user_recording.webm");
+
+      fetch("upload_and_score.php", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          status.textContent = `Vocal Similarity Score: ${data.score.toFixed(2)} / 100 🎯`;
+        } else {
+          status.textContent = "Scoring failed ❌";
+          console.error(data.error);
+        }
+      })
+      .catch(err => {
+        status.textContent = "Upload error ❌";
+        console.error(err);
+      });
     };
 
+    // Start recording
     mediaRecorder.start();
     startBtn.disabled = true;
     stopBtn.disabled = false;
     status.textContent = "Recording... 🔴";
+
   } catch (err) {
     alert("Microphone access denied or not supported.");
     console.error(err);
@@ -44,38 +69,3 @@ stopBtn.addEventListener("click", () => {
     stopBtn.disabled = true;
   }
 });
-
-// Analyze vocal pitch using Pitchy
-const analyzePitch = async (blob) => {
-  try {
-    const arrayBuffer = await blob.arrayBuffer();
-    const audioContext = new AudioContext();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    const channelData = audioBuffer.getChannelData(0);
-
-    const sampleRate = audioContext.sampleRate;
-    const frameSize = 2048;
-    const hopSize = 512;
-    let detected = 0;
-    let matches = 0;
-
-    for (let i = 0; i < channelData.length - frameSize; i += hopSize) {
-      const frame = channelData.slice(i, i + frameSize);
-      const [frequency, clarity] = pitchy.getPitch(frame, sampleRate);
-
-      if (clarity > 0.9 && frequency > 0) {
-        detected++;
-        // Check if pitch is within typical singing range (100–400 Hz)
-        if (frequency >= 100 && frequency <= 400) {
-          matches++;
-        }
-      }
-    }
-
-    const score = detected > 0 ? (matches / detected) * 100 : 0;
-    status.textContent = `Estimated Vocal Score: ${score.toFixed(2)} / 100 🎵`;
-  } catch (err) {
-    status.textContent = "Pitch analysis failed ❌";
-    console.error(err);
-  }
-};
