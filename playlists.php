@@ -50,7 +50,7 @@ if (!isset($_SESSION['username'])) {
         <img src="img/logo.png" alt="" />
       </a>
       <div class="header-right">
-        <a href="contact.html" class="hr-btn">Help</a>
+        <a href="logout.php" class="hr-btn">Logout</a>
         <span>|</span>
         <div class="user-panel">
           <a href="" class="login">Login</a>
