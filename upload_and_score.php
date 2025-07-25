@@ -3,7 +3,7 @@
 $uploadDir = __DIR__ . "/uploads/";
 $rawUploadPath = $uploadDir . "user_recording.webm";
 $convertedWavPath = $uploadDir . "user_recording.wav";
-$referenceAudioPath = __DIR__ . "/Recording.mp3";
+$referenceAudioPath = __DIR__ . "/Recording.wav";
 $pythonScript = __DIR__ . "/soundalgo.py";
 
 // === Ensure upload directory exists ===
@@ -24,7 +24,7 @@ if (!move_uploaded_file($_FILES["audio"]["tmp_name"], $rawUploadPath)) {
 
 // === Convert to WAV ===
 $ffmpegPath = __DIR__ . "/bin/ffmpeg.exe";
-$ffmpegCommand = "\"$ffmpegPath\" -y -i \"$rawUploadPath\" -ar 22050 -ac 1 \"$convertedWavPath\" 2>&1";
+$ffmpegCommand = "\"$ffmpegPath\" -y -i \"$rawUploadPath\" -ar 44100 -ac 1 \"$convertedWavPath\" 2>&1";
 $ffmpegOutput = shell_exec($ffmpegCommand);
 
 // Check if wav file was created
@@ -39,8 +39,8 @@ if (!file_exists($convertedWavPath)) {
 
 // === Run Python scoring script ===
 // Use full path to Python if needed
-$pythonPath = "python"; // or something like: "C:\\Path\\to\\Python311\\python.exe"
-$command = "$pythonPath \"$pythonScript\" \"$referenceAudioPath\" \"$convertedWavPath\"";
+$exePath = __DIR__ . "/bin/soundalgo.exe";
+$command = "\"$exePath\" \"$referenceAudioPath\" \"$convertedWavPath\"";
 
 exec($command, $outputLines, $exitCode);
 $output = implode("\n", $outputLines);
