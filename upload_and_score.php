@@ -23,7 +23,8 @@ if (!move_uploaded_file($_FILES["audio"]["tmp_name"], $rawUploadPath)) {
 }
 
 // === Convert to WAV ===
-$ffmpegCommand = "ffmpeg -y -i \"$rawUploadPath\" -ar 22050 -ac 1 \"$convertedWavPath\" 2>&1";
+$ffmpegPath = __DIR__ . "/bin/ffmpeg.exe";
+$ffmpegCommand = "\"$ffmpegPath\" -y -i \"$rawUploadPath\" -ar 22050 -ac 1 \"$convertedWavPath\" 2>&1";
 $ffmpegOutput = shell_exec($ffmpegCommand);
 
 // Check if wav file was created
