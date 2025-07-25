@@ -75,17 +75,17 @@ if (!isset($_SESSION['username'])) {
 
         <div class="clearfix"></div>
         <div class="row playlist-area">
-          <div class="mix col-lg-3 col-md-4 col-sm-6 genres">
-            <div class="playlist-item">
-              <a href="playlist.php">
-                <img
-                  src="D:\Download\DatabaseProject\img\Soobin-H.jpg"
-                  alt=""
-                />
-                <h5>Soobin Hoàng Sơn</h5>
-              </a>
+            <div class="mix col-lg-3 col-md-4 col-sm-6 genres">
+              <div class="playlist-item">
+                  <a href="playlist.php">
+                    <img
+                      src="img\playlist-img.png"
+                      alt=""
+                    />
+                    <h5>Soobin Hoàng Sơn</h5>
+                  </a>
+                </div>
             </div>
-          </div>
 
           <div class="mix col-lg-3 col-md-4 col-sm-6 movies">
             <div class="playlist-item">

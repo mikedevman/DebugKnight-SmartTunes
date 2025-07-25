@@ -107,7 +107,7 @@ function loadSong(song) {
         src="https://www.youtube.com/embed/${videoID}?autoplay=1&rel=0&modestbranding=1&showinfo=0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
         allowfullscreen
-        style="width: 100%; height: 315px; border-radius: 8px; border: none;"
+        style="width: 100%; height: 100%; border-radius: 8px; border: none;"
       ></iframe>
     `;
   } else if (song && song.video) {

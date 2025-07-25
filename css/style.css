@@ -35,6 +35,7 @@
 
 #karaoke-video, #karaoke-video-wrapper iframe {
   width: 100%;
+  height: 100%;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   background: #222;
@@ -124,6 +125,7 @@
   border-radius: 8px;
   padding: 10px 22px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 0.8em;
 }
 
 .btn-outline-light {
@@ -134,6 +136,8 @@
   border-radius: 8px;
   padding: 10px 22px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+  white-space: nowrap;
+  font-size: 0.8em;
 }
 
 .btn-outline-light:hover {
@@ -1358,7 +1362,7 @@ Category page
 	justify-content: flex-start;
 	align-items: stretch;
 	position: relative;
-	overflow: hidden;
+	overflow-y: auto;
 	gap: 24px;
 	padding: 32px 24px;
 	box-shadow: 0 4px 16px rgba(0,0,0,0.25);
@@ -1441,21 +1445,22 @@ Category page
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 25px;
+  gap: 8px;
   padding: 20px;
   position: absolute;
   z-index: 10;
   background: #181818;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  width: 21%;
 }
 
 .song-list-wrapper h2 {
 	color: #fff;
 	margin-bottom: 15px;
-	font-size: 1.5em;
+	font-size: 1.4em;
 	text-align: left;
-	padding-left: 8px;
+	white-space: nowrap;
 }
 
 #song-list {
@@ -1528,3 +1533,26 @@ Category page
 }
 
 /* --- End General Karaoke Page Styling Improvements --- */
+
+
+#recording-panel h3 {
+  font-size: 1.3em;
+  color: #fc0254;
+}
+
+.song-list-header-2 {
+	padding-left: 5%;
+	display: flex;
+}
+
+.btn-danger-2 {
+	background: linear-gradient(90deg, #fc0254 60%, #ff6a6a 100%);
+  	border: none;
+	color: #fff;
+	font-weight: 600;
+	border-radius: 8px;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+	font-size: 0.8em;
+	margin-left: 49%;
+}
+
