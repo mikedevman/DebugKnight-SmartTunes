@@ -9,7 +9,7 @@ if (!isset($_SESSION['username'])) {
 <!DOCTYPE html>
 <html lang="zxx">
   <head>
-    <title>SmartTunes - Artists</title>
+    <title>SmartTunes - Playlist</title>
     <meta charset="UTF-8" />
     <meta name="description" content="SmartTunes" />
     <meta name="keywords" content="music, html" />

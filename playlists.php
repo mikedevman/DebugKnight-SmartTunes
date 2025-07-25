@@ -9,7 +9,7 @@ if (!isset($_SESSION['username'])) {
 <!DOCTYPE html>
 <html lang="zxx">
   <head>
-    <title>SmartTunes - Artists</title>
+    <title>SmartTunes - Playlists</title>
     <meta charset="UTF-8" />
     <meta name="description" content="SmartTunes" />
     <meta name="keywords" content="music, html" />
@@ -67,62 +67,28 @@ if (!isset($_SESSION['username'])) {
     <!-- Header section end -->
 
     <!-- Playlist section -->
-    <section class="playlist-section spad">
-      <div class="container-fluid">
-        <div class="section-title">
-          <h2>Playlists</h2>
-        </div>
+        <!-- Create Playlist Button -->
+        <div class="playlists">
+          <div class="playlist-controls">
+            <button class="create-btn" onclick="toggleCreateForm()">Create Playlist</button>
 
-        <div class="clearfix"></div>
-        <div class="row playlist-area">
-            <div class="mix col-lg-3 col-md-4 col-sm-6 genres">
-              <div class="playlist-item">
-                  <a href="playlist.php">
-                    <img
-                      src="img\playlist-img.png"
-                      alt=""
-                    />
-                    <h5>Soobin Hoàng Sơn</h5>
-                  </a>
-                </div>
-            </div>
-
-          <div class="mix col-lg-3 col-md-4 col-sm-6 movies">
-            <div class="playlist-item">
-              <img
-                src="D:\Download\DatabaseProject\img\playlist\J97.webp"
-                alt=""
-              />
-              <h5>Trịnh Trần Phương Tuấn</h5>
+            <div id="create-form" class="create-form" style="display: none;">
+              <label for="playlistName">Playlist Name:</label>
+              <input type="text" id="playlistName" placeholder="Enter playlist name" />
+              <button onclick="addPlaylist()">Add</button>
             </div>
           </div>
 
-          <div class="mix col-lg-3 col-md-4 col-sm-6 artists">
-            <div class="playlist-item">
-              <a href="playlist.php">
-                <img
-                  src="D:\Download\DatabaseProject\img\Soobin-H.jpg"
-                  alt=""
-                />
-                <h5>Soobin Hoàng Sơn</h5>
-              </a>
-            </div>
+          <div class="section-title">
+            <h2>Playlists</h2>
           </div>
 
-          <div class="mix col-lg-3 col-md-4 col-sm-6 labels">
-            <div class="playlist-item">
-              <a href="playlist.php">
-                <img
-                  src="D:\Download\DatabaseProject\img\Soobin-H.jpg"
-                  alt=""
-                />
-                <h5>Soobin Hoàng Sơn</h5>
-              </a>
-            </div>
+          <div id="playlist-grid" class="playlist-grid">
+
           </div>
         </div>
-      </div>
-    </section>
+
+
     <!-- Playlist section end -->
 
     <!-- Footer section -->
@@ -188,5 +154,7 @@ if (!isset($_SESSION['username'])) {
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/mixitup.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/playlists.js"></script>
+    <script src="js/karaoke-recorder.js"></script>
   </body>
 </html>

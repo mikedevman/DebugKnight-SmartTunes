@@ -237,11 +237,17 @@ Helper CSS
  -----------------------*/
 
 .section-title {
-	margin-bottom: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 40px 10px;
 }
 
 .section-title h2 {
-	font-size: 60px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0a183d;
 }
 
 .set-bg {
@@ -836,7 +842,10 @@ Playlist page
 .search-form {
 	position: relative;
 	width: 100%;
-	margin-bottom: 25px;
+	margin-top: 2%;
+	margin-bottom: 0;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
 }
 
 .search-form input {
@@ -1683,4 +1692,130 @@ Category page
     color: #888;
     font-style: italic;
     margin: 0;
+}
+
+/* playlists */
+.playlist-controls {
+  text-align: left;
+  margin-bottom: 20px;
+  margin-right: 30px;
+}
+
+.create-btn {
+  margin-left: 50%;
+  margin-top: 1%;
+  background: #fc0254;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.3s;
+}
+
+.create-btn:hover {
+  background: #d81b60;
+}
+
+.create-form {
+  margin-left: 38%;
+  margin-top: 1%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 500px;
+}
+
+.create-form input {
+  width: 200px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  flex: 1;
+}
+
+.create-form button {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.create-form button:hover {
+  background-color: #218838;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+  padding: 0 40px;
+  margin-top: 30px;
+}
+
+.playlist-card {
+  position: relative;
+  background: #f8f9fa;
+  border-radius: 12px;
+  text-align: center;
+  padding: 20px 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.playlist-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.playlist-card img {
+  max-width: 100%;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+.playlist-card p {
+  font-weight: 600;
+  font-size: 1em;
+  color: #333;
+}
+
+.playlist-card .delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.playlist-card .delete-btn:hover {
+  background: #d60000;
+}
+
+.playlist-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.playlist-link:hover p {
+  color: #fc0254;
+}
+
+.playlists {
+	margin-bottom: 5%;
 }
