@@ -1556,3 +1556,131 @@ Category page
 	margin-left: 49%;
 }
 
+
+/* --- User Description Dropdown Box Display --- */
+/* User Panel - Keep your existing styles */
+.user-panel .register {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.user-panel .register:hover {
+    opacity: 0.8;
+}
+
+/* Modal Overlay */
+.user-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.user-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Box */
+.user-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 80%;
+    max-width: 700px;
+    max-height: 80vh;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.user-modal.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.modal-section {
+    background: #f9f9f9;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.modal-section h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #444;
+    font-size: 18px;
+}
+
+.items-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.items-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.items-list li:last-child {
+    border-bottom: none;
+}
+
+.items-list a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.items-list a:hover {
+    color: #0066cc;
+}
+
+.no-items {
+    color: #888;
+    font-style: italic;
+    margin: 0;
+}

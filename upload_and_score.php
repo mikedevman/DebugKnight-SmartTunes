@@ -1,51 +1,63 @@
 <?php
-header("Content-Type: application/json");
-
 // === CONFIG ===
 $uploadDir = __DIR__ . "/uploads/";
 $rawUploadPath = $uploadDir . "user_recording.webm";
 $convertedWavPath = $uploadDir . "user_recording.wav";
-$referenceAudioPath = __DIR__ . "/Recording.mp3"; 
+$referenceAudioPath = __DIR__ . "/Recording.mp3";
 $pythonScript = __DIR__ . "/soundalgo.py";
 
-// === SETUP ===
+// === Ensure upload directory exists ===
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
-// === HANDLE UPLOAD ===
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["audio"])) {
-    if (!move_uploaded_file($_FILES["audio"]["tmp_name"], $rawUploadPath)) {
-        echo json_encode(["success" => false, "error" => "Failed to save uploaded audio"]);
-        exit;
-    }
-
-    // === CONVERT TO WAV ===
-    $ffmpegCmd = "ffmpeg -y -i " . escapeshellarg($rawUploadPath) . " -ar 22050 -ac 1 " . escapeshellarg($convertedWavPath);
-    shell_exec($ffmpegCmd);
-
-    if (!file_exists($convertedWavPath)) {
-        echo json_encode(["success" => false, "error" => "FFmpeg conversion failed"]);
-        exit;
-    }
-
-    // === RUN PYTHON SCORING ===
-    $command = "python3 " . escapeshellarg($pythonScript) . " " . escapeshellarg($referenceAudioPath) . " " . escapeshellarg($convertedWavPath);
-    $output = shell_exec($command);
-
-    // === PARSE SCORE FROM PYTHON OUTPUT ===
-    if (preg_match('/Vocal Score:\s*([\d.]+)/', $output, $matches)) {
-        echo json_encode([
-            "success" => true,
-            "score" => floatval($matches[1])
-        ]);
-    } else {
-        echo json_encode([
-            "success" => false,
-            "error" => "Score not found in output",
-            "debug" => $output
-        ]);
-    }
-} else {
-    echo json_encode(["success" => false, "error" => "Invalid request"]);
+// === Handle audio upload ===
+if (!isset($_FILES["audio"])) {
+    echo json_encode(["success" => false, "error" => "No audio file received"]);
+    exit;
 }
+
+if (!move_uploaded_file($_FILES["audio"]["tmp_name"], $rawUploadPath)) {
+    echo json_encode(["success" => false, "error" => "Failed to save uploaded file"]);
+    exit;
+}
+
+// === Convert to WAV ===
+$ffmpegCommand = "ffmpeg -y -i \"$rawUploadPath\" -ar 22050 -ac 1 \"$convertedWavPath\" 2>&1";
+$ffmpegOutput = shell_exec($ffmpegCommand);
+
+// Check if wav file was created
+if (!file_exists($convertedWavPath)) {
+    echo json_encode([
+        "success" => false,
+        "error" => "FFmpeg conversion failed",
+        "debug" => $ffmpegOutput
+    ]);
+    exit;
+}
+
+// === Run Python scoring script ===
+// Use full path to Python if needed
+$pythonPath = "python"; // or something like: "C:\\Path\\to\\Python311\\python.exe"
+$command = "$pythonPath \"$pythonScript\" \"$referenceAudioPath\" \"$convertedWavPath\"";
+
+exec($command, $outputLines, $exitCode);
+$output = implode("\n", $outputLines);
+
+// Optional: save debug log
+file_put_contents("log.txt", "CMD: $command\n\nOUTPUT:\n$output\n\nEXIT CODE: $exitCode\n");
+
+// === Parse result ===
+if (preg_match("/Vocal Score:\s*([\d\.]+)/", $output, $matches)) {
+    $score = floatval($matches[1]);
+    echo json_encode(["success" => true, "score" => $score]);
+    exit;
+} else {
+    echo json_encode([
+        "success" => false,
+        "error" => "Score not found in output",
+        "debug" => $output
+    ]);
+    exit;
+}
+?>

@@ -1,0 +1,6 @@
+CMD: python "C:\xampp\htdocs\COS20031-Group-3/soundalgo.py" "C:\xampp\htdocs\COS20031-Group-3/Recording.mp3" "C:\xampp\htdocs\COS20031-Group-3/uploads/user_recording.wav"
+
+OUTPUT:
+Vocal Score: 81.25/100
+
+EXIT CODE: 0

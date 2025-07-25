@@ -52,8 +52,64 @@ if (!isset($_SESSION['username'])) {
 			<a href="logout.php" class="hr-btn">Logout</a>
 			<span>|</span>
 			<div class="user-panel">
-				<a href="" class="login">Login</a>
-				<a href="" class="register">Create an account</a>
+    <?php if(isset($_SESSION['user_id'])): ?>
+        <button class="user-welcome-btn">
+            Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>
+        </button>
+    <?php else: ?>
+        <a href="login.php" class="login">Login</a>
+        <a href="register.php" class="register">Register</a>
+    <?php endif; ?>
+</div>
+
+<!-- User Modal -->
+<div class="user-modal-overlay"></div>
+<div class="user-modal">
+    <div class="modal-header">
+        <h3><?php echo htmlspecialchars($_SESSION['username']); ?>'s Library</h3>
+        <button class="close-modal">&times;</button>
+    </div>
+    
+    <div class="modal-sections">
+        <div class="modal-section">
+            <h4>Your Playlists</h4>
+            <div class="items-container">
+                <?php if(!empty($user_playlists)): ?>
+                    <ul class="items-list">
+                        <?php foreach($user_playlists as $playlist): ?>
+                            <li>
+                                <a href="playlist.php?id=<?php echo $playlist['id']; ?>">
+                                    <?php echo htmlspecialchars($playlist['name']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="no-items">No playlists created yet</p>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <div class="modal-section">
+            <h4>Your Songs</h4>
+            <div class="items-container">
+                <?php if(!empty($user_songs)): ?>
+                    <ul class="items-list">
+                        <?php foreach($user_songs as $song): ?>
+                            <li>
+                                <a href="song.php?id=<?php echo $song['id']; ?>">
+                                    <?php echo htmlspecialchars($song['name']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="no-items">No songs uploaded yet</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
 			</div>
 		</div>
       <ul class="main-menu">
@@ -75,8 +131,8 @@ if (!isset($_SESSION['username'])) {
 							<div class="hs-text">
 								<h2><span>Welcome, </span><?php echo htmlspecialchars($_SESSION['username']); ?>!</h2>
 								<p>This is a website specifically designed for karaoke singing. In addition, it also serves as a platform where you can listen to music (similar to Spotify) but with the added feature of singing karaoke. </p>
-								<a href="karaoke.html" class="site-btn">Karaoke Singing</a>
-								<a href="songs.html" class="site-btn sb-c2">Listen Now</a>
+								<a href="karaoke.php" class="site-btn">Karaoke Singing</a>
+								<a href="playlists.php" class="site-btn sb-c2">Create Your Own Playlist!</a>
 							</div>
 						</div>
 						<div class="col-lg-6">
@@ -94,8 +150,8 @@ if (!isset($_SESSION['username'])) {
 							<div class="hs-text">
 								<h2><span>Listen </span> to new music.</h2>
 								<p>When you access this website to sing, your vocals will be compared to a standard, and based on that standard, we can assign a score. Additionally, each song has its own leaderboard, so give it your best shot to claim the top spot! </p>
-								<a href="#" class="site-btn">Karaoke Singing</a>
-								<a href="category.html" class="site-btn sb-c2">Listen Now</a>
+								<a href="contact.php" class="site-btn">Contact Us</a>
+								<a href="karaoke.php" class="site-btn sb-c2">Listen Now</a>
 							</div>
 						</div>
 						<div class="col-lg-6">
@@ -121,7 +177,7 @@ if (!isset($_SESSION['username'])) {
 				</div>
 				<div class="col-lg-6">
 					<p>When you visit this website to listen to music, each song is delivered with high-quality audio and curated playlists to match your mood. Our platform doesn't just play music—it enhances your listening experience with personalized recommendations and trending tracks. You can explore a wide variety of genres, discover new artists, and even follow your favorite ones. Plus, there’s a ranking system for the most popular songs, so you’ll always know what’s trending. Dive in and see if your favorite tracks make it to the top of the charts!</p>
-					<a href="songs.html" class="site-btn">Try it now</a>
+					<a href="karaoke.php" class="site-btn">Try it now</a>
 				</div>
 			</div>
 		</div>
@@ -246,7 +302,7 @@ if (!isset($_SESSION['username'])) {
 						<h2>Discover the Ultimate Karaoke & Music Experience</h2>
 						<h3>No sign-up fees. No subscriptions. Just pure music enjoyment.</h3>
 						<p>Sing your heart out, stream your favorite tracks, and explore a new way to enjoy music—all in one place. Whether you're practicing your vocals, competing for high scores, or just vibing to top hits, our platform has everything you need to make music fun and social.</p>
-						<a href="#" class="site-btn">Try it now - it's completely free!</a>
+						<a href="karaoke.php" class="site-btn">Try it now - it's completely free!</a>
 					</div>
 				</div>
 				<div class="col-lg-6">
@@ -376,6 +432,6 @@ Made in <script>document.write(new Date().getFullYear());</script> | This websit
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/mixitup.min.js"></script>
 	<script src="js/main.js"></script>
-
+	<script src="js/user-description.js"></script>
 	</body>
 </html>

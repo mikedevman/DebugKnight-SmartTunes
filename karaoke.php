@@ -100,6 +100,8 @@ if (!isset($_SESSION['username'])) {
             <button id="stop-recording" class="btn btn-danger" disabled>
               <i class="fa fa-stop"></i> Stop
             </button>
+            <span id="record-timer" style="margin-left: 10px; font-weight: bold;"></span>
+<span id="recording-status" style="display: block; margin-top: 10px;"></span>
             <span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
           </div>
           <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
