@@ -1,9 +1,15 @@
 import librosa
 import numpy as np
+import sys
 
 # Extract pitch sequence
 def extract_pitch(file):
-    y, sr = librosa.load(file)
+    try:
+        y, sr = librosa.load(file)
+    except Exception as e:
+        print(f"Error loading file {file}: {e}")
+        return np.array([])
+
     pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
     pitch_track = []
 
@@ -20,8 +26,12 @@ def compare(reference_file, user_file):
     ref_pitch = extract_pitch(reference_file)
     user_pitch = extract_pitch(user_file)
 
-    if len(ref_pitch) == 0 or len(user_pitch) == 0:
-        print("Error: One of the files has no detectable pitch.")
+    if len(ref_pitch) == 0:
+        print("Error: Reference file has no detectable pitch.")
+        return
+
+    if len(user_pitch) == 0:
+        print("Error: User recording has no detectable pitch.")
         return
 
     # Reshape to match DTW expected input: (1, N)
@@ -29,17 +39,23 @@ def compare(reference_file, user_file):
     user_pitch = user_pitch.reshape(1, -1)
 
     # DTW comparison
-    dist, _ = librosa.sequence.dtw(ref_pitch, user_pitch)
-    cost = dist[-1, -1]
-  
-    # Try a much higher scaling_factor for better score range
-    scaling_factor = 10000  # You can tune this value
-    score = 100 * np.exp(-cost / scaling_factor)
-    score = max(0, min(100, score))  # Clamp between 0–100
-    print(f"Vocal Score: {score:.2f}/100")
+    try:
+        dist, _ = librosa.sequence.dtw(ref_pitch, user_pitch)
+        cost = dist[-1, -1]
 
-# Console input
+        scaling_factor = 100000  # Tunable
+        score = 100 * np.exp(-cost / scaling_factor)
+        score = max(0, min(100, score))
+        print(f"Vocal Score: {score:.2f}/100")
+    except Exception as e:
+        print(f"Error during DTW comparison: {e}")
+
+# CLI support
 if __name__ == "__main__":
-    ref = input("Enter path to reference file: ").strip('"')
-    usr = input("Enter path to user file: ").strip('"')
+    if len(sys.argv) < 3:
+        print("Usage: python soundalgo.py reference_file user_file")
+        sys.exit(1)
+
+    ref = sys.argv[1]
+    usr = sys.argv[2]
     compare(ref, usr)
