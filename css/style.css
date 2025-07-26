@@ -1819,3 +1819,35 @@ Category page
 .playlists {
 	margin-bottom: 5%;
 }
+
+/* view song detail */
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.song-title {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 8px;
+  padding-left: 10px;
+}
+
+.view-btn {
+  padding: 5px 12px;
+  border: 1px solid #ccc;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.view-btn:hover {
+  background: #555;
+}

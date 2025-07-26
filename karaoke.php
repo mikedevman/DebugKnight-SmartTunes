@@ -30,6 +30,42 @@ if (!isset($_SESSION['username'])) {
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- View/Edit Song Details -->  
+    <div class="upload-container" style="display: none" id="viewEditContainer">
+      <button class="close-upload" id="closeViewEditBtn">&times;</button>
+      <h2>Edit Song Details</h2>
+      <form class="upload-form" id="viewEditForm" onsubmit="return saveEditedSong(event)">
+        <input type="hidden" name="id" id="edit_id" />
+
+        <label for="edit_title">Song Title:</label>
+        <input type="text" name="title" id="edit_title" required />
+
+        <label for="edit_content">YouTube Link:</label>
+        <input type="text" name="content" id="edit_content" required />
+
+        <label for="edit_tempo">Tempo (BPM):</label>
+        <input type="number" name="tempo" id="edit_tempo" required />
+
+        <label for="edit_songkey">Key:</label>
+        <input type="text" name="songkey" id="edit_songkey" required />
+
+        <label for="edit_genre">Genre:</label>
+        <input type="text" name="genre" id="edit_genre" required />
+
+        <label for="edit_year">Year Published:</label>
+        <input type="number" name="year" id="edit_year" required />
+
+        <label for="edit_album">Album:</label>
+        <select name="album" id="edit_album" required>
+          <option value="" disabled>Select album</option>
+          <option value="1">Album 1</option>
+          <option value="2">Album 2</option>
+        </select>
+
+        <button type="submit" class="site-btn">Save</button>
+      </form>
+    </div>
+
     <div id="preloder">
       <div class="loader"></div>
     </div>
@@ -133,9 +169,6 @@ if (!isset($_SESSION['username'])) {
 
     <label for="year">Year Published:</label>
     <input type="number" name="year" placeholder="2020" required />
-
-    <label for="timeplayed">Duration (mm:ss):</label>
-    <input type="text" name="timeplayed" placeholder="4:30" required />
 
     <label for="album">Album:</label>
     <select name="album" required>
