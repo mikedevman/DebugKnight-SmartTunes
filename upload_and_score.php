@@ -4,7 +4,6 @@ $uploadDir = __DIR__ . "/uploads/";
 $rawUploadPath = $uploadDir . "user_recording.webm";
 $convertedWavPath = $uploadDir . "user_recording.wav";
 $referenceAudioPath = __DIR__ . "/Recording.wav";
-$pythonScript = __DIR__ . "/soundalgo.py";
 
 // === Ensure upload directory exists ===
 if (!file_exists($uploadDir)) {
