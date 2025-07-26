@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $year = $_POST["year"];
     $album = $_POST["album"];
 
-    $stmt = $conn->prepare("UPDATE song SET name = ?, content = ?, tempo = ?, 'key' = ?, genre = ?, year_publish = ?, album = ? WHERE song_id = ?");
+    $stmt = $conn->prepare("UPDATE song SET name = ?, content = ?, tempo = ?, `key` = ?, genre = ?, year_publish = ?, album = ? WHERE song_id = ?");
     $stmt->bind_param("sssssssi", $title, $content, $tempo, $songkey, $genre, $year, $album, $id);
 
     if ($stmt->execute()) {

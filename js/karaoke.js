@@ -56,9 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("edit_title").value = song.title;
     document.getElementById("edit_content").value = song.video;
     document.getElementById("edit_tempo").value = song.tempo || "";
-    document.getElementById("edit_songkey").value = song.key || "";
+    document.getElementById("edit_songkey").value = song.songkey || "";
     document.getElementById("edit_genre").value = song.genre || "";
-    document.getElementById("edit_year").value = song.year_publish || "";
+    document.getElementById("edit_year").value = song.year || "";
     document.getElementById("edit_album").value = song.album || "";
 
     viewEditContainer.style.display = "block";

@@ -38,52 +38,6 @@ if (!isset($_SESSION['username'])) {
 
 </head>
 <body>
-	<?php
-	session_start();
-	$host = "127.0.0.1";
-	$user = "root";
-	$password = "";
-	$dbname = "music_db";
-
-	$conn = new mysqli($host, $user, $password, $dbname);
-
-	// Check if user is logged in
-	if (!isset($_SESSION['user_id'])) {
-		header("Location: login.php");
-		exit();
-	}
-
-	// Fetch user's playlists
-	$user_playlists = [];
-	try {
-		$stmt = $pdo->prepare("
-			SELECT id, playlist_name
-			FROM playlist 
-			WHERE user_created = ?
-			ORDER BY id DESC
-		");
-		$stmt->execute([$_SESSION['user_id']]);
-		$user_playlists = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	} catch (PDOException $e) {
-		error_log("Error fetching playlists: " . $e->getMessage());
-	}
-
-	// Fetch user's songs
-	$user_songs = [];
-	try {
-		$stmt = $pdo->prepare("
-			SELECT id, name 
-			FROM song 
-			WHERE user_id = ?
-			ORDER BY id DESC
-		");
-		$stmt->execute([$_SESSION['user_id']]);
-		$user_songs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	} catch (PDOException $e) {
-		error_log("Error fetching songs: " . $e->getMessage());
-	}
-	?>
-
 	<!-- Page Preloder -->
 	<div id="preloder">
 		<div class="loader"></div>
