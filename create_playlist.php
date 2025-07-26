@@ -1,38 +1,38 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
-$host = "127.0.0.1";
-$user = "root";
-$password = "";
-$dbname = "music_db";
-
-$conn = new mysqli($host, $user, $password, $dbname);
-if ($conn->connect_error) {
-  echo json_encode(["success" => false, "error" => "Database connection failed"]);
-  exit;
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'error' => 'User not logged in']);
+    exit;
 }
 
-// Get POST values safely
-$playlistName = isset($_POST['playlist_name']) ? trim($_POST['playlist_name']) : '';
-$description = isset($_POST['description']) ? trim($_POST['description']) : '';
+$user_id = $_SESSION['user_id'];
 
-if ($playlistName === '') {
-  echo json_encode(["success" => false, "error" => "Playlist name is required"]);
-  exit;
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $playlist_name = $_POST['playlist_name'] ?? '';
 
-// Prepare & insert into `playlist` table
-$stmt = $conn->prepare("INSERT INTO playlist (user_created, playlist_name, description, total_view, total_time_played) VALUES (?, ?, ?, 0, 0)");
-if (!$stmt) {
-  echo json_encode(["success" => false, "error" => "Prepare failed: " . $conn->error]);
-  exit;
+    if ($playlist_name === '') {
+        echo json_encode(['success' => false, 'error' => 'Missing playlist name']);
+        exit;
+    }
+
+    $conn = new mysqli("127.0.0.1", "root", "", "music_db");
+
+    if ($conn->connect_error) {
+        echo json_encode(['success' => false, 'error' => 'Database connection failed']);
+        exit;
+    }
+
+    $stmt = $conn->prepare("INSERT INTO playlist (user_created, playlist_name, description) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $user_id, $playlist_name, $description);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Insert failed']);
+    }
+
+    $stmt->close();
+    $conn->close();
 }
-$stmt->bind_param("iss", $userId, $playlistName, $description);
-if ($stmt->execute()) {
-  echo json_encode(["success" => true]);
-} else {
-  echo json_encode(["success" => false, "error" => "Execute failed: " . $stmt->error]);
-}
-$stmt->close();
-$conn->close();
-?>

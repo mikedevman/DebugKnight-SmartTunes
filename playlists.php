@@ -44,27 +44,83 @@ if (!isset($_SESSION['username'])) {
       <div class="loader"></div>
     </div>
 
-    <!-- Header section -->
-    <header class="header-section clearfix">
-      <a href="index.php" class="site-logo">
-        <img src="img/logo.png" alt="" />
-      </a>
-      <div class="header-right">
-        <a href="logout.php" class="hr-btn">Logout</a>
-        <span>|</span>
-        <div class="user-panel">
-          <a href="" class="login">Login</a>
-          <a href="" class="register">Create an account</a>
+<!-- Header section -->
+	<header class="header-section clearfix">
+		<a href="index.php" class="site-logo">
+			<img src="img/logo.png" alt="">
+		</a>
+		<div class="header-right">
+			<a href="logout.php" class="hr-btn">Logout</a>
+			<span>|</span>
+			<div class="user-panel">
+    <?php if(isset($_SESSION['user_id'])): ?>
+        <button class="user-welcome-btn">
+            Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>
+        </button>
+    <?php else: ?>
+        <a href="login.php" class="login">Login</a>
+        <a href="register.php" class="register">Register</a>
+    <?php endif; ?>
+</div>
+
+<!-- User Modal -->
+<div class="user-modal-overlay"></div>
+<div class="user-modal">
+    <div class="modal-header">
+        <h3><?php echo htmlspecialchars($_SESSION['username']); ?>'s Library</h3>
+        <button class="close-modal">&times;</button>
+    </div>
+    
+    <div class="modal-sections">
+        <div class="modal-section">
+            <h4>Your Playlists</h4>
+            <div class="items-container">
+                <?php if(!empty($user_playlists)): ?>
+                    <ul class="items-list">
+                        <?php foreach($user_playlists as $playlist): ?>
+                            <li>
+                                <a href="playlist.php?id=<?php echo $playlist['id']; ?>">
+                                    <?php echo htmlspecialchars($playlist['name']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="no-items">No playlists created yet</p>
+                <?php endif; ?>
+            </div>
         </div>
-      </div>
+        
+        <div class="modal-section">
+            <h4>Your Songs</h4>
+            <div class="items-container">
+                <?php if(!empty($user_songs)): ?>
+                    <ul class="items-list">
+                        <?php foreach($user_songs as $song): ?>
+                            <li>
+                                <a href="song.php?id=<?php echo $song['id']; ?>">
+                                    <?php echo htmlspecialchars($song['name']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="no-items">No songs uploaded yet</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+			</div>
+		</div>
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
-    </header>
-    <!-- Header section end -->
+	</header>
+	<!-- Header section end -->
 
     <!-- Playlist section -->
         <!-- Create Playlist Button -->
@@ -156,5 +212,6 @@ if (!isset($_SESSION['username'])) {
     <script src="js/main.js"></script>
     <script src="js/playlists.js"></script>
     <script src="js/karaoke-recorder.js"></script>
+    <script src="js/user-description.js"></script>
   </body>
 </html>

@@ -52,9 +52,65 @@ if (!isset($_SESSION['username'])) {
 			<a href="logout.php" class="hr-btn">Logout</a>
 			<span>|</span>
 			<div class="user-panel">
-				<a href="" class="login">Login</a>
-				<a href="" class="register">Create an account</a>
-			</div> 
+    <?php if(isset($_SESSION['user_id'])): ?>
+        <button class="user-welcome-btn">
+            Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>
+        </button>
+    <?php else: ?>
+        <a href="login.php" class="login">Login</a>
+        <a href="register.php" class="register">Register</a>
+    <?php endif; ?>
+</div>
+
+<!-- User Modal -->
+<div class="user-modal-overlay"></div>
+<div class="user-modal">
+    <div class="modal-header">
+        <h3><?php echo htmlspecialchars($_SESSION['username']); ?>'s Library</h3>
+        <button class="close-modal">&times;</button>
+    </div>
+    
+    <div class="modal-sections">
+        <div class="modal-section">
+            <h4>Your Playlists</h4>
+            <div class="items-container">
+                <?php if(!empty($user_playlists)): ?>
+                    <ul class="items-list">
+                        <?php foreach($user_playlists as $playlist): ?>
+                            <li>
+                                <a href="playlist.php?id=<?php echo $playlist['id']; ?>">
+                                    <?php echo htmlspecialchars($playlist['name']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="no-items">No playlists created yet</p>
+                <?php endif; ?>
+            </div>
+        </div>
+        
+        <div class="modal-section">
+            <h4>Your Songs</h4>
+            <div class="items-container">
+                <?php if(!empty($user_songs)): ?>
+                    <ul class="items-list">
+                        <?php foreach($user_songs as $song): ?>
+                            <li>
+                                <a href="song.php?id=<?php echo $song['id']; ?>">
+                                    <?php echo htmlspecialchars($song['name']); ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p class="no-items">No songs uploaded yet</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+			</div>
 		</div>
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
@@ -169,6 +225,7 @@ if (!isset($_SESSION['username'])) {
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/mixitup.min.js"></script>
 	<script src="js/main.js"></script>
+	<script src="js/user-description.js"></script>
 
 	</body>
 </html>

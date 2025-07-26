@@ -12,31 +12,34 @@
     return;
   }
 
-  // Optional: extend with description
   const data = new URLSearchParams();
   data.append("playlist_name", name);
-  data.append("description", ""); // add optional description here
 
   fetch("create_playlist.php", {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: data,
   })
-    .then((res) => res.json())
-    .then((result) => {
-      if (result.success) {
-        nameInput.value = "";
-        toggleCreateForm(); // close form
-        loadPlaylists();    // reload the list
-      } else {
-        alert("Failed to create playlist: " + result.error);
+    .then(async (response) => {
+      const text = await response.text(); // get raw response
+      try {
+        const result = JSON.parse(text);
+        if (result.success) {
+          location.reload();
+        } else {
+          console.error("Server error:", result.error);
+          alert("Error creating playlist: " + result.error);
+        }
+      } catch (e) {
+        console.error("Failed to parse JSON. Raw response:", text);
+        alert("Server error (not JSON): " + text);
       }
     })
-    .catch((err) => {
-      alert("Error creating playlist.");
-      console.error(err);
+    .catch((error) => {
+      console.error("Fetch failed:", error);
+      alert("Request failed: " + error.message);
     });
 }
+
 
     function submitForm(event) {
       event.preventDefault();
@@ -73,7 +76,7 @@
 
             card.innerHTML = `
               <button class="delete-btn" onclick="deletePlaylist(${pl.id})">×</button>
-              <img src="img/default.png" alt="Thumbnail" />
+              <img src="img/playlist-img.png" alt="Thumbnail" />
               <p class="playlist-name" onclick="openPlaylist(${pl.id})">${pl.playlist_name}</p>
               <p style="font-size:12px;">Views: ${pl.total_view} | Played: ${pl.total_time_played}</p>
             `;
@@ -83,10 +86,35 @@
         });
     }
 
-    function deletePlaylist(id) {
-      fetch(`delete_playlist.php?id=${id}`)
-        .then(() => loadPlaylists());
-    }
+function deletePlaylist(playlistId) {
+  const data = new URLSearchParams();
+  data.append("playlist_id", playlistId);
+
+  fetch("delete_playlists.php", {
+    method: "POST",
+    body: data,
+  })
+    .then(async (response) => {
+      const text = await response.text();
+      try {
+        const result = JSON.parse(text);
+        if (result.success) {
+          location.reload();
+        } else {
+          console.error("Server error:", result.error);
+          alert("Error deleting playlist: " + result.error);
+        }
+      } catch (e) {
+        console.error("Failed to parse JSON. Raw response:", text);
+        alert("Server error (not JSON): " + text);
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch failed:", error);
+      alert("Request failed: " + error.message);
+    });
+}
+
 
     function openPlaylist(id) {
     fetch(`increment_view.php?id=${id}`)
