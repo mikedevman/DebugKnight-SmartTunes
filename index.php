@@ -4,7 +4,7 @@ if (!isset($_SESSION['username'])) {
   header("Location: login.php");
   exit();
 }
-
+1
 $host = '127.0.0.1';
 $user = 'root';
 $password = '';
