@@ -282,49 +282,6 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 	</section>
 	<!-- How section end -->
 
-	<!-- Concept section -->
-	<section class="concept-section spad">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6">
-					<div class="section-title">
-						<h2>Our Concept & artists</h2>
-					</div>
-				</div>
-				<div class="col-lg-6">
-					<p>Our platform is built on the idea that music is meant to be experienced—not just heard. We combine the joy of karaoke with the convenience of music streaming, giving users the freedom to sing along or simply enjoy their favorite tracks. We collaborate with a diverse range of artists to bring you high-quality vocals, exclusive content, and a constantly growing library. Whether you're here to perform or just listen, we’re here to amplify your passion for music.</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-3 col-sm-6">
-					<div class="concept-item">
-						<img src="img/concept/1.jpg" alt="">
-						<h5>Soul Music</h5>
-					</div>
-				</div>
-				<div class="col-lg-3 col-sm-6">
-					<div class="concept-item">
-						<img src="img/concept/2.jpg" alt="">
-						<h5>Live Concerts</h5>
-					</div>
-				</div>
-				<div class="col-lg-3 col-sm-6">
-					<div class="concept-item">
-						<img src="img/concept/3.jpg" alt="">
-						<h5>Dj Sets</h5>
-					</div>
-				</div>
-				<div class="col-lg-3 col-sm-6">
-					<div class="concept-item">
-						<img src="img/concept/4.jpg" alt="">
-						<h5>Live Streems</h5>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Concept section end -->
-
 	<!-- Subscription section -->
 	<section class="subscription-section spad">
 		<div class="container">
