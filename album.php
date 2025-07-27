@@ -1,10 +1,4 @@
 <?php
-session_start();
-if (!isset($_SESSION['username'])) {
-  header("Location: login.php");
-  exit();
-}
-
 $host = '127.0.0.1';
 $user = 'root';
 $password = '';
@@ -15,34 +9,14 @@ $conn = new mysqli($host, $user, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
-$user_id = $_SESSION['user_id'];
-$username = $_SESSION['username'];
-
-// Truy vấn playlist
-$user_id = $_SESSION['user_id'];
-$sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
-$stmt1 = $conn->prepare($sql_playlists);
-$stmt1->bind_param("i", $user_id);
-$stmt1->execute();
-$result1 = $stmt1->get_result();
-$user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
-
-// Truy vấn song
-$sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
-$stmt2 = $conn->prepare($sql_songs);
-$stmt2->bind_param("i", $user_id);
-$stmt2->execute();
-$result2 = $stmt2->get_result();
-$user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-	<title>SmartTunes - Contact</title>
+	<title>SmartTunes - Home</title>
 	<meta charset="UTF-8">
-	<meta name="description" content="SmartTunes">
+	<meta name="description" content="SolMusic HTML Template">
 	<meta name="keywords" content="music, html">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
@@ -70,9 +44,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 </head>
 <body>
 	<!-- Page Preloder -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
+
 
 	<!-- Header section -->
 	<header class="header-section clearfix">
@@ -147,53 +119,93 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
+        <li><a href="albums.php">Albums</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
 	</header>
 	<!-- Header section end -->
 
-	<!-- Contact section -->
-	<section class="contact-section">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-6 p-0">
-					<!-- Map -->
-					<div class="map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.027513591999!2d105.78045937479627!3d21.03158508768244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135bfa667a7dee9%3A0x2ac9ba5f99e4f389!2sSwinburne%20Innovation%20Space!5e0!3m2!1sen!2s!4v1753154972084!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-				</div>
-				<div class="col-lg-6 p-0">
-					<div class="contact-warp">
-						<div class="section-title mb-0">
-							<h3>Our Team - DebugKnight</h3>
-						</div>
-						<p>We are an aspiring team determined to create a bug-free, efficient database for applications of all scales. We prioritize quality over speed and will do our best to maintain the quality of our products. </p>
-						<ul>
-							<li>80 Duy Tan, Dich Vong Hau, Cau Giay, Ha Noi</li>
-							<li>+86 394415380</li>
-							<li>mikedang1304@gmail.com</li>
-						</ul>
-						<form class="contact-from">
-							<div class="row">
-								<div class="col-md-6">
-									<input type="text" placeholder="Your name">
-								</div>
-								<div class="col-md-6">
-									<input type="text" placeholder="Your e-mail">
-								</div>
-								<div class="col-md-12">
-									<input type="text" placeholder="Subject">
-									<textarea placeholder="Message"></textarea>
-									<button class="site-btn">send message</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Blog section end -->
+<?php
+$album_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if ($album_id <= 0) die("Invalid album ID");
 
-	<!-- Footer section -->
+// Get album name
+$stmt = $conn->prepare("SELECT album_name FROM album WHERE id = ?");
+$stmt->bind_param("i", $album_id);
+$stmt->execute();
+$stmt->bind_result($album_name);
+$stmt->fetch();
+$stmt->close();
+
+// Display album title
+echo "<h1>Album: " . htmlspecialchars($album_name) . "</h1>";
+
+// Display songs already in the album
+$stmt = $conn->prepare("SELECT song_id, name FROM song WHERE album = ?");
+$stmt->bind_param("i", $album_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+echo "<h2>Songs in this Album</h2>";
+if ($result->num_rows > 0) {
+    echo "<ul>";
+    while ($row = $result->fetch_assoc()) {
+        echo "<li>" . htmlspecialchars($row['name']) . "</li>";
+    }
+    echo "</ul>";
+} else {
+    echo "<p>No songs in this album yet.</p>";
+}
+$stmt->close();
+
+// Handle add song to album
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_song'])) {
+    $song_id = intval($_POST['song_id']);
+    $stmt = $conn->prepare("UPDATE song SET album = ? WHERE id = ?");
+    $stmt->bind_param("ii", $album_id, $song_id);
+    if ($stmt->execute()) {
+        echo "<p style='color: green;'>Song added to album successfully.</p>";
+    } else {
+        echo "<p style='color: red;'>Failed to add song.</p>";
+    }
+    $stmt->close();
+}
+
+// Song Search Form
+?>
+<h2>Add Song to This Album</h2>
+<form method="POST" action="album.php?id=<?php echo $album_id; ?>">
+    <input type="text" name="search_term" placeholder="Search song name..." required>
+    <button type="submit" name="search">Search</button>
+</form>
+
+<?php
+// Handle search
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
+    $search_term = "%" . $_POST['search_term'] . "%";
+    $stmt = $conn->prepare("SELECT song_id, name FROM song WHERE name LIKE ? AND (album IS NULL OR album != ?)");
+    $stmt->bind_param("si", $search_term, $album_id); // Avoid showing songs already in the album
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "<form method='POST' action='album.php?id=" . $album_id . "'>";
+        echo "<input type='hidden' name='album_id' value='" . $album_id . "'>";
+        echo "<select name='song_id'>";
+        while ($row = $result->fetch_assoc()) {
+            echo "<option value='" . $row['id'] . "'>" . htmlspecialchars($row['name']) . "</option>";
+        }
+        echo "</select> ";
+        echo "<button type='submit' name='add_song'>Add to Album</button>";
+        echo "</form>";
+    } else {
+        echo "<p>No songs found.</p>";
+    }
+    $stmt->close();
+}
+?>
+
+    <!-- Footer section -->
 	<footer class="footer-section">
 		<div class="container">
 			<div class="row">
@@ -203,7 +215,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 							<div class="footer-widget">
 								<h2>About us</h2>
 								<ul>
-									<li><a href="index.php">Our Story</a></li>
+									<li><a href="">Our Story</a></li>
 									<li><a href="">Sol Music Blog</a></li>
 									<li><a href="">History</a></li>
 								</ul>
@@ -211,13 +223,13 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 						</div>
 						<div class="col-sm-4">
 							<div class="footer-widget">
-								<h2>Ultilities</h2>
-                  				<ul>
-                    				<li><a href="karaoke.php">Music</a></li>
-                   					<li><a href="artists.html">Artists</a></li>
-                    				<li><a href="karaoke.php">Karaoke</a></li>
-                    				<li><a href="karaoke.php">Add Song</a></li>
-                  				</ul>
+								<h2>Products</h2>
+								<ul>
+									<li><a href="">Music</a></li>
+									<li><a href="">Subscription</a></li>
+									<li><a href="">Custom Music</a></li>
+									<li><a href="">Footage</a></li>
+								</ul>
 							</div>
 						</div>
 						<div class="col-sm-4">
@@ -236,13 +248,15 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 				<div class="col-xl-6 col-lg-5 order-lg-1">
 					<img src="img/logo.png" alt="">
 					<div class="copyright">
-                Music from the heart
-            </div>
-            <div class="social-links">
-              <a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
-              <a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
-              <a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
-            </div>
+Made in <script>document.write(new Date().getFullYear());</script> | This website is made with <i class="fa fa-heart-o" aria-hidden="true"></i>
+					</div>
+					<div class="social-links">
+						<a href=""><i class="fa fa-instagram"></i></a>
+						<a href=""><i class="fa fa-pinterest"></i></a>
+						<a href=""><i class="fa fa-facebook"></i></a>
+						<a href=""><i class="fa fa-twitter"></i></a>
+						<a href=""><i class="fa fa-youtube"></i></a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -257,6 +271,4 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 	<script src="js/mixitup.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/user-description.js"></script>
-
 	</body>
-</html>

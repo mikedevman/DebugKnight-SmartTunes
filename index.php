@@ -4,6 +4,37 @@ if (!isset($_SESSION['username'])) {
   header("Location: login.php");
   exit();
 }
+
+$host = '127.0.0.1';
+$user = 'root';
+$password = '';
+$dbname = 'music_db';
+
+$conn = new mysqli($host, $user, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$user_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
+
+// Truy vấn playlist
+$user_id = $_SESSION['user_id'];
+$sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
+$stmt1 = $conn->prepare($sql_playlists);
+$stmt1->bind_param("i", $user_id);
+$stmt1->execute();
+$result1 = $stmt1->get_result();
+$user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
+
+// Truy vấn song
+$sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
+$stmt2 = $conn->prepare($sql_songs);
+$stmt2->bind_param("i", $user_id);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+$user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +128,7 @@ if (!isset($_SESSION['username'])) {
                     <ul class="items-list">
                         <?php foreach($user_songs as $song): ?>
                             <li>
-                                <a href="song.php?id=<?php echo $song['id']; ?>">
+                                <a href="karaoke.php?id=<?php echo $song['song_id']; ?>">
                                     <?php echo htmlspecialchars($song['name']); ?>
                                 </a>
                             </li>
@@ -110,12 +141,13 @@ if (!isset($_SESSION['username'])) {
         </div>
     </div>
 </div>
-			</div>
+		</div>
 		</div>
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
+		<li><a href="albums.php">Albums</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
 	</header>

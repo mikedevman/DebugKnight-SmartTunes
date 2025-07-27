@@ -19,30 +19,49 @@ if ($conn->connect_error) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-// Truy vấn playlist
-$user_id = $_SESSION['user_id'];
-$sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
-$stmt1 = $conn->prepare($sql_playlists);
-$stmt1->bind_param("i", $user_id);
-$stmt1->execute();
-$result1 = $stmt1->get_result();
-$user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
+$songResults = [];
+if (isset($_GET['search'])) {
+    $searchTerm = '%' . $conn->real_escape_string($_GET['search']) . '%';
+    $stmt = $conn->prepare("SELECT id, song_name FROM song WHERE song_name LIKE ?");
+    $stmt->bind_param("s", $searchTerm);
+    $stmt->execute();
+    $songResults = $stmt->get_result();
+}
 
-// Truy vấn song
-$sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
-$stmt2 = $conn->prepare($sql_songs);
+$stmt = $conn->prepare("SELECT id, album_name FROM album");
+$stmt->execute();
+$result = $stmt->get_result();
+$all_albums = $result->fetch_all(MYSQLI_ASSOC);
+
+$stmt2 = $conn->prepare("SELECT album_id FROM album_author WHERE author_id = ?");
 $stmt2->bind_param("i", $user_id);
 $stmt2->execute();
-$result2 = $stmt2->get_result();
-$user_songs = $result2->fetch_all(MYSQLI_ASSOC);
+$member_result = $stmt2->get_result();
+
+$albums = $conn->query("SELECT * FROM album");
+
+$query = "SELECT id, album_name FROM album";
+$result = $conn->query($query);
+
+$user_albums = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $user_albums[] = $row;
+    }
+}
+
+$editable_albums = [];
+while ($row = $member_result->fetch_assoc()) {
+    $editable_albums[] = $row['album_id'];
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-	<title>SmartTunes - Contact</title>
+	<title>SmartTunes - Home</title>
 	<meta charset="UTF-8">
-	<meta name="description" content="SmartTunes">
+	<meta name="description" content="SolMusic HTML Template">
 	<meta name="keywords" content="music, html">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
@@ -70,9 +89,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 </head>
 <body>
 	<!-- Page Preloder -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
+
 
 	<!-- Header section -->
 	<header class="header-section clearfix">
@@ -147,53 +164,122 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
+        <li><a href="albums.php">Albums</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
 	</header>
 	<!-- Header section end -->
 
-	<!-- Contact section -->
-	<section class="contact-section">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-6 p-0">
-					<!-- Map -->
-					<div class="map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.027513591999!2d105.78045937479627!3d21.03158508768244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135bfa667a7dee9%3A0x2ac9ba5f99e4f389!2sSwinburne%20Innovation%20Space!5e0!3m2!1sen!2s!4v1753154972084!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-				</div>
-				<div class="col-lg-6 p-0">
-					<div class="contact-warp">
-						<div class="section-title mb-0">
-							<h3>Our Team - DebugKnight</h3>
-						</div>
-						<p>We are an aspiring team determined to create a bug-free, efficient database for applications of all scales. We prioritize quality over speed and will do our best to maintain the quality of our products. </p>
-						<ul>
-							<li>80 Duy Tan, Dich Vong Hau, Cau Giay, Ha Noi</li>
-							<li>+86 394415380</li>
-							<li>mikedang1304@gmail.com</li>
-						</ul>
-						<form class="contact-from">
-							<div class="row">
-								<div class="col-md-6">
-									<input type="text" placeholder="Your name">
-								</div>
-								<div class="col-md-6">
-									<input type="text" placeholder="Your e-mail">
-								</div>
-								<div class="col-md-12">
-									<input type="text" placeholder="Subject">
-									<textarea placeholder="Message"></textarea>
-									<button class="site-btn">send message</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- Blog section end -->
+<h2>Your Albums</h2>
 
-	<!-- Footer section -->
+<!-- Create Album Form -->
+<form method="POST" action="create_album.php" style="margin-bottom: 20px;">
+    <input type="text" name="album_name" placeholder="New album name" required>
+    <button type="submit">Create Album</button>
+</form>
+
+<!-- Album Cards -->
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+<?php foreach ($user_albums as $album): ?>
+    <div style="width: 200px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; text-align: center;">
+        <h3 style="margin: 0;">
+            <a href="album.php?id=<?= $album['id'] ?>" style="text-decoration: none; color: black; font-size: 14px;">
+                <?= htmlspecialchars($album['album_name']) ?>
+            </a>
+        </h3>
+    </div>
+<?php endforeach; ?>
+</div>
+
+<style>
+    
+
+h2 {
+    margin: 40px auto 20px;
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto 30px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+form input[type="text"],
+form textarea {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+form button {
+    background-color: #ff0055;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #e6004c;
+}
+
+.album-card {
+    background-color: #fff;
+    margin: 30px auto;
+    max-width: 700px;
+    border-radius: 10px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.album-card h3 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #222;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.album-card h4 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 18px;
+}
+
+.album-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.album-card li {
+    margin-bottom: 8px;
+}
+
+.album-card a {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+.album-card a:hover {
+    text-decoration: underline;
+}
+
+</style>
+
+    	<!-- Footer section -->
 	<footer class="footer-section">
 		<div class="container">
 			<div class="row">
@@ -203,7 +289,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 							<div class="footer-widget">
 								<h2>About us</h2>
 								<ul>
-									<li><a href="index.php">Our Story</a></li>
+									<li><a href="">Our Story</a></li>
 									<li><a href="">Sol Music Blog</a></li>
 									<li><a href="">History</a></li>
 								</ul>
@@ -211,13 +297,13 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 						</div>
 						<div class="col-sm-4">
 							<div class="footer-widget">
-								<h2>Ultilities</h2>
-                  				<ul>
-                    				<li><a href="karaoke.php">Music</a></li>
-                   					<li><a href="artists.html">Artists</a></li>
-                    				<li><a href="karaoke.php">Karaoke</a></li>
-                    				<li><a href="karaoke.php">Add Song</a></li>
-                  				</ul>
+								<h2>Products</h2>
+								<ul>
+									<li><a href="">Music</a></li>
+									<li><a href="">Subscription</a></li>
+									<li><a href="">Custom Music</a></li>
+									<li><a href="">Footage</a></li>
+								</ul>
 							</div>
 						</div>
 						<div class="col-sm-4">
@@ -236,13 +322,15 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 				<div class="col-xl-6 col-lg-5 order-lg-1">
 					<img src="img/logo.png" alt="">
 					<div class="copyright">
-                Music from the heart
-            </div>
-            <div class="social-links">
-              <a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
-              <a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
-              <a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
-            </div>
+Made in <script>document.write(new Date().getFullYear());</script> | This website is made with <i class="fa fa-heart-o" aria-hidden="true"></i>
+					</div>
+					<div class="social-links">
+						<a href=""><i class="fa fa-instagram"></i></a>
+						<a href=""><i class="fa fa-pinterest"></i></a>
+						<a href=""><i class="fa fa-facebook"></i></a>
+						<a href=""><i class="fa fa-twitter"></i></a>
+						<a href=""><i class="fa fa-youtube"></i></a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -257,6 +345,4 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 	<script src="js/mixitup.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/user-description.js"></script>
-
 	</body>
-</html>
