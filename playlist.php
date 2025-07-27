@@ -43,7 +43,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
   <head>
     <title>SmartTunes - Playlist</title>
     <meta charset="UTF-8" />
-    <meta name="description" content="SmartTunes" />
+    <meta name="description" content="playlists" />
     <meta name="keywords" content="music, html" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 

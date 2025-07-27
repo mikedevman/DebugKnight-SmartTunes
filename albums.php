@@ -59,9 +59,9 @@ while ($row = $member_result->fetch_assoc()) {
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-	<title>SmartTunes - Home</title>
+	<title>SmartTunes - Albums</title>
 	<meta charset="UTF-8">
-	<meta name="description" content="SolMusic HTML Template">
+	<meta name="description" content="albums">
 	<meta name="keywords" content="music, html">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	

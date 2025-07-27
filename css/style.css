@@ -1577,6 +1577,32 @@ Category page
     opacity: 0.8;
 }
 
+.user-panel .user-welcome-btn {
+  background: transparent;
+  border: 1px solid #f81f7f;
+  color: #f81f7f;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(248, 31, 127, 0.4);
+}
+
+.user-panel .user-welcome-btn:hover {
+  background-color: #f81f7f;
+  color: white;
+  box-shadow: 0 0 12px rgba(248, 31, 127, 0.8);
+  transform: scale(1.05);
+}
+
+.user-welcome-btn {
+	position: relative;
+	display: inline-block;
+	color: black;
+}
+
 /* Modal Overlay */
 .user-modal-overlay {
     position: fixed;
