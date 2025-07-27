@@ -13,6 +13,7 @@ $user_id = $_SESSION['user_id'];
 
 $title      = $_POST['title'] ?? '';
 $content    = $_POST['content'] ?? '';
+$view       = $_POST['view'] ?? '';
 $genre      = $_POST['genre'] ?? '';
 $year       = $_POST['year'] ?? '';
 $albumID    = $_POST['album'] ?? '';
@@ -28,14 +29,14 @@ function convertToSeconds($timeStr) {
     list($min, $sec) = explode(':', $timeStr);
     return ((int)$min * 60) + (int)$sec;
 }
-$durationSec = convertToSeconds($timeplayed);
+
 
 $conn->begin_transaction();
 
 try {
-    $stmt = $conn->prepare("INSERT INTO song (name, content, genre, year_publish, album, tempo, `key`, time_played)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssisiis", $title, $content, $genre, $year, $albumID, $tempo, $songkey, $durationSec);
+    $stmt = $conn->prepare("INSERT INTO song (name, content, view, genre, year_publish, album, tempo, `key`, time_played)
+                            VALUES (?, ?, 0, ?, ?, ?, ?, ?, 0)");
+    $stmt->bind_param("sssiiis", $title, $content, $genre, $year, $albumID, $tempo, $songkey);
     if (!$stmt->execute()) {
         throw new Exception("Error inserting song: " . $stmt->error);
     }

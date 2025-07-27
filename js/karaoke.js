@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const songSearchInput = document.getElementById("song-search");
+  const sortDropdown = document.getElementById("sort-dropdown");
+
+  sortDropdown.addEventListener("change", () => {
+  const selectedSort = sortDropdown.value;
+  fetchSortedSongs(selectedSort);
+});
+
   const searchIconBtn = document.getElementById("search-icon-btn");
   const songList = document.getElementById("song-list");
   const deleteBtn = document.getElementById("delete-selected-btn");
@@ -12,7 +19,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let allSongs = [];
   let selectedSong = null;
+  
+  function fetchSortedSongs(sortType = "") {
+  fetch(`display_songs.php?sort=${sortType}`)
+    .then(res => res.json())
+    .then(songs => {
+      allSongs = songs;
+      renderSongList(allSongs);
+    });
+}
 
+  function playSong(songId, videoUrl) {
+    const video = document.getElementById('karaoke-video');
+    video.src = videoUrl;
+    video.play();
+
+    fetch('update_view.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ song_id: songId })
+    });
+  }
+
+  document.getElementById('karaoke-video').addEventListener('ended', function () {
+  const songId = currentlyPlayingSongId;
+  if (!songId) return;
+
+  fetch('update_played.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ song_id: songId })
+  });
+});
   fetch("display_songs.php")
     .then(res => res.json())
     .then(songs => {
@@ -204,4 +242,8 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadContainer.style.display = "none";
     document.querySelector(".main-karaoke-content").classList.remove("blur-background");
   }
+
+
+
+
 });

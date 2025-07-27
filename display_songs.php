@@ -5,7 +5,27 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$result = $conn->query("SELECT * FROM song ORDER BY song_id DESC");
+$sort = $_GET['sort'] ?? '';
+
+switch ($sort) {
+    case 'az':
+        $order_by = 'ORDER BY name ASC';
+        break;
+    case 'za':
+        $order_by = 'ORDER BY name DESC';
+        break;
+    case 'views':
+        $order_by = 'ORDER BY view DESC';
+        break;
+    case 'played':
+        $order_by = 'ORDER BY time_played DESC';
+        break;
+    default:
+        $order_by = 'ORDER BY song_id DESC'; // fallback
+        break;
+}
+
+$result = $conn->query("SELECT * FROM song $order_by");
 
 $songs = array();
 while ($row = $result->fetch_assoc()) {

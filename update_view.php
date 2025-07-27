@@ -1,14 +1,14 @@
 <?php
-$host = "127.0.0.1";
-$user = "root";
-$password = "";
-$dbname = "music_db";
+    $input = json_decode(file_get_contents("php://input"), true);
+    $song_id = intval($input['song_id'] ?? 0);
 
-$conn = new mysqli($host, $user, $password, $dbname);
+    if ($song_id) {
+    $host = "127.0.0.1";
+    $user = "root";
+    $password = "";
+    $dbname = "music_db";
 
-if (isset($_GET["id"])) {
-    $id = (int)$_GET["id"];
-    $conn->query("UPDATE playlists SET total_view = total_view + 1 WHERE id = $id");
-    echo json_encode(["success" => true]);
+    $conn = new mysqli($host, $user, $password, $dbname);
+    $conn->query("UPDATE song SET views = views + 1 WHERE song_id = $song_id");
 }
 ?>

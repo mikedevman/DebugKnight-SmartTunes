@@ -237,6 +237,15 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 
     </div>
 
+<select id="sort-dropdown">
+  <option value="">Newest</option>
+  <option value="az">A - Z</option>
+  <option value="za">Z - A</option>
+  <option value="views">Most Viewed</option>
+  <option value="played">Most Played</option>
+</select>
+
+
     <!-- Upload Form Popup -->
     <div class="upload-container" style="display: none" id="uploadContainer">
   <button class="close-upload" id="closeUploadBtn">&times;</button>
