@@ -42,7 +42,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 <head>
 	<title>SmartTunes - Contact</title>
 	<meta charset="UTF-8">
-	<meta name="description" content="SmartTunes">
+	<meta name="description" content="contact">
 	<meta name="keywords" content="music, html">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
@@ -141,12 +141,13 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
         </div>
     </div>
 </div>
-			</div>
+		</div>
 		</div>
       <ul class="main-menu">
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
+		<li><a href="albums.php">Albums</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
 	</header>

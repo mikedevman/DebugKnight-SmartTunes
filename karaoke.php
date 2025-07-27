@@ -42,7 +42,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
   <head>
     <title>SmartTunes - Karaoke</title>
     <meta charset="UTF-8" />
-    <meta name="description" content="SolMusic HTML Template" />
+    <meta name="description" content="karaoke" />
     <meta name="keywords" content="music, html" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
