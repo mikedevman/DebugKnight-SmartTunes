@@ -1972,3 +1972,8 @@ Category page
 	font-size: 15px;
 	background: #fc0254;
 }
+
+.contact-section .section-title h3 {
+	text-align: left;
+  	margin-left: -40px;
+}
