@@ -246,7 +246,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
     <!-- Upload Form Popup -->
     <div class="upload-container" style="display: none" id="uploadContainer">
   <button class="close-upload" id="closeUploadBtn">&times;</button>
-  <h2>Upload a YouTube Song</h2>
+  <h2>Upload Song</h2>
   <form class="upload-form" action="upload_song.php" method="POST">
     <label for="title">Song Title:</label>
     <input type="text" name="title" placeholder="Enter song title" required />
