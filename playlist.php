@@ -117,6 +117,7 @@ if (!isset($_SESSION['username'])) {
         <li><a href="index.php">Home</a></li>
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
+        <li><a href="albums.php">Albums</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
 	</header>
@@ -241,7 +242,14 @@ if (!isset($_SESSION['username'])) {
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/mixitup.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/playlist.js"></script>
     <script src="js/user-description.js"></script>
+    <script src="js/playlist.js"></script>
+    <script src="js/jquery.jplayer.min.js"></script>
+    <script src="js/wavesurfer.min.js"></script>
+
+    <script src="js/WaveSurferInit.js"></script>
+    <script src="js/jplayerInit.js"></script>
+    <script src="js/karaoke-recorder.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pitchy@1.2.0/dist/pitchy.umd.js"></script>
   </body>
 </html>

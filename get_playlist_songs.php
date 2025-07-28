@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 $stmt = $conn->prepare("
-    SELECT s.song_id, s.name AS Name, s.content AS Content
+    SELECT s.song_id, s.name, s.content
     FROM playlist_song ps
     JOIN song s ON ps.song_id = s.song_id
     WHERE ps.playlist_id = ?
@@ -25,10 +25,13 @@ $result = $stmt->get_result();
 
 $songs = [];
 while ($row = $result->fetch_assoc()) {
-    $songs[] = $row;
+    $songs[] = [
+        "song_id" => $row["song_id"],
+        "name" => $row["name"],
+        "content" => $row["content"]
+    ];
 }
 
 echo json_encode($songs);
 $stmt->close();
 $conn->close();
-?>
