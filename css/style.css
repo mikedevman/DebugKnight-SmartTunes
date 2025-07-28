@@ -1605,7 +1605,7 @@ Category page
 	border-radius: 8px;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 	font-size: 0.8em;
-	margin-left: 49%;
+	margin-left: 170px;
 }
 
 
@@ -1973,7 +1973,132 @@ Category page
 	background: #fc0254;
 }
 
-.contact-section .section-title h3 {
-	text-align: left;
-  	margin-left: -40px;
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+  padding: 0 40px;
+  margin-top: 30px;
+  margin-bottom: 5%;
+}
+
+.album-card {
+  position: relative;
+  background: #f8f9fa;
+  border-radius: 12px;
+  text-align: center;
+  padding: 20px 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.album-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.album-card img {
+  max-width: 100%;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 12px;
+}
+
+.album-card p {
+  font-weight: 600;
+  font-size: 1em;
+  color: #333;
+}
+
+.album-card .delete-btn:hover {
+  background: #d60000;
+}
+.album-card button {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.playlists {
+	margin-bottom: 5%;
+}
+
+.album-card h3 {
+  font-size: 15px;
+  margin-top: 12px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-height: 3.6em; /* Giới hạn 2 dòng */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em;
+}
+
+/* Form tạo album */
+form[action="create_album.php"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 30px auto 0 auto;
+  max-width: 600px;
+}
+
+form[action="create_album.php"] input[type="text"] {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 60%;
+}
+
+form[action="create_album.php"] button {
+  padding: 8px 16px;
+  background-color: #fc0254;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+form[action="create_album.php"] button:hover {
+  background-color: #d80042;
+}
+
+
+#album-songs {
+	list-style: none;
+	padding: 0;
+	margin-top: 100px;
+}
+
+.album-song-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.album-song-item:hover,
+.album-song-item.active {
+  background-color: #d6575d;
+  color: #fff;
+}
+
+.albums-header h2 {
+	font-size: 45px;
+	font-weight: 700;
+	margin-left: 42%;
+	margin-top: 2%;
 }

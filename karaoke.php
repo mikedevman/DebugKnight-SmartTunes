@@ -72,16 +72,28 @@ $song_id = $_GET['id'] ?? 0;
         <label for="edit_year">Year Published:</label>
         <input type="number" name="year" id="edit_year" required />
 
-        <label for="edit_album">Album:</label>
-        <select name="album" id="edit_album" required>
-          <option value="" disabled>Select album</option>
-          <option value="1">Album 1</option>
-          <option value="2">Album 2</option>
-        </select>
-
-        <button type="submit" class="site-btn">Save</button>
-      </form>
-    </div>
+            <?php
+            $albums = [];
+            $stmt = $conn->prepare("SELECT id, album_name FROM album ORDER BY album_name ASC");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $albums[] = $row;
+            }
+            $stmt->close();
+            ?>
+              <label for="edit_album">Album:</label>
+              <select name="album" id="edit_album" required>
+              <option value="" disabled selected>Select album</option>
+              <?php foreach ($albums as $album): ?>
+                <option value="<?php echo htmlspecialchars($album['id']); ?>">
+                  <?php echo htmlspecialchars($album['album_name']); ?>
+                </option>
+              <?php endforeach; ?>
+              </select>
+                <button type="submit" class="site-btn">Save</button>
+              </form>
+            </div>
 
     <div id="preloder">
       <div class="loader"></div>

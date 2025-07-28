@@ -172,115 +172,58 @@ while ($row = $member_result->fetch_assoc()) {
       </ul>
 	</header>
 	<!-- Header section end -->
-
-<h2>Your Albums</h2>
-
+<div class="albums-header">
+<h2 >Your Albums</h2>
+</div>
 <!-- Create Album Form -->
 <form method="POST" action="create_album.php" style="margin-bottom: 20px;">
     <input type="text" name="album_name" placeholder="New album name" required>
     <button type="submit">Create Album</button>
 </form>
 
-<!-- Album Cards -->
-<div style="display: flex; flex-wrap: wrap; gap: 20px;">
-<?php foreach ($user_albums as $album): ?>
-    <div style="width: 200px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; text-align: center;">
-        <h3 style="margin: 0;">
-            <a href="album.php?id=<?= $album['id'] ?>" style="text-decoration: none; color: black; font-size: 14px;">
+<?php
+$user_id = $_SESSION['user_id'];
+
+$conn = new mysqli("127.0.0.1", "root", "", "music_db");
+$albums = [];
+
+$sql = "SELECT album.id, album.album_name, album_author.author_id
+        FROM album
+        
+        JOIN album_author ON album.id = album_author.album_id
+        ORDER BY album.id DESC";
+$result = $conn->query($sql);
+
+while ($row = $result->fetch_assoc()) {
+    $row['is_author'] = ($row['author_id'] == $user_id);
+    $albums[] = $row;
+}
+?>
+
+<div class="album-grid">
+<?php foreach ($albums as $album): ?>
+    <div class="album-card">
+
+        <a href="album.php?id=<?= $album['id'] ?>">
+            <img src="img/album-img.jpg" alt="Album Thumbnail">
+        </a>
+
+        <h3>
+            <a href="album.php?id=<?= $album['id'] ?>" style="text-decoration: none; color: black;">
                 <?= htmlspecialchars($album['album_name']) ?>
             </a>
         </h3>
+
+        <?php if (!empty($album['is_author'])): ?>
+            <form action="delete_albums.php" method="POST" onsubmit="return confirm('Delete?')" style="margin-top: 10px;">
+                <input type="hidden" name="album_id" value="<?= $album['id'] ?>">
+                <button type="submit">x</button>
+            </form>
+        <?php endif; ?>
     </div>
 <?php endforeach; ?>
 </div>
 
-<style>
-    
-
-h2 {
-    margin: 40px auto 20px;
-    text-align: center;
-    color: #333;
-    font-weight: 600;
-}
-
-form {
-    max-width: 500px;
-    margin: 0 auto 30px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-form input[type="text"],
-form textarea {
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
-}
-
-form button {
-    background-color: #ff0055;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-form button:hover {
-    background-color: #e6004c;
-}
-
-.album-card {
-    background-color: #fff;
-    margin: 30px auto;
-    max-width: 700px;
-    border-radius: 10px;
-    padding: 20px 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.album-card h3 {
-    margin-bottom: 15px;
-    font-size: 22px;
-    color: #222;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-}
-
-.album-card h4 {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    color: #555;
-    font-size: 18px;
-}
-
-.album-card ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.album-card li {
-    margin-bottom: 8px;
-}
-
-.album-card a {
-    text-decoration: none;
-    color: #0066cc;
-}
-
-.album-card a:hover {
-    text-decoration: underline;
-}
-
-</style>
 
     	<!-- Footer section -->
 	<footer class="footer-section">

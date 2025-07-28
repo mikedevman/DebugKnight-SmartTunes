@@ -4,6 +4,7 @@ if (!isset($_SESSION['username'])) {
   header("Location: login.php");
   exit();
 }
+
 $host = '127.0.0.1';
 $user = 'root';
 $password = '';
@@ -133,86 +134,59 @@ if ($conn->connect_error) {
 	</header>
 	<!-- Header section end -->
 
-<?php
-$album_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-if ($album_id <= 0) die("Invalid album ID");
-
-// Get album name
-$stmt = $conn->prepare("SELECT album_name FROM album WHERE id = ?");
-$stmt->bind_param("i", $album_id);
-$stmt->execute();
-$stmt->bind_result($album_name);
-$stmt->fetch();
-$stmt->close();
-
-// Display album title
-echo "<h1>Album: " . htmlspecialchars($album_name) . "</h1>";
+<div class = "search-form-2">
+<input id="song-name-input" list="song-list-data" placeholder="Add song into album..." />
+<datalist id="song-list-data"></datalist>
+<input type="hidden" id="selected-song-id" />
+<button id="add-album-btn">Add</button>
+</div>
 
 
-// Handle add song to album
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_song'])) {
-    $song_id = intval($_POST['song_id']);
-    $stmt = $conn->prepare("UPDATE song SET album = ? WHERE song_id = ?");
-    $stmt->bind_param("ii", $album_id, $song_id);
-    if ($stmt->execute()) {
-        echo "<p style='color: green;'>Song added to album successfully.</p>";
-    } else {
-        echo "<p style='color: red;'>Failed to add song.</p>";
-    }
-    $stmt->close();
-}
+<div class="main-karaoke-content">
+<div class="left-panel">
+  <div class="song-search-area">
+    <div class="search-input-wrapper">
+      <input
+        type="text"
+        id="song-search"
+        placeholder="Enter song name or artist"
+      />
+      <i class="fa fa-search search-icon" id="search-icon-btn"></i>
+    </div>
+  </div>
 
-// Display songs already in the album
-$stmt = $conn->prepare("SELECT song_id, name FROM song WHERE album = ?");
-$stmt->bind_param("i", $album_id);
-$stmt->execute();
-$result = $stmt->get_result();
+  <div class="song-list-wrapper" style="max-height: 690px; overflow-y: auto">
+    <div class="song-list-header-2">
+      <h2>Song List</h2>
+      <button id="delete-selected-btn" class="btn btn-danger-2">Delete</button>
+    </div>
+    <ul id="album-songs"></ul>
+  </div>
+</div>
 
-echo "<h2>Songs in this Album</h2>";
-if ($result->num_rows > 0) {
-    echo "<ul>";
-    while ($row = $result->fetch_assoc()) {
-        echo "<li>" . htmlspecialchars($row['name']) . "</li>";
-    }
-    echo "</ul>";
-} else {
-    echo "<p>No songs in this album yet.</p>";
-}
-$stmt->close();
+      <div class="right-panel">
+        <div id="karaoke-container">
+          <div id="karaoke-video-wrapper">
+            <video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>
+          </div>
+        </div>
+        <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); width: 100%;">
+          <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Vocal Recorder</h3>
+          <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
+            <button id="start-recording" class="btn btn-success">
+              <i class="fa fa-circle"></i> Start Recording
+            </button>
+            <button id="stop-recording" class="btn btn-danger" disabled>
+              <i class="fa fa-stop"></i> Stop
+            </button>
+<span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
+          </div>
+          <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
+        </div>
+        
+      </div>
 
-// Song Search Form
-?>
-<h2>Add Song to This Album</h2>
-<form method="POST" action="album.php?id=<?php echo $album_id; ?>">
-    <input type="text" name="search_term" placeholder="Search song name..." required>
-    <button type="submit" name="search">Search</button>
-</form>
-
-<?php
-// Handle search
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
-    $search_term = "%" . $_POST['search_term'] . "%";
-    $stmt = $conn->prepare("SELECT song_id, name FROM song WHERE name LIKE ? AND (album IS NULL OR album != ?)");
-    $stmt->bind_param("si", $search_term, $album_id); // Avoid showing songs already in the album
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        echo "<form method='POST' action='album.php?id=" . $album_id . "'>";
-        echo "<input type='hidden' name='album_id' value='" . $album_id . "'>";
-        echo "<select name='song_id'>";
-        while ($row = $result->fetch_assoc()) {
-            echo "<option value='" . $row['song_id'] . "'>" . htmlspecialchars($row['name']) . "</option>";
-        }
-        echo "</select> ";
-        echo "<button type='submit' name='add_song'>Add to Album</button>";
-        echo "</form>";
-    } else {
-        echo "<p>No songs found.</p>";
-    }
-    $stmt->close();
-}
-?>
+    </div>
 
     <!-- Footer section -->
 	<footer class="footer-section">
@@ -280,4 +254,14 @@ Made in <script>document.write(new Date().getFullYear());</script> | This websit
 	<script src="js/mixitup.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/user-description.js"></script>
+    <script src="js/album.js"></script>
+
+	
+    <script src="js/jquery.jplayer.min.js"></script>
+    <script src="js/wavesurfer.min.js"></script>
+
+    <script src="js/WaveSurferInit.js"></script>
+    <script src="js/jplayerInit.js"></script>
+    <script src="js/karaoke-recorder.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pitchy@1.2.0/dist/pitchy.umd.js"></script>
 	</body>

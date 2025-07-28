@@ -125,7 +125,7 @@ if (!isset($_SESSION['username'])) {
 
     <!-- Playlist section -->
 <div class = "search-form-2">
-<input id="song-name-input" list="song-list-data" placeholder="Nhập tên bài hát..." />
+<input id="song-name-input" list="song-list-data" placeholder="Add song into playlist..." />
 <datalist id="song-list-data"></datalist>
 <input type="hidden" id="selected-song-id" />
 <button id="add-playlist-btn">Add</button>
