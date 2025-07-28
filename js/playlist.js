@@ -47,19 +47,32 @@ function setupAddButton() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ playlist_id: playlistId, song_id: songId })
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(res => res.text())   // lấy thẳng text để debug
+        .then(text => {
+            console.log("Raw response:", text); // 🐞 xem server trả gì
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                alert("Server không trả JSON hợp lệ:\n" + text);
+                return;
+            }
+
             if (data.success) {
                 alert("Đã thêm bài hát!");
-                document.getElementById("song-name-input").value = "";
-                document.getElementById("selected-song-id").value = "";
-                loadPlaylistSongs();
+                window.location.reload(); // reload ngay
             } else {
-                alert("Lỗi: " + data.message);
+                alert("Lỗi: " + (data.message || "Không rõ nguyên nhân"));
             }
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+            alert("Có lỗi xảy ra: " + err.message);
         });
     });
 }
+
 
 // ---------- Trích xuất ID video YouTube ----------
 function getYouTubeVideoID(url) {

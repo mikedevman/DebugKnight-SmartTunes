@@ -13,6 +13,24 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+$update = $conn->prepare("
+    UPDATE playlist p
+    LEFT JOIN (
+        SELECT ps.playlist_id,
+               IFNULL(SUM(s.view), 0) AS total_view,
+               IFNULL(SUM(s.time_played), 0) AS total_time_played
+        FROM playlist_song ps
+        JOIN song s ON s.song_id = ps.song_id
+        GROUP BY ps.playlist_id
+    ) stats ON p.id = stats.playlist_id
+    SET p.total_view = IFNULL(stats.total_view, 0),
+        p.total_time_played = IFNULL(stats.total_time_played, 0)
+    WHERE p.user_created = ?
+");
+$update->bind_param("i", $user_id);
+$update->execute();
+$update->close();
+
 $stmt = $conn->prepare("
     SELECT id, user_created, playlist_name, description, total_time_played, total_view
     FROM playlist

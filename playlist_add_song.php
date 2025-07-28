@@ -23,15 +23,18 @@ if ($conn->connect_error) {
 }
 
 // Check if song is already in playlist
-$check = $conn->prepare("SELECT * FROM playlist_song WHERE playlist_id = ? AND song_id = ?");
+$check = $conn->prepare("SELECT 1 FROM playlist_song WHERE playlist_id = ? AND song_id = ?");
 $check->bind_param("ii", $playlistId, $songId);
 $check->execute();
 $result = $check->get_result();
 
 if ($result->num_rows > 0) {
     echo json_encode(['success' => false, 'message' => 'Song already in playlist']);
+    $check->close();
+    $conn->close();
     exit;
 }
+$check->close();
 
 // Add song to playlist
 $stmt = $conn->prepare("INSERT INTO playlist_song (playlist_id, song_id) VALUES (?, ?)");
@@ -40,6 +43,7 @@ $stmt->bind_param("ii", $playlistId, $songId);
 if ($stmt->execute()) {
     $stmt->close();
 
+    // Update playlist totals by adding this song's values
     $stmt = $conn->prepare("
         UPDATE playlist p
         JOIN song s ON s.song_id = ?
@@ -47,13 +51,16 @@ if ($stmt->execute()) {
             p.total_time_played = p.total_time_played + s.time_played
         WHERE p.id = ?
     ");
-    $stmt->bind_param("ii", $song_id, $playlist_id);
-    $stmt->execute();
-    $stmt->close();
+    $stmt->bind_param("ii", $songId, $playlistId);
 
-    echo "Song added to playlist and totals updated!";
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Song added and totals updated']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update totals: ' . $stmt->error]);
+    }
+    $stmt->close();
 } else {
-    echo "Error: " . $stmt->error;
+    echo json_encode(['success' => false, 'message' => 'Insert failed: ' . $stmt->error]);
 }
 
 $conn->close();

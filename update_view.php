@@ -14,7 +14,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 if (isset($data['song_id'])) {
     $song_id = (int)$data['song_id'];
 
-    $sql = "UPDATE songs SET time_played = time_played + 1 WHERE id = ?";
+    $sql = "UPDATE songs SET view = view + 1 WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $song_id);
     $stmt->execute();

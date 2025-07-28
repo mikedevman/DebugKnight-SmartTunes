@@ -55,39 +55,59 @@ document.addEventListener("DOMContentLoaded", () => {
     return match ? match[1] : null;
   }
 
-  function loadSong(song) {
-    selectedSong = song;
+function loadSong(song) {
+  selectedSong = song;
 
-    // ✅ Update URL with song ID without reloading
-    const newUrl = `${window.location.pathname}?id=${song.id}`;
-    history.pushState({ songId: song.id }, "", newUrl);
+  // ✅ Update URL with song ID without reloading
+  const newUrl = `${window.location.pathname}?id=${song.id}`;
+  history.pushState({ songId: song.id }, "", newUrl);
 
-    const container = $("karaoke-container");
-    let wrapper = $("karaoke-video-wrapper");
-    if (!wrapper) {
-      wrapper = document.createElement("div");
-      wrapper.id = "karaoke-video-wrapper";
-      container.insertBefore(wrapper, $("recording-panel"));
-    } else {
-      wrapper.innerHTML = ""; // reset old content
-    }
+  const container = $("karaoke-container");
+  let wrapper = $("karaoke-video-wrapper");
+  if (!wrapper) {
+    wrapper = document.createElement("div");
+    wrapper.id = "karaoke-video-wrapper";
+    container.insertBefore(wrapper, $("recording-panel"));
+  } else {
+    wrapper.innerHTML = ""; // reset old content
+  }
 
-    const videoID = song?.video ? getYouTubeVideoID(song.video) : null;
-    const videoHTML = videoID
-      ? `<iframe id="karaoke-video" src="https://www.youtube.com/embed/${videoID}?autoplay=1&rel=0&modestbranding=1&showinfo=0" allow="autoplay; encrypted-media" allowfullscreen style="width: 100%; height: 100%; border-radius: 8px; border: none;"></iframe>`
-      : `<video id="karaoke-video" src="${song.video || ''}" controls style="width: 100%; border-radius: 8px;"></video>`;
+  const videoID = song?.video ? getYouTubeVideoID(song.video) : null;
 
-    wrapper.innerHTML = videoHTML;
-    deleteBtn.style.display = "inline-block";
+  // ✅ Build video player
+  let videoHTML;
+  if (videoID) {
+    videoHTML = `<iframe id="karaoke-video" src="https://www.youtube.com/embed/${videoID}?autoplay=1&rel=0&modestbranding=1&showinfo=0" 
+      allow="autoplay; encrypted-media" allowfullscreen 
+      style="width: 100%; height: 100%; border-radius: 8px; border: none;">
+    </iframe>`;
+  } else {
+    videoHTML = `<video id="karaoke-video" src="${song.video || ''}" controls autoplay style="width: 100%; border-radius: 8px;"></video>`;
+  }
 
-    if (videoID) {
-      fetch("update_view.php", {
+  wrapper.innerHTML = videoHTML;
+  deleteBtn.style.display = "inline-block";
+
+  // ✅ Increment view on every click (YouTube or local video)
+  fetch("update_view.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ song_id: song.id }),
+  });
+
+  // ✅ For local <video>, detect when finished to increment time_played
+  if (!videoID) {
+    const videoElem = document.getElementById("karaoke-video");
+    videoElem.addEventListener("ended", () => {
+      fetch("update_played.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ song_id: song.id }),
       });
-    }
+    });
   }
+}
+
 
   // === MODAL ===
   function openViewEditModal(song) {

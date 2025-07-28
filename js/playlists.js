@@ -76,7 +76,7 @@
 
             card.innerHTML = `
               <button class="delete-btn" onclick="confirmDelete(${pl.id})">×</button>
-              <img src="img/playlist-img.png" alt="Thumbnail" />
+              <img src="img/playlist-img.png" alt="Thumbnail" onclick="openPlaylist(${pl.id})" style="cursor:pointer;/>
               <p class="playlist-name" onclick="openPlaylist(${pl.id})">${pl.playlist_name}</p>
               <p style="font-size:12px;">Views: ${pl.total_view} | Played: ${pl.total_time_played}</p>
             `;
@@ -124,7 +124,7 @@ function deletePlaylist(playlistId) {
 
 
     function openPlaylist(id) {
-    fetch(`increment_view.php?id=${id}`)
+    fetch(`update_view.php?id=${id}`)
         .then(() => {
         window.location.href = `playlist.php?id=${id}`;
         });
