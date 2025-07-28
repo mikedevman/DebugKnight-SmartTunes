@@ -195,13 +195,12 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 
         <div
           class="song-list-wrapper"
-          style="max-height: 690px; overflow-y: auto"
+          style="max-height: 690px; overflow-y: auto;"
         >
         <div class="song-list-header">
           <button id="show-upload-btn" class="btn btn-outline-light">
             Upload Song
             </button>
-
             <h2>Song List</h2>
             <button id="delete-selected-btn" class="btn btn-danger">
             Delete
@@ -209,6 +208,13 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
           </div>
           <ul id="song-list"></ul>
         </div>
+        <select id="sort-dropdown">
+          <option value="">Newest</option>
+          <option value="az">A - Z</option>
+          <option value="za">Z - A</option>
+          <option value="views">Most Viewed</option>
+          <option value="played">Most Played</option>
+        </select>
       </div>
 
       <div class="right-panel">
@@ -218,7 +224,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
           </div>
         </div>
         <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); width: 100%;">
-          <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Vocal Recorder</h3>
+          <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Karaoke</h3>
           <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
             <button id="start-recording" class="btn btn-success">
               <i class="fa fa-circle"></i> Start Recording
@@ -227,7 +233,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
               <i class="fa fa-stop"></i> Stop
             </button>
             <span id="record-timer" style="margin-left: 10px; font-weight: bold;"></span>
-<span id="recording-status" style="display: block; margin-top: 10px;"></span>
+            <span id="recording-status" style="display: block; margin-top: 10px;"></span>
             <span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
           </div>
           <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
@@ -237,13 +243,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 
     </div>
 
-<select id="sort-dropdown">
-  <option value="">Newest</option>
-  <option value="az">A - Z</option>
-  <option value="za">Z - A</option>
-  <option value="views">Most Viewed</option>
-  <option value="played">Most Played</option>
-</select>
+
 
 
     <!-- Upload Form Popup -->

@@ -202,11 +202,11 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 					<div class="row">
 						<div class="col-sm-4">
 							<div class="footer-widget">
-								<h2>About us</h2>
+								<h2>Our Company</h2>
 								<ul>
-									<li><a href="index.php">Our Story</a></li>
-									<li><a href="">Sol Music Blog</a></li>
-									<li><a href="">History</a></li>
+									<li><a href="contact.php">Our Story</a></li>
+									<li><a href="contact.php">Contact Us</a></li>
+									<li><a href="contact.php">Careers</a></li>
 								</ul>
 							</div>
 						</div>
@@ -215,20 +215,20 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 								<h2>Ultilities</h2>
                   				<ul>
                     				<li><a href="karaoke.php">Music</a></li>
-                   					<li><a href="artists.html">Artists</a></li>
-                    				<li><a href="karaoke.php">Karaoke</a></li>
+                    				<li><a href="artists.html">Artists</a></li>
+                    				<li><a href="">Playlists</a></li>
+                    				<li><a href="">Albums</a></li>
                     				<li><a href="karaoke.php">Add Song</a></li>
+                    				<li><a href="">Create Playlist</a></li>
                   				</ul>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="footer-widget">
-								<h2>Playlists</h2>
+								<h2>Support</h2>
 								<ul>
-									<li><a href="">Newsletter</a></li>
-									<li><a href="">Careers</a></li>
-									<li><a href="">Press</a></li>
-									<li><a href="">Contact</a></li>
+									<li><a href="contact.php">FAQ</a></li>
+									<li><a href="contact.php">Help</a></li>
 								</ul>
 							</div>
 						</div>
