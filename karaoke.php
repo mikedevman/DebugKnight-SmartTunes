@@ -165,6 +165,9 @@ $song_id = $_GET['id'] ?? 0;
             </div>
         </div>
     </div>
+    	<div class="history-btn">
+		<a href="history.php"><button>Score History</button></a>
+	</div>
 </div>
 			</div>
 		</div>

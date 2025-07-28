@@ -1801,6 +1801,19 @@ Category page
     margin: 0;
 }
 
+.history-btn button {
+	background: linear-gradient(90deg, #fc0254 60%, #ff6a6a 100%);
+	border: none;
+	color: #fff;
+	font-weight: 600;
+	border-radius: 8px;
+	padding: 10px 22px;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+	font-size: 0.8em;
+	margin-top: 2%;
+	margin-left: 40%;
+}
+
 /* playlists */
 .playlist-controls {
   text-align: left;

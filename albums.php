@@ -160,6 +160,9 @@ while ($row = $member_result->fetch_assoc()) {
             </div>
         </div>
     </div>
+    	<div class="history-btn">
+		<a href="history.php"><button>Score History</button></a>
+	</div>
 </div>
 			</div>
 		</div>

@@ -88,26 +88,25 @@ function loadSong(song) {
   wrapper.innerHTML = videoHTML;
   deleteBtn.style.display = "inline-block";
 
-  // ✅ Increment view on every click (YouTube or local video)
-  fetch("update_view.php", {
+  // ✅ Increment view + time_played on every click (YouTube or local video)
+  fetch("update_song_stats.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ song_id: song.id }),
+    body: JSON.stringify({ song_id: song.id, increment: "view_and_played" }),
   });
 
-  // ✅ For local <video>, detect when finished to increment time_played
+  // ✅ For local <video>, detect when finished → increment time_played again
   if (!videoID) {
     const videoElem = document.getElementById("karaoke-video");
     videoElem.addEventListener("ended", () => {
-      fetch("update_played.php", {
+      fetch("update_song_stats.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ song_id: song.id }),
+        body: JSON.stringify({ song_id: song.id, increment: "played_only" }),
       });
     });
   }
 }
-
 
   // === MODAL ===
   function openViewEditModal(song) {

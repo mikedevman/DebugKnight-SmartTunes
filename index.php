@@ -140,6 +140,9 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
     </div>
+	<div class="history-btn">
+		<a href="history.php"><button>Score History</button></a>
+	</div>
 </div>
 		</div>
 		</div>

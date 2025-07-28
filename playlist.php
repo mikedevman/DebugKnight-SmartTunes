@@ -110,6 +110,9 @@ if (!isset($_SESSION['username'])) {
             </div>
         </div>
     </div>
+    	<div class="history-btn">
+		<a href="history.php"><button>Score History</button></a>
+	</div>
 </div>
 			</div>
 		</div>
