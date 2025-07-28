@@ -12,13 +12,18 @@ if ($songId !== null) {
     $conn->begin_transaction();
 
     try {
-        $stmt = $conn->prepare("DELETE FROM song WHERE song_id = ?");
+        
+        $stmt = $conn->prepare("DELETE FROM playhistory WHERE song_played = ?");
         $stmt->bind_param("i", $songId);
         $stmt->execute();
         $stmt->close();
 
-        $conn->commit();
+        $stmt2 = $conn->prepare("DELETE FROM song WHERE song_id = ?");
+        $stmt2->bind_param("i", $songId);
+        $stmt2->execute();
+        $stmt2->close();
 
+        $conn->commit();
         echo json_encode(["status" => "success"]);
     } catch (Exception $e) {
         $conn->rollback();

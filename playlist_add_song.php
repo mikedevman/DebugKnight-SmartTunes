@@ -38,11 +38,23 @@ $stmt = $conn->prepare("INSERT INTO playlist_song (playlist_id, song_id) VALUES 
 $stmt->bind_param("ii", $playlistId, $songId);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true]);
+    $stmt->close();
+
+    $stmt = $conn->prepare("
+        UPDATE playlist p
+        JOIN song s ON s.song_id = ?
+        SET p.total_view = p.total_view + s.view,
+            p.total_time_played = p.total_time_played + s.time_played
+        WHERE p.id = ?
+    ");
+    $stmt->bind_param("ii", $song_id, $playlist_id);
+    $stmt->execute();
+    $stmt->close();
+
+    echo "Song added to playlist and totals updated!";
 } else {
-    echo json_encode(['success' => false, 'message' => 'Insert failed']);
+    echo "Error: " . $stmt->error;
 }
 
-$stmt->close();
 $conn->close();
 ?>

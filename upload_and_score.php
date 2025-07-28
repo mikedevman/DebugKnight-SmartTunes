@@ -1,4 +1,17 @@
 <?php
+session_start();
+
+$host = "127.0.0.1";
+$user = "root";
+$password = "";
+$dbname = "music_db";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 // === CONFIG ===
 $uploadDir = __DIR__ . "/uploads/";
 $rawUploadPath = $uploadDir . "user_recording.webm";
@@ -50,14 +63,21 @@ file_put_contents("log.txt", "CMD: $command\n\nOUTPUT:\n$output\n\nEXIT CODE: $e
 // === Parse result ===
 if (preg_match("/Vocal Score:\s*([\d\.]+)/", $output, $matches)) {
     $score = floatval($matches[1]);
+    $user_id = $_SESSION['user_id'] ?? 0; 
+
+    // Giả sử bạn gửi id bài hát qua AJAX hoặc session
+    $song_id = $_POST['song_id'] ?? 0;  
+
+    // Đường dẫn file user recording (để lưu)
+    $user_recording_url = "uploads/user_recording.wav";
+
+    // Insert vào playhistory
+    $stmt = $conn->prepare("INSERT INTO playhistory (user_id, song_played, date, score, user_recording) VALUES (?, ?, NOW(), ?, ?)");
+    $stmt->bind_param("iids", $user_id, $song_id, $score, $user_recording_url);
+    $stmt->execute();
+    $stmt->close();
+
     echo json_encode(["success" => true, "score" => $score]);
-    exit;
-} else {
-    echo json_encode([
-        "success" => false,
-        "error" => "Score not found in output",
-        "debug" => $output
-    ]);
     exit;
 }
 ?>

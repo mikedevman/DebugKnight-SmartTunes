@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update songs section
             const songsContainer = document.querySelector('.modal-section:last-child .items-container');
-            updateItemsList(songsContainer, songs, 'song.php');
+            updateItemsList(songsContainer, songs, 'karaoke.php');
             
         } catch (error) {
             console.error('Error fetching user data:', error);
@@ -64,14 +64,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const itemsList = document.createElement('ul');
             itemsList.className = 'items-list';
             
-            items.forEach(item => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
+        items.forEach(item => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+
+            if (item.song_id) {
+                a.href = `${linkPrefix}?id=${item.song_id}`;
+            } else {
                 a.href = `${linkPrefix}?id=${item.id}`;
-                a.textContent = item.name;
-                li.appendChild(a);
-                itemsList.appendChild(li);
-            });
+            }
+
+            a.textContent = item.name;
+            li.appendChild(a);
+            itemsList.appendChild(li);
+        });
+
             
             container.innerHTML = '';
             container.appendChild(itemsList);

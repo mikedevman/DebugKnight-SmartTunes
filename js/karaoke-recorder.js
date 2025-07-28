@@ -35,6 +35,7 @@ startBtn.addEventListener("click", async () => {
 
       const formData = new FormData();
       formData.append("audio", blob, "user_recording.webm");
+      formData.append("song_id", CURRENT_SONG_ID);
 
       fetch("upload_and_score.php", {
         method: "POST",

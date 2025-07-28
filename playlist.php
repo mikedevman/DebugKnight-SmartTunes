@@ -98,7 +98,7 @@ if (!isset($_SESSION['username'])) {
                     <ul class="items-list">
                         <?php foreach($user_songs as $song): ?>
                             <li>
-                                <a href="song.php?id=<?php echo $song['id']; ?>">
+                                <a href="karaoke.php?id=<?php echo $song['song_id']; ?>">
                                     <?php echo htmlspecialchars($song['name']); ?>
                                 </a>
                             </li>

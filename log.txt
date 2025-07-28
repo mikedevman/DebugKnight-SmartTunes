@@ -1,6 +1,6 @@
 CMD: "C:\xampp\htdocs\COS20031-Group-3/bin/soundalgo.exe" "C:\xampp\htdocs\COS20031-Group-3/Recording.wav" "C:\xampp\htdocs\COS20031-Group-3/uploads/user_recording.wav"
 
 OUTPUT:
+Vocal Score: 5.70/100
 
-
-EXIT CODE: 1
+EXIT CODE: 0

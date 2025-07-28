@@ -19,22 +19,8 @@ if ($conn->connect_error) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-// Truy vấn playlist
-$user_id = $_SESSION['user_id'];
-$sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
-$stmt1 = $conn->prepare($sql_playlists);
-$stmt1->bind_param("i", $user_id);
-$stmt1->execute();
-$result1 = $stmt1->get_result();
-$user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
+$song_id = $_GET['id'] ?? 0;
 
-// Truy vấn song
-$sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
-$stmt2 = $conn->prepare($sql_songs);
-$stmt2->bind_param("i", $user_id);
-$stmt2->execute();
-$result2 = $stmt2->get_result();
-$user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -266,11 +252,25 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
     <label for="year">Year Published:</label>
     <input type="number" name="year" placeholder="2020" required />
 
+    <?php
+    $albums = [];
+    $stmt = $conn->prepare("SELECT id, album_name FROM album ORDER BY album_name ASC");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $albums[] = $row;
+    }
+    $stmt->close();
+    ?>
+
     <label for="album">Album:</label>
     <select name="album" required>
       <option value="" disabled selected>Select album</option>
-      <option value="1">Album 1</option>
-      <option value="2">Album 2</option>
+      <?php foreach ($albums as $album): ?>
+        <option value="<?php echo htmlspecialchars($album['id']); ?>">
+          <?php echo htmlspecialchars($album['album_name']); ?>
+        </option>
+      <?php endforeach; ?>
     </select>
 
     <button type="submit" class="site-btn">Upload</button>
@@ -341,6 +341,9 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
     <script src="js/main.js"></script>
     <script src="js/karaoke.js"></script>
     <script src="js/user-description.js"></script>
+    <script>
+      const CURRENT_SONG_ID = <?php echo json_encode($song_id); ?>;
+    </script>
 
     <script src="js/jquery.jplayer.min.js"></script>
     <script src="js/wavesurfer.min.js"></script>

@@ -14,20 +14,21 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 $stmt = $conn->prepare("
-    SELECT id, user_created, playlist_name, description, total_time_played, total_view
-    FROM playlist
-    WHERE user_created = ?
+    SELECT s.song_id, s.name
+    FROM song s
+    INNER JOIN song_author sa ON s.song_id = sa.song_id
+    WHERE sa.author_id = ?
 ");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-$playlists = [];
+$songs = [];
 while ($row = $result->fetch_assoc()) {
-    $playlists[] = $row;
+    $songs[] = $row;
 }
 $stmt->close();
 
-echo json_encode($playlists);
+echo json_encode($songs);
 $conn->close();
 ?>
