@@ -204,7 +204,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 			<div class="row">
 				<div class="col-lg-6">
 					<div class="section-title">
-						<h2>Unlimited Access to music tracks</h2>
+						<h2>Unlimited Access to Music Tracks</h2>
 					</div>
 				</div>
 				<div class="col-lg-6">
@@ -397,7 +397,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 					</div>
 				</div>
 				<div class="col-xl-6 col-lg-5 order-lg-1">
-					<img src="img/logo.png" alt="">
+					<a class="footer-img" href="index.php"><img src="img/logo.png"></a>
 					<div class="copyright">
                 Music from the heart
             </div>

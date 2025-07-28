@@ -75,7 +75,7 @@
             card.className = "playlist-card";
 
             card.innerHTML = `
-              <button class="delete-btn" onclick="deletePlaylist(${pl.id})">×</button>
+              <button class="delete-btn" onclick="confirmDelete(${pl.id})">×</button>
               <img src="img/playlist-img.png" alt="Thumbnail" />
               <p class="playlist-name" onclick="openPlaylist(${pl.id})">${pl.playlist_name}</p>
               <p style="font-size:12px;">Views: ${pl.total_view} | Played: ${pl.total_time_played}</p>
@@ -85,6 +85,13 @@
           });
         });
     }
+    
+function confirmDelete(id) {
+  const confirmed = confirm("Are you sure you want to delete this playlist?");
+  if (confirmed) {
+    deletePlaylist(id);
+  }
+}
 
 function deletePlaylist(playlistId) {
   const data = new URLSearchParams();

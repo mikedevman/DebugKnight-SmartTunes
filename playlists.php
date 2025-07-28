@@ -140,6 +140,9 @@ $username = $_SESSION['username'];
 
     <!-- Playlist section -->
         <!-- Create Playlist Button -->
+         <div class="playlists-header">
+            <h2>My Playlists</h2>
+          </div>
         <div class="playlists">
           <div class="playlist-controls">
             <button class="create-btn" onclick="toggleCreateForm()">Create Playlist</button>
@@ -149,10 +152,6 @@ $username = $_SESSION['username'];
               <input type="text" id="playlistName" placeholder="Enter playlist name" />
               <button onclick="addPlaylist()">Add</button>
             </div>
-          </div>
-
-          <div class="section-title">
-            <h2>Playlists</h2>
           </div>
 
           <div id="playlist-grid" class="playlist-grid">
