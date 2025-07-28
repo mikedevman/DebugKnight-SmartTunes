@@ -12,11 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === FETCH & RENDER ===
   function fetchSortedSongs(sortType = "") {
-    fetch(`display_songs.php?sort=${sortType}`)
+    return fetch(`display_songs.php?sort=${sortType}`)
       .then(res => res.json())
       .then(songs => {
         allSongs = songs;
         renderSongList(allSongs);
+        return songs;
       });
   }
 
@@ -56,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadSong(song) {
     selectedSong = song;
+
+    // ✅ Update URL with song ID without reloading
+    const newUrl = `${window.location.pathname}?id=${song.id}`;
+    history.pushState({ songId: song.id }, "", newUrl);
 
     const container = $("karaoke-container");
     let wrapper = $("karaoke-video-wrapper");
@@ -147,23 +152,22 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-    if (result.status === "success") {
-      allSongs = allSongs.filter(s => s.id !== selectedSong.id);
-      renderSongList(allSongs);
+        if (result.status === "success") {
+          allSongs = allSongs.filter(s => s.id !== selectedSong.id);
+          renderSongList(allSongs);
 
-      const wrapper = $("karaoke-video-wrapper");
-      if (wrapper) {
-        wrapper.innerHTML = ""; // clear video, keep wrapper
-      }
+          const wrapper = $("karaoke-video-wrapper");
+          if (wrapper) {
+            wrapper.innerHTML = ""; // clear video, keep wrapper
+          }
 
-      document.querySelectorAll(".song-item").forEach(item => item.classList.remove("active"));
-      selectedSong = null;
-    }
-    else {
-              alert("Delete failed: " + result.message);
-            }
-          });
-      };
+          document.querySelectorAll(".song-item").forEach(item => item.classList.remove("active"));
+          selectedSong = null;
+        } else {
+          alert("Delete failed: " + result.message);
+        }
+      });
+  };
 
   // === SEARCH ===
   const performSearch = () => {
@@ -198,8 +202,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // === INITIAL LOAD ===
-  fetchSortedSongs();
+// === INITIAL LOAD ===
+fetchSortedSongs().then(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const songIdFromUrl = urlParams.get("id");
+  if (songIdFromUrl) {
+    const song = allSongs.find(s => s.id == songIdFromUrl);
+    if (song) {
+      loadSong(song);
+      document.querySelectorAll(".song-item").forEach(item => {
+        if (item.textContent.includes(song.title)) {
+          item.classList.add("active");
+        }
+      });
+    }
+  }
+});
+
+// === HANDLE BROWSER BACK/FORWARD ===
+window.addEventListener("popstate", e => {
+  const songId = e.state?.songId || new URLSearchParams(window.location.search).get("id");
+  if (songId) {
+    const song = allSongs.find(s => s.id == songId);
+    if (song) {
+      loadSong(song);
+      document.querySelectorAll(".song-item").forEach(item => {
+        item.classList.remove("active");
+        if (item.textContent.includes(song.title)) {
+          item.classList.add("active");
+        }
+      });
+    }
+  } else {
+    // If no songId in URL, clear the video
+    const wrapper = $("karaoke-video-wrapper");
+    if (wrapper) wrapper.innerHTML = "";
+    document.querySelectorAll(".song-item").forEach(item => item.classList.remove("active"));
+    selectedSong = null;
+  }
+});
 
   // === WHEN VIDEO ENDS ===
   document.addEventListener("ended", function (e) {
