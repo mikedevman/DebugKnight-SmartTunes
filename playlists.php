@@ -180,48 +180,48 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
     <!-- Playlist section end -->
 
     <!-- Footer section -->
-    <footer class="footer-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-xl-6 col-lg-7 order-lg-2">
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="footer-widget">
-                  <h2>About us</h2>
-                  <ul>
-                    <li><a href="index.php">Our Story</a></li>
-                    <li><a href="">Sol Music Blog</a></li>
-                    <li><a href="">History</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="footer-widget">
-                  <h2>Ultilities</h2>
-                  <ul>
-                    <li><a href="karaoke.php">Music</a></li>
-                    <li><a href="artists.html">Artists</a></li>
-                    <li><a href="karaoke.php">Karaoke</a></li>
-                    <li><a href="karaoke.php">Add Song</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="footer-widget">
-                  <h2>Playlists</h2>
-                  <ul>
-                    <li><a href="">Newsletter</a></li>
-                    <li><a href="">Careers</a></li>
-                    <li><a href="">Press</a></li>
-                    <li><a href="">Contact</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-6 col-lg-5 order-lg-1">
-            <img src="img/logo.png" alt="" />
-            <div class="copyright">
+	<footer class="footer-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-6 col-lg-7 order-lg-2">
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Our Company</h2>
+								<ul>
+									<li><a href="contact.php">Our Story</a></li>
+									<li><a href="contact.php">Contact Us</a></li>
+									<li><a href="contact.php">Careers</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Ultilities</h2>
+                  				<ul>
+                    				<li><a href="karaoke.php">Music</a></li>
+                    				<li><a href="artists.html">Artists</a></li>
+                    				<li><a href="">Playlists</a></li>
+                    				<li><a href="">Albums</a></li>
+                    				<li><a href="karaoke.php">Add Song</a></li>
+                    				<li><a href="">Create Playlist</a></li>
+                  				</ul>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Support</h2>
+								<ul>
+									<li><a href="contact.php">FAQ</a></li>
+									<li><a href="contact.php">Help</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-6 col-lg-5 order-lg-1">
+					<img src="img/logo.png" alt="">
+					<div class="copyright">
                 Music from the heart
             </div>
             <div class="social-links">
@@ -229,11 +229,11 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
               <a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
               <a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
             </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <!-- Footer section end -->
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- Footer section end -->
 
     <!--====== Javascripts & Jquery ======-->
     <script src="js/jquery-3.2.1.min.js"></script>

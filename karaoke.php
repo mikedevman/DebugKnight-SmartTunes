@@ -224,26 +224,23 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
           </div>
         </div>
         <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); width: 100%;">
-          <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Karaoke</h3>
-          <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
-            <button id="start-recording" class="btn btn-success">
-              <i class="fa fa-circle"></i> Start Recording
-            </button>
-            <button id="stop-recording" class="btn btn-danger" disabled>
-              <i class="fa fa-stop"></i> Stop
-            </button>
-            <span id="record-timer" style="margin-left: 10px; font-weight: bold;"></span>
-            <span id="recording-status" style="display: block; margin-top: 10px;"></span>
-            <span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
+          <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Karaoke Voice Recorder</h3>
+            <div id="record-controls" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <button id="start-recording" class="btn btn-success">
+                <i class="fa fa-circle"></i> Start Recording
+              </button>
+              <button id="stop-recording" class="btn btn-danger" disabled>
+                <i class="fa fa-stop"></i> Stop
+              </button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span id="record-timer" style="font-weight: bold;"></span>
+              <span id="recording-status" style="font-weight: 600;"></span>
+            </div>
           </div>
-          <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
+            <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
+          </div>
         </div>
-        
       </div>
-
-    </div>
-
-
 
 
     <!-- Upload Form Popup -->
@@ -280,68 +277,61 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
   </form>
 </div>
 
-    <!-- Form Upload ẩn -->
-
-    <footer class="footer-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-xl-6 col-lg-7 order-lg-2">
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="footer-widget">
-                  <h2>About us</h2>
-                  <ul>
-                    <li><a href="">Our Story</a></li>
-                    <li><a href="">Sol Music Blog</a></li>
-                    <li><a href="">History</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="footer-widget">
-                  <h2>Products</h2>
-                  <ul>
-                    <li><a href="">Music</a></li>
-                    <li><a href="">Subscription</a></li>
-                    <li><a href="">Custom Music</a></li>
-                    <li><a href="">Footage</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="footer-widget">
-                  <h2>Playlists</h2>
-                  <ul>
-                    <li><a href="">Newsletter</a></li>
-                    <li><a href="">Careers</a></li>
-                    <li><a href="">Press</a></li>
-                    <li><a href="">Contact</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-6 col-lg-5 order-lg-1">
-            <img src="img/logo.png" alt="" />
-            <div class="copyright">
-              Made in
-              <script>
-                document.write(new Date().getFullYear());
-              </script>
-              | This website is made with
-              <i class="fa fa-heart-o" aria-hidden="true"></i>
+    <!-- Footer section -->
+	<footer class="footer-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-6 col-lg-7 order-lg-2">
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Our Company</h2>
+								<ul>
+									<li><a href="contact.php">Our Story</a></li>
+									<li><a href="contact.php">Contact Us</a></li>
+									<li><a href="contact.php">Careers</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Ultilities</h2>
+                  				<ul>
+                    				<li><a href="karaoke.php">Music</a></li>
+                    				<li><a href="artists.html">Artists</a></li>
+                    				<li><a href="">Playlists</a></li>
+                    				<li><a href="">Albums</a></li>
+                    				<li><a href="karaoke.php">Add Song</a></li>
+                    				<li><a href="">Create Playlist</a></li>
+                  				</ul>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Support</h2>
+								<ul>
+									<li><a href="contact.php">FAQ</a></li>
+									<li><a href="contact.php">Help</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xl-6 col-lg-5 order-lg-1">
+					<img src="img/logo.png" alt="">
+					<div class="copyright">
+                Music from the heart
             </div>
             <div class="social-links">
-              <a href=""><i class="fa fa-instagram"></i></a>
-              <a href=""><i class="fa fa-pinterest"></i></a>
-              <a href=""><i class="fa fa-facebook"></i></a>
-              <a href=""><i class="fa fa-twitter"></i></a>
-              <a href=""><i class="fa fa-youtube"></i></a>
+              <a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
+              <a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
+              <a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
             </div>
-          </div>
-        </div>
-      </div>
-    </footer>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- Footer section end -->
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

@@ -31,7 +31,7 @@ startBtn.addEventListener("click", async () => {
       playback.src = url;
       playback.style.display = "block";
 
-      status.innerHTML = "Uploading and scoring... ⏳";
+      status.innerHTML = "Uploading and scoring... ⏳ (estimated 15-20 seconds)";
 
       const formData = new FormData();
       formData.append("audio", blob, "user_recording.webm");
@@ -43,7 +43,7 @@ startBtn.addEventListener("click", async () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          status.innerHTML = `✅ Your Score: <strong>${data.score.toFixed(2)} / 100</strong> 🎯`;
+          status.innerHTML = `✅ Vocal Similarity Score: <strong>${data.score.toFixed(2)} / 100</strong> 🎯`;
         } else {
           // Clean error messages only
           let reason = "❌ An error occurred.";
