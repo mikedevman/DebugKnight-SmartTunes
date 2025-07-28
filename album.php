@@ -44,6 +44,9 @@ if ($conn->connect_error) {
 </head>
 <body>
 	<!-- Page Preloder -->
+	<div id="preloder">
+		<div class="loader"></div>
+	</div>
 
 
 	<!-- Header section -->
@@ -140,6 +143,20 @@ $stmt->close();
 // Display album title
 echo "<h1>Album: " . htmlspecialchars($album_name) . "</h1>";
 
+
+// Handle add song to album
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_song'])) {
+    $song_id = intval($_POST['song_id']);
+    $stmt = $conn->prepare("UPDATE song SET album = ? WHERE song_id = ?");
+    $stmt->bind_param("ii", $album_id, $song_id);
+    if ($stmt->execute()) {
+        echo "<p style='color: green;'>Song added to album successfully.</p>";
+    } else {
+        echo "<p style='color: red;'>Failed to add song.</p>";
+    }
+    $stmt->close();
+}
+
 // Display songs already in the album
 $stmt = $conn->prepare("SELECT song_id, name FROM song WHERE album = ?");
 $stmt->bind_param("i", $album_id);
@@ -157,19 +174,6 @@ if ($result->num_rows > 0) {
     echo "<p>No songs in this album yet.</p>";
 }
 $stmt->close();
-
-// Handle add song to album
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_song'])) {
-    $song_id = intval($_POST['song_id']);
-    $stmt = $conn->prepare("UPDATE song SET album = ? WHERE id = ?");
-    $stmt->bind_param("ii", $album_id, $song_id);
-    if ($stmt->execute()) {
-        echo "<p style='color: green;'>Song added to album successfully.</p>";
-    } else {
-        echo "<p style='color: red;'>Failed to add song.</p>";
-    }
-    $stmt->close();
-}
 
 // Song Search Form
 ?>
@@ -193,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
         echo "<input type='hidden' name='album_id' value='" . $album_id . "'>";
         echo "<select name='song_id'>";
         while ($row = $result->fetch_assoc()) {
-            echo "<option value='" . $row['id'] . "'>" . htmlspecialchars($row['name']) . "</option>";
+            echo "<option value='" . $row['song_id'] . "'>" . htmlspecialchars($row['name']) . "</option>";
         }
         echo "</select> ";
         echo "<button type='submit' name='add_song'>Add to Album</button>";
