@@ -76,7 +76,7 @@
 
             card.innerHTML = `
               <button class="delete-btn" onclick="deletePlaylist(${pl.id})">×</button>
-              <img src="img/playlist-img.png" alt="Thumbnail" onclick="openPlaylist(${pl.id})" style="cursor:pointer;/>
+              <img src="img/playlist-img.png" alt="Thumbnail" onclick="openPlaylist(${pl.id})" style="cursor:pointer;"/>
               <p class="playlist-name" onclick="openPlaylist(${pl.id})">${pl.playlist_name}</p>
               <p style="font-size:12px;">Views: ${pl.total_view} | Played: ${pl.total_time_played}</p>
             `;
@@ -99,6 +99,7 @@ function deletePlaylist(playlistId) {
       try {
         const result = JSON.parse(text);
         if (result.success) {
+          alert("Do you want to delete this song?");
           location.reload();
         } else {
           console.error("Server error:", result.error);
