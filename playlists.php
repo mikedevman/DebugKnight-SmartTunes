@@ -144,7 +144,7 @@ $username = $_SESSION['username'];
     <!-- Playlist section -->
         <!-- Create Playlist Button -->
          <div class="playlists-header">
-            <h2>My Playlists</h2>
+            <h2>Your Playlists</h2>
           </div>
         <div class="playlists">
           <div class="playlist-controls">
