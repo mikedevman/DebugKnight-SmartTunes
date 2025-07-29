@@ -99,7 +99,7 @@ function deletePlaylist(playlistId) {
       try {
         const result = JSON.parse(text);
         if (result.success) {
-          alert("Do you want to delete this song?");
+          alert("Do you want to delete this playlist?");
           location.reload();
         } else {
           console.error("Server error:", result.error);
