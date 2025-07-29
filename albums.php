@@ -176,7 +176,7 @@ while ($row = $member_result->fetch_assoc()) {
 	</header>
 	<!-- Header section end -->
 <div class="albums-header">
-<h2 >Your Albums</h2>
+<h2 >Albums</h2>
 </div>
 <!-- Create Album Form -->
 <form method="POST" action="create_album.php" style="margin-bottom: 20px;">
