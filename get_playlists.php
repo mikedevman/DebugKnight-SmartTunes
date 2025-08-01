@@ -1,11 +1,16 @@
 <?php
+// Start the session
 session_start();
+
+// Connect to the database
 $conn = new mysqli("127.0.0.1", "root", "", "music_db");
 
+// Check for connection errors
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     echo json_encode([]);
     exit;
@@ -13,6 +18,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// Update playlist stats (views and time played)
 $update = $conn->prepare("
     UPDATE playlist p
     LEFT JOIN (
@@ -31,6 +37,7 @@ $update->bind_param("i", $user_id);
 $update->execute();
 $update->close();
 
+// Get user's playlists
 $stmt = $conn->prepare("
     SELECT id, user_created, playlist_name, description, total_time_played, total_view
     FROM playlist
@@ -40,12 +47,16 @@ $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
+// Collect playlists into array
 $playlists = [];
 while ($row = $result->fetch_assoc()) {
     $playlists[] = $row;
 }
 $stmt->close();
 
+// Return playlists as JSON
 echo json_encode($playlists);
+
+// Close database connection
 $conn->close();
 ?>

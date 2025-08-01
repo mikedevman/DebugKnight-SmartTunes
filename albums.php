@@ -225,60 +225,62 @@ while ($row = $result->fetch_assoc()) {
 <?php endforeach; ?>
 </div>
 
-<!-- Footer Section -->
-<footer class="footer-section">
-	<div class="container">
-		<div class="row">
-			<div class="col-xl-6 col-lg-7 order-lg-2">
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="footer-widget">
-							<h2>Our Company</h2>
-							<ul>
-								<li><a href="contact.php">Our Story</a></li>
-								<li><a href="contact.php">Contact Us</a></li>
-								<li><a href="contact.php">Careers</a></li>
-							</ul>
+<!-- Footer section -->
+	<footer class="footer-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-6 col-lg-7 order-lg-2">
+					<div class="row">
+						<!-- Company links -->
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Our Company</h2>
+								<ul>
+									<li><a href="contact.php">Our Story</a></li>
+									<li><a href="contact.php">Contact Us</a></li>
+									<li><a href="contact.php">Careers</a></li>
+								</ul>
+							</div>
 						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="footer-widget">
-							<h2>Ultilities</h2>
-							<ul>
-								<li><a href="karaoke.php">Music</a></li>
-								<li><a href="artists.html">Artists</a></li>
-								<li><a href="">Playlists</a></li>
-								<li><a href="">Albums</a></li>
-								<li><a href="karaoke.php">Add Song</a></li>
-								<li><a href="">Create Playlist</a></li>
-							</ul>
+						<!-- Utility links -->
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Ultilities</h2>
+								<ul>
+									<li><a href="karaoke.php">Music</a></li>
+									<li><a href="artists.html">Artists</a></li>
+									<li><a href="playlists.php">Playlists</a></li>
+									<li><a href="albums.php">Albums</a></li>
+									<li><a href="karaoke.php">Add Song</a></li>
+									<li><a href="playlists.php">Create Playlist</a></li>
+								</ul>
+							</div>
 						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="footer-widget">
-							<h2>Support</h2>
-							<ul>
-								<li><a href="contact.php">FAQ</a></li>
-								<li><a href="contact.php">Help</a></li>
-							</ul>
+						<!-- Support links -->
+						<div class="col-sm-4">
+							<div class="footer-widget">
+								<h2>Support</h2>
+								<ul>
+									<li><a href="contact.php">FAQ</a></li>
+									<li><a href="contact.php">Help</a></li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-xl-6 col-lg-5 order-lg-1">
-				<img src="img/logo.png" alt="">
-				<div class="copyright">
-					Music from the heart
-				</div>
-				<div class="social-links">
-					<a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
-					<a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
-					<a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
+				<!-- Logo and social links -->
+				<div class="col-xl-6 col-lg-5 order-lg-1">
+					<img src="img/logo.png" alt="">
+					<div class="copyright">Music from the heart</div>
+					<div class="social-links">
+						<a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
+						<a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
+						<a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</footer>
+	</footer>
 
 <!-- JavaScript Files -->
 <script src="js/jquery-3.2.1.min.js"></script>

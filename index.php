@@ -1,25 +1,31 @@
 <?php
+
+// Start the session to access user data
 session_start();
 if (!isset($_SESSION['username'])) {
   header("Location: login.php");
   exit();
 }
 
+// Database connection setup
 $host = '127.0.0.1';
 $user = 'root';
 $password = '';
 $dbname = 'music_db';
 
+// Create a connection to the MySQL database
 $conn = new mysqli($host, $user, $password, $dbname);
 
+// Stop the script and show error if the connection fails
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Get user session info
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-// Truy vấn playlist
+// Database query to get all albums
 $user_id = $_SESSION['user_id'];
 $sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
 $stmt1 = $conn->prepare($sql_playlists);
@@ -28,7 +34,7 @@ $stmt1->execute();
 $result1 = $stmt1->get_result();
 $user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
 
-// Truy vấn song
+// Query to get user's songs
 $sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
 $stmt2 = $conn->prepare($sql_songs);
 $stmt2->bind_param("i", $user_id);
@@ -365,6 +371,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 			<div class="row">
 				<div class="col-xl-6 col-lg-7 order-lg-2">
 					<div class="row">
+						<!-- Company links -->
 						<div class="col-sm-4">
 							<div class="footer-widget">
 								<h2>Our Company</h2>
@@ -375,19 +382,21 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 								</ul>
 							</div>
 						</div>
+						<!-- Utility links -->
 						<div class="col-sm-4">
 							<div class="footer-widget">
 								<h2>Ultilities</h2>
-                  				<ul>
-                    				<li><a href="karaoke.php">Music</a></li>
-                    				<li><a href="artists.html">Artists</a></li>
-                    				<li><a href="">Playlists</a></li>
-                    				<li><a href="">Albums</a></li>
-                    				<li><a href="karaoke.php">Add Song</a></li>
-                    				<li><a href="">Create Playlist</a></li>
-                  				</ul>
+								<ul>
+									<li><a href="karaoke.php">Music</a></li>
+									<li><a href="artists.html">Artists</a></li>
+									<li><a href="playlists.php">Playlists</a></li>
+									<li><a href="albums.php">Albums</a></li>
+									<li><a href="karaoke.php">Add Song</a></li>
+									<li><a href="playlists.php">Create Playlist</a></li>
+								</ul>
 							</div>
 						</div>
+						<!-- Support links -->
 						<div class="col-sm-4">
 							<div class="footer-widget">
 								<h2>Support</h2>
@@ -399,21 +408,19 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 						</div>
 					</div>
 				</div>
+				<!-- Logo and social links -->
 				<div class="col-xl-6 col-lg-5 order-lg-1">
-					<a class="footer-img" href="index.php"><img src="img/logo.png"></a>
-					<div class="copyright">
-                Music from the heart
-            </div>
-            <div class="social-links">
-              <a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
-              <a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
-              <a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
-            </div>
+					<img src="img/logo.png" alt="">
+					<div class="copyright">Music from the heart</div>
+					<div class="social-links">
+						<a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>
+						<a href="https://www.facebook.com/namanh.ha.1042/"><i class="fa fa-facebook"></i></a>
+						<a href="https://www.youtube.com/@Mike-b6t9v"><i class="fa fa-youtube"></i></a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</footer>
-	<!-- Footer section end -->
 	
 	<!--====== Javascripts & Jquery ======-->
 	<script src="js/jquery-3.2.1.min.js"></script>

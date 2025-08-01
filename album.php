@@ -197,10 +197,10 @@ if ($conn->connect_error) {
 								<ul>
 									<li><a href="karaoke.php">Music</a></li>
 									<li><a href="artists.html">Artists</a></li>
-									<li><a href="">Playlists</a></li>
-									<li><a href="">Albums</a></li>
+									<li><a href="playlists.php">Playlists</a></li>
+									<li><a href="albums.php">Albums</a></li>
 									<li><a href="karaoke.php">Add Song</a></li>
-									<li><a href="">Create Playlist</a></li>
+									<li><a href="playlists.php">Create Playlist</a></li>
 								</ul>
 							</div>
 						</div>
