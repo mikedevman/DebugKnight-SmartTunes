@@ -133,19 +133,6 @@
   color: #fc0254;
 }
 
-.song-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 25px;
-  padding: 20px;
-  position: absolute;
-  z-index: 10;
-  background: #181818;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
 .song-list-header h2 {
   margin-top: 10px;
 }
@@ -281,8 +268,9 @@ Helper CSS
 	font-size: 3.2em;
 	color: #0a183d;
 	font-weight: 1000;
-	margin-left: 43%;
-	margin-top: 1%;
+	margin-left: 38%;
+	
+	margin-top: 3%;
 }
 
 .set-bg {
@@ -1112,9 +1100,6 @@ Category page
 	padding-bottom: 80px;
 }
 
-.song-item {
-	margin-bottom: 33px;
-}
 
 .song-info-box img {
 	float: left;
@@ -1557,6 +1542,7 @@ Category page
   cursor: pointer;
   transition: background-color 0.2s;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 33px;
 }
 
 .song-item:hover,
@@ -1564,6 +1550,29 @@ Category page
   background-color: #fc0254;
   color: #fff;
 }
+
+.playlist-song-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 14px 18px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	color: #f5f5f5;
+	background-color: transparent;
+	cursor: pointer;
+	transition: background-color 0.25s ease, color 0.25s ease;
+	border-radius: 6px;
+	font-size: 15px;
+	letter-spacing: 0.3px;
+}
+
+.playlist-song-item:hover,
+.playlist-song-item.active {
+	background-color: #fc0254;
+	color: #ffffff;
+}
+
 
 .video-container {
   position: relative;
@@ -1624,15 +1633,16 @@ Category page
 }
 
 .song-list-header-2 {
-	padding-left: 5%;
 	display: flex;
-	gap: 25px;
-	padding: 20px;
-	position: absolute;
-	z-index: 10;
-	background: #181818;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 15px 20px;
+  background: #181818;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 1px;
 }
 
 .btn-danger-2 {
@@ -1822,8 +1832,8 @@ Category page
 }
 
 .create-btn {
-  margin-left: 50%;
-  margin-top: 1%;
+  margin-left: 46%;
+  margin-top: 2%;
   background: #fc0254;
   color: #fff;
   font-weight: bold;
@@ -1840,7 +1850,7 @@ Category page
 }
 
 .create-form {
-  margin-left: 38%;
+  margin-left: 33.5%;
   margin-top: 1%;
   display: flex;
   align-items: center;
@@ -1975,54 +1985,63 @@ Category page
 #playlist-songs {
 	list-style: none;
 	padding: 0;
-	margin-top: 100px;
 }
 
-.playlist-song-item {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-.playlist-song-item:hover,
-.playlist-song-item.active {
-  background-color: #d6575d;
-  color: #fff;
-}
+
+
 
 .search-form-2 {
 	position: relative;
 	width: 95%;
-	margin-top: 2%;
-	margin-bottom: 0;
-	margin-left: 2.5%;
-	margin-right: 2.5%;
+	max-width: 700px;
+	margin: 2% auto 0 auto;
 }
 
 .search-form-2 input {
 	width: 100%;
 	height: 60px;
-	padding-left: 41px;
-	padding-right: 175px;
+	padding-left: 50px;
+	padding-right: 180px;
 	border: none;
 	border-radius: 80px;
-	font-size: 15px;
-	background: #d0d7db;
+	font-size: 16px;
+	background: #f0f3f5;
+	color: #333;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	transition: box-shadow 0.3s ease;
+}
+
+.search-form-2 input:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(252, 2, 84, 0.3);
 }
 
 .search-form-2 button {
 	position: absolute;
-	height: 60px;
-	min-width: 167px;
-	right: 0;
-	top: 0;
+	right: 5px;
+	top: 5px;
+	height: 50px;
+	padding: 0 25px;
 	border: none;
 	border-radius: 80px;
-	color: #fff;
-	font-size: 15px;
 	background: #fc0254;
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background 0.3s ease, transform 0.2s;
 }
+
+.search-form-2 button:hover {
+	background: #e00048;
+	transform: scale(1.03);
+}
+
+.search-form-2 button:active {
+	transform: scale(0.97);
+}
+
 
 .album-grid {
   display: grid;
@@ -2131,7 +2150,10 @@ form[action="create_album.php"] button:hover {
 #album-songs {
 	list-style: none;
 	padding: 0;
-	margin-top: 100px;
+}
+
+#album-songs li {
+	margin-left: 20px;
 }
 
 .album-song-item {
@@ -2151,5 +2173,5 @@ form[action="create_album.php"] button:hover {
 	font-size: 45px;
 	font-weight: 700;
 	margin-left: 42%;
-	margin-top: 2%;
+	margin-top: 3%;
 }

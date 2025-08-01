@@ -366,6 +366,5 @@ $song_id = $_GET['id'] ?? 0;
     <script src="js/WaveSurferInit.js"></script>
     <script src="js/jplayerInit.js"></script>
     <script src="js/karaoke-recorder.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pitchy@1.2.0/dist/pitchy.umd.js"></script>
   </body>
 </html>

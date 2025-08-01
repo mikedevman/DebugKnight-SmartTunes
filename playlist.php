@@ -163,19 +163,7 @@ if (!isset($_SESSION['username'])) {
             <video id="karaoke-video" controls style="width: 100%; border-radius: 8px;"></video>
           </div>
         </div>
-        <div id="recording-panel" style="margin-top: 20px; padding: 20px; border-radius: 10px; background: #181818; color: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); width: 100%;">
-          <h3 style="margin-bottom: 15px;"><i class="fa fa-microphone"></i> Vocal Recorder</h3>
-          <div id="record-controls" style="display: flex; gap: 10px; align-items: center;">
-            <button id="start-recording" class="btn btn-success">
-              <i class="fa fa-circle"></i> Start Recording
-            </button>
-            <button id="stop-recording" class="btn btn-danger" disabled>
-              <i class="fa fa-stop"></i> Stop
-            </button>
-<span id="recording-status" style="margin-left: 10px; font-weight: 600;"></span>
-          </div>
-          <audio id="playback" controls style="display: none; margin-top: 15px; width: 100%;"></audio>
-        </div>
+        
         
       </div>
 
