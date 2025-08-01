@@ -58,9 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
 function loadSong(song) {
   selectedSong = song;
 
-  // ✅ Update URL with song ID without reloading
-  const newUrl = `${window.location.pathname}?id=${song.id}`;
-  history.pushState({ songId: song.id }, "", newUrl);
+  // Check if current URL already has the song id parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("id") !== String(song.id)) {
+    // Reload page with song ID in URL only if different
+    window.location.href = `${window.location.pathname}?id=${song.id}`;
+    return; // Stop further execution to avoid duplicate loading
+  }
 
   const container = $("karaoke-container");
   let wrapper = $("karaoke-video-wrapper");

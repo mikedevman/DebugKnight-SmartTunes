@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 $uploadDir = __DIR__ . "/uploads/";
 $rawUploadPath = $uploadDir . "user_recording.webm";
 $convertedWavPath = $uploadDir . "user_recording.wav";
-$referenceAudioPath = __DIR__ . "/Recording.wav";
+$referenceAudioPath = __DIR__ . "/reference-audio/Recording.wav";
 
 // === Ensure upload directory exists ===
 if (!file_exists($uploadDir)) {

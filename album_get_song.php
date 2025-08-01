@@ -1,24 +1,22 @@
 <?php
-// SỬA ĐỔI: Không cần session_start() hay kiểm tra đăng nhập nữa
+// Set response format to JSON
 header('Content-Type: application/json');
 
-// Lấy album_id từ query string của URL (phương thức GET)
+// Get album ID from the request
 $albumId = $_GET['id'] ?? null; 
 if (!$albumId) {
-    echo json_encode(['success' => false, 'message' => 'Thiếu ID của album.']);
+    echo json_encode(['success' => false, 'message' => 'Missing album ID.']);
     exit;
 }
 
+// Connect to the database
 $conn = new mysqli("127.0.0.1", "root", "", "music_db");
 if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Kết nối CSDL thất bại.']);
+    echo json_encode(['success' => false, 'message' => 'Failed to connect to database.']);
     exit;
 }
 
-// SỬA ĐỔI: Xóa bỏ hoàn toàn đoạn kiểm tra quyền sở hữu album
-// Bây giờ bất kỳ ai cũng có thể truy vấn danh sách bài hát.
-
-// Lấy danh sách bài hát trong album
+// Query songs from the album
 $stmt = $conn->prepare("
     SELECT song_id, name, content, tempo, `key`, genre, year_publish, time_played 
     FROM song 
@@ -29,6 +27,7 @@ $stmt->bind_param("i", $albumId);
 $stmt->execute();
 $result = $stmt->get_result();
 
+// Build song list
 $songs = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -45,8 +44,10 @@ if ($result->num_rows > 0) {
     }
 }
 
+// Return JSON response
 echo json_encode(['success' => true, 'songs' => $songs]);
 
+// Close connections
 $stmt->close();
 $conn->close();
 ?>
