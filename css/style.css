@@ -265,12 +265,9 @@ Helper CSS
 }
 
 .playlists-header h2 {
-	font-size: 3.2em;
-	color: #0a183d;
-	font-weight: 1000;
-	margin-left: 39%;
-	
-	margin-top: 3%;
+  margin-left: 41%;
+  margin-top: 3%;
+  font: normal 700 45px/1.2 "Montserrat", sans-serif;
 }
 
 .set-bg {
@@ -2235,8 +2232,8 @@ form[action="create_album.php"] button:hover {
 }
 
 .albums-header h2 {
-	font-size: 45px;
-	font-weight: 700;
-	margin-left: 43%;
-	margin-top: 3%;
+margin-left: 44%;
+  margin-top: 3%;
+  font: normal 700 45px/1.2 "Montserrat", sans-serif;
 }
+

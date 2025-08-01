@@ -1,11 +1,13 @@
 <?php
 session_start();
 
+// Database connection setup
 $host = "127.0.0.1";
 $user = "root";
 $password = "";
 $dbname = "music_db";
 
+// Create a connection to the MySQL database
 $conn = new mysqli($host, $user, $password, $dbname);
 
 // Check connection
@@ -13,21 +15,26 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Initialize error message
 $error = "";
 
+// Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
-
+  
+    // Validate input
     $stmt = $conn->prepare("SELECT id, password_hash FROM user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
 
+    // Check if user exists
     if ($stmt->num_rows === 1) {
         $stmt->bind_result($id, $hash);
         $stmt->fetch();
 
+        // Verify password
         if (password_verify($password, $hash)) {
             $_SESSION["user_id"] = $id;
             $_SESSION["username"] = $username;
@@ -158,24 +165,28 @@ $conn->close();
   </style>
 </head>
 <body>
+  <!-- Login form container -->
   <div class="form-container">
     <h2>Login</h2>
 
+    <!-- Show error message if login fails -->
     <?php if (!empty($error)): ?>
       <div class="error-message">
         <?= htmlspecialchars($error) ?>
       </div>
     <?php endif; ?>
 
+    <!-- Login form -->
     <form action="login.php" method="POST">
       <input type="text" name="username" placeholder="Username" required />
       <input type="password" name="password" placeholder="Password" required />
       <button type="submit">Login</button>
     </form>
+
+    <!-- Link to registration page -->
     <div class="link">
       Don't have an account? <a href="register.php">Register</a>
     </div>
   </div>
 </body>
 </html>
-

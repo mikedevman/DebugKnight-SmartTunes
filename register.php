@@ -1,29 +1,36 @@
 <?php
 session_start();
 
+// Database connection setup
 $host = "127.0.0.1";
 $user = "root";
 $password = "";
 $dbname = "music_db";
 
+// Create a connection to the MySQL database
 $conn = new mysqli($host, $user, $password, $dbname);
 
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Initialize error message
 $message = "";
 
+// Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
+    // Validate input
     if (!empty($username) && !empty($password)) {
         $check = $conn->prepare("SELECT id FROM user WHERE username = ?");
         $check->bind_param("s", $username);
         $check->execute();
         $check->store_result();
 
+        // Check if username already exists
         if ($check->num_rows > 0) {
             $message = "Username already exists!";
         } else {
@@ -38,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         }
 
+        // Close the prepared statements
         $check->close();
     } else {
         $message = "All fields are required.";
@@ -56,12 +64,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     * {
       box-sizing: border-box;
+      padding: 0;
+      margin: 0;
     }
 
     body {
-      margin: 0;
       font-family: 'Inter', sans-serif;
-      background-color: #0B1033;
+      background: linear-gradient(145deg, #0b1033, #070c2b);
       color: white;
       display: flex;
       justify-content: center;
@@ -70,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     .form-container {
-      background-color: #121b45;
+      background: #121b45;
       padding: 40px 30px;
       border-radius: 16px;
       width: 360px;
@@ -80,21 +89,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     .form-container h2 {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       color: #f81f7f;
-      font-size: 26px;
       font-weight: 600;
+      font-size: 26px;
+      letter-spacing: 1px;
     }
 
     .form-container input {
       width: 100%;
-      padding: 14px;
+      padding: 14px 15px;
       margin-bottom: 16px;
       background-color: #1b2344;
       border: 1px solid #2c366a;
       border-radius: 8px;
-      color: white;
+      color: #fff;
       font-size: 15px;
+      transition: 0.3s;
     }
 
     .form-container input:focus {
@@ -122,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     .form-container button:hover {
-      background-color: #e60e6d;
+      background-color: #e30e6c;
     }
 
     .form-container .link {
@@ -157,16 +168,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <div class="form-container">
     <h2>Register</h2>
 
+    <!-- Display error message if set -->
     <?php if (!empty($message)): ?>
       <div class="error-message"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
 
+    <!-- Registration form -->
     <form action="register.php" method="POST">
       <input type="text" name="username" placeholder="Username" required />
       <input type="password" name="password" placeholder="Password" required />
       <button type="submit">Register</button>
     </form>
 
+    <!-- Link to login page -->
     <div class="link">
       Already have an account? <a href="login.php">Login</a>
     </div>
