@@ -218,7 +218,9 @@ if ($conn->connect_error) {
 				</div>
 				<!-- Logo and social links -->
 				<div class="col-xl-6 col-lg-5 order-lg-1">
-					<img src="img/logo.png" alt="">
+					<a href="index.php" class="site-logo-footer">
+						<img src="img/logo.png" alt="">
+					</a>
 					<div class="copyright">Music from the heart</div>
 					<div class="social-links">
 						<a href="https://www.instagram.com/mikee.conv/?hl=en"><i class="fa fa-instagram"></i></a>

@@ -1,7 +1,7 @@
 let allSongs = [];
 let selectedSong = null;
 
-// ---------- Tải danh sách tất cả bài hát ----------
+// Load all songs
 function loadAllSongs() {
     fetch("get_songs.php")
         .then(res => res.json())
@@ -18,7 +18,7 @@ function loadAllSongs() {
         });
 }
 
-// ---------- Gán ID bài hát khi người dùng nhập tên ----------
+// Auto-select song ID when user types
 function setupSongInputListener() {
     const input = document.getElementById("song-name-input");
     input.addEventListener("input", () => {
@@ -28,7 +28,7 @@ function setupSongInputListener() {
     });
 }
 
-// ---------- Thêm bài hát vào playlist ----------
+// Add song to playlist
 function setupAddButton() {
     const addBtn = document.getElementById("add-playlist-btn");
     addBtn.addEventListener("click", e => {
@@ -38,7 +38,7 @@ function setupAddButton() {
         const songId = document.getElementById("selected-song-id").value;
 
         if (!playlistId || !songId) {
-            alert("Vui lòng chọn bài hát hợp lệ.");
+            alert("Please select a valid song.");
             return;
         }
 
@@ -47,40 +47,39 @@ function setupAddButton() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ playlist_id: playlistId, song_id: songId })
         })
-        .then(res => res.text())   // lấy thẳng text để debug
+        .then(res => res.text())
         .then(text => {
-            console.log("Raw response:", text); // 🐞 xem server trả gì
+            console.log("Raw response:", text);
 
             let data;
             try {
                 data = JSON.parse(text);
             } catch (e) {
-                alert("Server không trả JSON hợp lệ:\n" + text);
+                alert("Server returned invalid JSON:\n" + text);
                 return;
             }
 
             if (data.success) {
-                alert("Đã thêm bài hát!");
-                window.location.reload(); // reload ngay
+                alert("Song added!");
+                window.location.reload();
             } else {
-                alert("Lỗi: " + (data.message || "Không rõ nguyên nhân"));
+                alert("Error: " + (data.message || "Unknown error"));
             }
         })
         .catch(err => {
             console.error("Fetch error:", err);
-            alert("Có lỗi xảy ra: " + err.message);
+            alert("An error occurred: " + err.message);
         });
     });
 }
 
-
-// ---------- Trích xuất ID video YouTube ----------
+// Extract YouTube video ID
 function getYouTubeVideoID(url) {
     const match = url.match(/(?:youtube\.com\/.*[?&]v=|youtu\.be\/)([^"&?\s]{11})/);
     return match ? match[1] : null;
 }
 
-// ---------- Hiển thị video ở panel phải ----------
+// Load video preview
 function loadPlaylistVideo(url) {
     const wrapper = document.getElementById("karaoke-video-wrapper");
     const videoID = getYouTubeVideoID(url);
@@ -92,7 +91,7 @@ function loadPlaylistVideo(url) {
         : `<video src="${url}" controls style="width: 100%; border-radius: 8px;"></video>`;
 }
 
-// ---------- Tải danh sách bài hát trong playlist ----------
+// Load all songs in the selected playlist
 function loadPlaylistSongs() {
     const playlistId = getPlaylistId();
     if (!playlistId) return;
@@ -128,16 +127,16 @@ function loadPlaylistSongs() {
         });
 }
 
-// ---------- Xử lý xóa bài hát khỏi playlist ----------
+// Delete selected song from playlist
 function setupDeleteButton() {
     const deleteBtn = document.getElementById("delete-selected-btn");
     deleteBtn.addEventListener("click", () => {
         if (!selectedSong) {
-            alert("Vui lòng chọn bài hát cần xóa.");
+            alert("Please select a song to delete.");
             return;
         }
 
-        if (!confirm(`Bạn chắc chắn muốn xóa "${selectedSong.title}" khỏi playlist?`)) return;
+        if (!confirm(`Are you sure you want to remove "${selectedSong.title}" from the playlist?`)) return;
 
         fetch("delete_playlist_song.php", {
             method: "POST",
@@ -150,25 +149,25 @@ function setupDeleteButton() {
         .then(res => res.json())
         .then(result => {
             if (result.status === "success") {
-                alert("Đã xóa khỏi playlist.");
+                alert("Song removed.");
                 selectedSong = null;
                 loadPlaylistSongs();
             } else {
-                alert("Lỗi: " + result.message);
+                alert("Error: " + result.message);
             }
         })
         .catch(err => {
-            alert("Lỗi kết nối: " + err);
+            alert("Connection error: " + err);
         });
     });
 }
 
-// ---------- Trích xuất ID playlist từ URL ----------
+// Get playlist ID from URL
 function getPlaylistId() {
     return new URLSearchParams(window.location.search).get("id");
 }
 
-// ---------- Khởi chạy khi DOM sẵn sàng ----------
+// Run on page load
 document.addEventListener("DOMContentLoaded", () => {
     loadAllSongs();
     setupSongInputListener();

@@ -2237,3 +2237,9 @@ margin-left: 44%;
   font: normal 700 45px/1.2 "Montserrat", sans-serif;
 }
 
+.site-logo-footer img {
+	width: 150px;
+	margin-left: -10px;
+	height: auto;
+	display: block;
+}

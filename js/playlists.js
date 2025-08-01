@@ -1,9 +1,11 @@
-    function toggleCreateForm() {
-      const form = document.getElementById("create-form");
-      form.style.display = form.style.display === "none" ? "flex" : "none";
-    }
+// Toggle playlist creation form visibility
+function toggleCreateForm() {
+  const form = document.getElementById("create-form");
+  form.style.display = form.style.display === "none" ? "flex" : "none";
+}
 
-    function addPlaylist() {
+// Create new playlist (basic version)
+function addPlaylist() {
   const nameInput = document.getElementById("playlistName");
   const name = nameInput.value.trim();
 
@@ -20,7 +22,7 @@
     body: data,
   })
     .then(async (response) => {
-      const text = await response.text(); // get raw response
+      const text = await response.text();
       try {
         const result = JSON.parse(text);
         if (result.success) {
@@ -40,52 +42,54 @@
     });
 }
 
+// Handle playlist creation form submission (with description)
+function submitForm(event) {
+  event.preventDefault();
+  const name = document.getElementById("playlistName").value.trim();
+  const description = document.getElementById("description").value.trim();
 
-    function submitForm(event) {
-      event.preventDefault();
-      const name = document.getElementById("playlistName").value.trim();
-      const description = document.getElementById("description").value.trim();
+  fetch("create_playlist.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ playlist_name: name, description: description })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      loadPlaylists();
+      document.getElementById("create-form").reset();
+      toggleCreateForm();
+    } else {
+      alert("Error: " + data.error);
+    }
+  });
+}
 
-      fetch("create_playlist.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ playlist_name: name, description: description })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          loadPlaylists();
-          document.getElementById("create-form").reset();
-          toggleCreateForm();
-        } else {
-          alert("Error: " + data.error);
-        }
+// Load all playlists and display them
+function loadPlaylists() {
+  fetch("get_playlists.php")
+    .then(res => res.json())
+    .then(data => {
+      const grid = document.getElementById("playlist-grid");
+      grid.innerHTML = "";
+
+      data.forEach(pl => {
+        const card = document.createElement("div");
+        card.className = "playlist-card";
+
+        card.innerHTML = `
+          <button class="delete-btn" onclick="deletePlaylist(${pl.id})">×</button>
+          <img src="img/playlist-img.png" alt="Thumbnail" onclick="openPlaylist(${pl.id})" style="cursor:pointer;"/>
+          <p class="playlist-name" onclick="openPlaylist(${pl.id})">${pl.playlist_name}</p>
+          <p style="font-size:12px;">Views: ${pl.total_view} | Played: ${pl.total_time_played}</p>
+        `;
+
+        grid.appendChild(card);
       });
-    }
+    });
+}
 
-    function loadPlaylists() {
-      fetch("get_playlists.php")
-        .then(res => res.json())
-        .then(data => {
-          const grid = document.getElementById("playlist-grid");
-          grid.innerHTML = "";
-
-          data.forEach(pl => {
-            const card = document.createElement("div");
-            card.className = "playlist-card";
-
-            card.innerHTML = `
-              <button class="delete-btn" onclick="deletePlaylist(${pl.id})">×</button>
-              <img src="img/playlist-img.png" alt="Thumbnail" onclick="openPlaylist(${pl.id})" style="cursor:pointer;"/>
-              <p class="playlist-name" onclick="openPlaylist(${pl.id})">${pl.playlist_name}</p>
-              <p style="font-size:12px;">Views: ${pl.total_view} | Played: ${pl.total_time_played}</p>
-            `;
-
-            grid.appendChild(card);
-          });
-        });
-    }
-
+// Delete a playlist by ID
 function deletePlaylist(playlistId) {
   const data = new URLSearchParams();
   data.append("playlist_id", playlistId);
@@ -116,17 +120,18 @@ function deletePlaylist(playlistId) {
     });
 }
 
+// Open playlist and update its view count
+function openPlaylist(id) {
+  fetch(`update_view.php?id=${id}`)
+    .then(() => {
+      window.location.href = `playlist.php?id=${id}`;
+    });
+}
 
-    function openPlaylist(id) {
-    fetch(`update_view.php?id=${id}`)
-        .then(() => {
-        window.location.href = `playlist.php?id=${id}`;
-        });
-    }
+// Simulate playing all songs in a playlist (for stat tracking)
+function onAllSongsPlayed(playlistId) {
+  fetch(`update_played.php?id=${playlistId}`);
+}
 
-    // Simulate all songs played:
-    function onAllSongsPlayed(playlistId) {
-      fetch(`update_played.php?id=${playlistId}`);
-    }
-
-    window.onload = loadPlaylists;
+// Load playlists on page load
+window.onload = loadPlaylists;

@@ -1,4 +1,6 @@
+// Wait for the DOM to load before executing any code
 document.addEventListener("DOMContentLoaded", () => {
+  // Get references to key DOM elements
   const songSearchInput = document.getElementById("song-search");
   const searchIconBtn = document.getElementById("search-icon-btn");
   const songList = document.getElementById("song-list");
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let allSongs = [];
   let selectedSong = null;
 
+  // Fetch and display songs from user's playlist
   fetch("display_songs_in_playlist.php")
     .then(res => res.json())
     .then(songs => {
@@ -20,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderSongList(allSongs);
     });
 
+  // Render the song list dynamically into the UI
   function renderSongList(songs) {
     songList.innerHTML = "";
 
@@ -50,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Open the edit modal and fill the form with selected song data
   function openViewEditModal(song) {
     selectedSong = song;
     document.getElementById("edit_id").value = song.id;
@@ -65,11 +70,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".main-karaoke-content").classList.add("blur-background");
   }
 
+  // Close the edit modal
   closeViewEditBtn.addEventListener("click", () => {
     viewEditContainer.style.display = "none";
     document.querySelector(".main-karaoke-content").classList.remove("blur-background");
   });
 
+  // Save changes made to a song in the edit form
   function saveEditedSong(event) {
     event.preventDefault();
 
@@ -100,8 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return false;
   }
 
+  // Attach form submission handler
   viewEditForm.addEventListener("submit", saveEditedSong);
 
+  // Delete a song from playlist by ID
   function deleteSong(songId) {
     fetch("delete_song_from_playlist.php", {
       method: "POST",
@@ -129,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  // Handle click on delete button
   deleteBtn.addEventListener("click", () => {
     if (selectedSong && confirm(`You want to delete "${selectedSong.title}"?`)) {
       deleteSong(selectedSong.id);
@@ -137,23 +147,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Search functionality to filter songs by title
   function performSearch() {
     const searchTerm = songSearchInput.value.toLowerCase();
     const filteredSongs = allSongs.filter(song => song.title.toLowerCase().includes(searchTerm));
     renderSongList(filteredSongs);
   }
 
+  // Handle Enter key press in search input
   songSearchInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") performSearch();
   });
+
+  // Handle click on search icon
   searchIconBtn.addEventListener("click", performSearch);
 
+  // Extract YouTube video ID from a URL
   function getYouTubeVideoID(url) {
     const regExp = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\n\s]{11})/;
     const match = url.match(regExp);
     return match ? match[1] : null;
   }
 
+  // Load a song's video (YouTube or local) into the player
   function loadSong(song) {
     selectedSong = song;
     deleteBtn.style.display = "inline-block";
@@ -183,15 +199,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Show upload form modal
   showUploadBtn.addEventListener("click", () => {
     uploadContainer.style.display = "block";
     document.querySelector(".main-karaoke-content").classList.add("blur-background");
   });
 
+  // Close upload form modal
   closeUploadBtn.addEventListener("click", () => {
     closeUploadForm();
   });
 
+  // Close modals on Escape key press
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeUploadForm();
@@ -200,6 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Hide upload form modal and remove background blur
   function closeUploadForm() {
     uploadContainer.style.display = "none";
     document.querySelector(".main-karaoke-content").classList.remove("blur-background");

@@ -43,7 +43,7 @@ def compare(reference_file, user_file):
         dist, _ = librosa.sequence.dtw(ref_pitch, user_pitch)
         cost = dist[-1, -1]
 
-        scaling_factor = 100000  # Tunable
+        scaling_factor = 5000  # Tunable
         score = 100 * np.exp(-cost / scaling_factor)
         score = max(0, min(100, score))
         print(f"Vocal Score: {score:.2f}/100")

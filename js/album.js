@@ -1,12 +1,12 @@
 let allSongs = [];
 let selectedSong = null;
 
-// ---------- Trích xuất ID album từ URL ----------
+// ---------- Extract album ID from URL ----------
 function getAlbumId() {
     return new URLSearchParams(window.location.search).get("id");
 }
 
-// ---------- Tải danh sách tất cả bài hát cho thanh tìm kiếm ----------
+// ---------- Load all songs for the search bar ----------
 function loadAllSongs() {
     fetch("get_songs.php")
         .then(res => res.json())
@@ -25,7 +25,7 @@ function loadAllSongs() {
         .catch(err => console.error("Error loading all songs:", err));
 }
 
-// ---------- Gán ID bài hát khi người dùng nhập tên ----------
+// ---------- Assign song ID when user types the name ----------
 function setupSongInputListener() {
     const input = document.getElementById("song-name-input");
     input.addEventListener("input", () => {
@@ -35,7 +35,7 @@ function setupSongInputListener() {
     });
 }
 
-// ---------- Thiết lập nút "Thêm" bài hát vào album ----------
+// ---------- Set up "Add" button to add song to album ----------
 function setupAddButton() {
     const addBtn = document.getElementById("add-album-btn");
     addBtn.addEventListener("click", e => {
@@ -46,7 +46,7 @@ function setupAddButton() {
         const songId = document.getElementById("selected-song-id").value;
 
         if (!albumId || !songName || !songId) {
-            alert("Vui lòng chọn một bài hát hợp lệ từ danh sách.");
+            alert("Please select a valid song from the list.");
             return;
         }
 
@@ -58,26 +58,26 @@ function setupAddButton() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert("Đã thêm bài hát vào album!");
+                alert("Song added to album!");
                 document.getElementById("song-name-input").value = "";
                 document.getElementById("selected-song-id").value = "";
                 loadAlbumSongs();
             } else {
-                alert("Lỗi: " + data.message);
+                alert("Error: " + data.message);
             }
         })
         .catch(err => console.error("Error adding song:", err));
     });
 }
 
-// ---------- Trích xuất ID video YouTube ----------
+// ---------- Extract YouTube video ID ----------
 function getYouTubeVideoID(url) {
     if (!url) return null;
     const match = url.match(/(?:youtube\.com\/.*[?&]v=|youtu\.be\/)([^"&?\s]{11})/);
     return match ? match[1] : null;
 }
 
-// ---------- Hiển thị video ở panel phải ----------
+// ---------- Display video on the right panel ----------
 function loadAlbumVideo(url) {
     const wrapper = document.getElementById("karaoke-video-wrapper");
     const videoID = getYouTubeVideoID(url);
@@ -91,19 +91,19 @@ function loadAlbumVideo(url) {
     }
 }
 
-// ---------- Tải danh sách bài hát trong album ----------
+// ---------- Load the list of songs in the album ----------
 function loadAlbumSongs() {
     const albumId = getAlbumId();
     if (!albumId) return;
 
-    // Sửa lỗi cú pháp: dùng backtick (`) cho template literal
+    // Use backtick (`) for template literals
     fetch(`album_get_song.php?id=${albumId}`)
         .then(res => res.json())
         .then(data => {
             if (!data.success) {
                 console.error("Failed to load album songs:", data.message);
                 const container = document.getElementById("album-songs");
-                container.innerHTML = `<li>Lỗi: ${data.message}</li>`;
+                container.innerHTML = `<li>Error: ${data.message}</li>`;
                 return;
             }
 
@@ -112,7 +112,7 @@ function loadAlbumSongs() {
             container.innerHTML = ""; 
 
             if (songs.length === 0) {
-                container.innerHTML = `<li>Chưa có bài hát nào trong album này.</li>`;
+                container.innerHTML = `<li>No songs in this album yet.</li>`;
             } else {
                 songs.forEach(song => {
                     const li = document.createElement("li");
@@ -140,21 +140,21 @@ function loadAlbumSongs() {
         })
         .catch(err => {
             console.error("Error fetching album songs:", err);
-            document.getElementById("album-songs").innerHTML = `<li>Lỗi kết nối đến máy chủ.</li>`;
+            document.getElementById("album-songs").innerHTML = `<li>Failed to connect to the server.</li>`;
         });
 }
 
-// ---------- Thiết lập nút "Xóa" bài hát khỏi album ----------
+// ---------- Set up "Delete" button to remove song from album ----------
 function setupDeleteButton() {
     const deleteBtn = document.getElementById("delete-selected-btn");
     deleteBtn.addEventListener("click", () => {
         if (!selectedSong) {
-            alert("Vui lòng chọn bài hát cần xóa.");
+            alert("Please select a song to delete.");
             return;
         }
-        
-        // Sửa lỗi cú pháp: dùng backtick (`) cho template literal
-        if (!confirm(`Bạn chắc chắn muốn xóa "${selectedSong.title}" khỏi album?`)) return;
+
+        // Use backtick (`) for template literals
+        if (!confirm(`Are you sure you want to remove "${selectedSong.title}" from the album?`)) return;
 
         fetch("delete_album_song.php", {
             method: "POST",
@@ -167,21 +167,21 @@ function setupDeleteButton() {
         .then(res => res.json())
         .then(result => {
             if (result.status === "success") {
-                alert("Đã xóa bài hát khỏi album.");
+                alert("Song removed from album.");
                 selectedSong = null;
-                document.getElementById("karaoke-video-wrapper").innerHTML = ''; // Xóa video
-                loadAlbumSongs(); // Tải lại danh sách
+                document.getElementById("karaoke-video-wrapper").innerHTML = ''; // Remove video
+                loadAlbumSongs(); // Reload list
             } else {
-                alert("Lỗi: " + result.message);
+                alert("Error: " + result.message);
             }
         })
         .catch(err => {
-            alert("Lỗi kết nối: " + err);
+            alert("Connection error: " + err);
         });
     });
 }
 
-// ---------- Khởi chạy khi DOM sẵn sàng ----------
+// ---------- Initialize when DOM is ready ----------
 document.addEventListener("DOMContentLoaded", () => {
     loadAllSongs();
     setupSongInputListener();
