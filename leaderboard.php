@@ -11,10 +11,15 @@ if ($conn->connect_error) {
 }
 
 $sql = "
-    SELECT u.username, ph.score, ph.user_recording, ph.date
+    SELECT 
+        u.username, 
+        MAX(ph.score) AS max_score, 
+        ph.user_recording, 
+        ph.date
     FROM playhistory ph
     JOIN user u ON ph.user_id = u.id
-    ORDER BY ph.score DESC
+    GROUP BY u.username
+    ORDER BY max_score DESC
 ";
 $result = $conn->query($sql);
 ?>
@@ -260,7 +265,9 @@ $result = $conn->query($sql);
           <tr>
             <td class="rank <?= $rankClass ?>">#<?= $rank ?> <?= $medal ?></td>
             <td><?= htmlspecialchars($row['username']) ?></td>
-            <td><?= number_format($row['score'], 2) ?></td>
+            <td><?= isset($row['max_score']) && is_numeric($row['max_score']) 
+                ? number_format($row['max_score'], 2) 
+                : 'N/A'; ?></td>
             <td>
               <?php if (!empty($row['user_recording'])): ?>
                         <audio controls style="width: 200px;">

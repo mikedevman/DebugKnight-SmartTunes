@@ -33,7 +33,7 @@ if (isset($_SESSION['user_id'])) {
 
     // Prepare and execute SQL to fetch songs where the user is the author
     $stmt = $conn->prepare("
-        SELECT s.song_id, s.name
+        SELECT COUNT(*) AS name
         FROM song s
         INNER JOIN song_author sa ON s.song_id = sa.song_id
         WHERE sa.author_id = ?

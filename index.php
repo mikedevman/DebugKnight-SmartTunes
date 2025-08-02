@@ -24,23 +24,6 @@ if ($conn->connect_error) {
 // Get user session info
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
-
-// Database query to get all playlists
-$user_id = $_SESSION['user_id'];
-$sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
-$stmt1 = $conn->prepare($sql_playlists);
-$stmt1->bind_param("i", $user_id);
-$stmt1->execute();
-$result1 = $stmt1->get_result();
-$user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
-
-// Query to get user's songs
-$sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
-$stmt2 = $conn->prepare($sql_songs);
-$stmt2->bind_param("i", $user_id);
-$stmt2->execute();
-$result2 = $stmt2->get_result();
-$user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
