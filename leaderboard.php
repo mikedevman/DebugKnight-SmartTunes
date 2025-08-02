@@ -44,7 +44,6 @@ $result = $conn->query($sql);
 	<link rel="stylesheet" href="css/font-awesome.min.css"/>
 	<link rel="stylesheet" href="css/owl.carousel.min.css"/>
 	<link rel="stylesheet" href="css/slicknav.min.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Main Stylesheets -->
 	<link rel="stylesheet" href="css/style.css"/>
 
@@ -146,90 +145,102 @@ $result = $conn->query($sql);
 
   <style>
     body {
-        background: white;
-        font-family: 'Montserrat', sans-serif;
-        color: #fff;
-    }
-    .leaderboard-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: calc(100vh - 200px); /* leave room for header & footer */
-        padding: 40px 20px;
-    }
-    .leaderboard-container {
-        width: 100%;
-        max-width: 1000px;
-        background: #111b4a;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        overflow: hidden;
-    }
-    .leaderboard-header {
-        text-align: center;
-        padding: 40px 20px;
-        background: #0f1a4c;
-    }
-    .leaderboard-header h2 {
-        margin: 0;
-        font-size: 36px;
-        font-weight: 700;
-        color: #ff0059;
-    }
-    .leaderboard-header p {
-        color: #d1d5db;
-        font-size: 18px;
-    }
-    thead {
-        background: #192255;
-    }
-    thead th {
-        font-weight: 600;
-        font-size: 18px;
-        color: #ff9bd3;
-        padding: 18px;
-    }
-    tbody td {
-        font-size: 16px;
-        padding: 16px;
-    }
-    tbody tr {
-        transition: background 0.3s ease;
-    }
-    tbody tr:hover {
-        background: rgba(255, 255, 255, 0.07);
-    }
-    .rank {
-        font-weight: bold;
-        font-size: 20px;
-    }
-    .rank-1 { color: gold; }
-    .rank-2 { color: silver; }
-    .rank-3 { color: #cd7f32; } /* bronze */
-    .btn-listen {
-        background: #ff0059;
-        color: white;
-        font-weight: 500;
-        padding: 8px 20px;
-        border-radius: 25px;
-        text-decoration: none;
-        transition: background 0.3s ease;
-        font-size: 14px;
-    }
-    .btn-listen:hover {
-        background: #ff3385;
-        color: #fff;
-    }
-    .no-scores {
-        text-align: center;
-        padding: 30px;
-        font-style: italic;
-        color: #bbb;
-        font-size: 18px;
-    }
-    .header-section .main-menu a {
+    background: white;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+}
+.leaderboard-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px); /* leave room for header & footer */
+    padding: 40px 20px;
+}
+.leaderboard-container {
+    width: 100%;
+    max-width: 1000px;
+    background: #111b4a;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+.leaderboard-header {
+    text-align: center;
+    padding: 40px 20px;
+    background: #0f1a4c;
+}
+.leaderboard-header h2 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    color: #ff0059;
+}
+.leaderboard-header p {
+    color: #d1d5db;
+    font-size: 18px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+thead {
+    background: #192255;
+}
+thead th {
+    font-weight: 600;
+    font-size: 18px;
+    color: #ff9bd3;
+    padding: 18px;
+    text-align: center;
+}
+tbody td {
+    font-size: 16px;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+tbody tr {
+    background: #111b4a;
+    transition: all 0.3s ease;
+    color: white;
+}
+tbody tr:nth-child(even) {
+    background: #0f1842;
+}
+tbody tr:hover {
+    background: rgba(255, 0, 89, 0.15) !important;
+}
+.rank {
+    font-weight: bold;
+    font-size: 20px;
+}
+.rank-1 { color: gold; }
+.rank-2 { color: silver; }
+.rank-3 { color: #cd7f32; } /* bronze */
+.btn-listen {
+    background: #ff0059;
+    color: white;
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 25px;
     text-decoration: none;
-    }
+    transition: background 0.3s ease;
+    font-size: 14px;
+    display: inline-block;
+}
+.btn-listen:hover {
+    background: #ff3385;
+    color: #fff;
+}
+.no-scores {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #bbb;
+    font-size: 18px;
+}
+.header-section .main-menu a {
+    text-decoration: none;
+}
   </style>
 </head>
 <body>
