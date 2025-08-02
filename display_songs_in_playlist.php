@@ -1,48 +1,54 @@
 <?php
-// Connect to database
-$conn = new mysqli("127.0.0.1", "root", "", "music_db");
+header('Content-Type: application/json');
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$playlist_id = $_GET['id'] ?? null;
+$sort = $_GET['sort'] ?? '';
+
+if (!$playlist_id) {
+    echo json_encode(['success' => false, 'message' => 'Missing playlist ID']);
+    exit;
 }
 
-// Prepare SQL to get songs in the playlist
+$conn = new mysqli("127.0.0.1", "root", "", "music_db");
+if ($conn->connect_error) {
+    echo json_encode(['success' => false, 'message' => 'DB connection failed']);
+    exit;
+}
+
+$orderBy = match($sort) {
+    'az' => 's.name ASC',
+    'za' => 's.name DESC',
+    'views' => 's.view DESC',
+    'played' => 's.time_played DESC',
+    default => 's.song_id DESC' // newest
+};
+
 $stmt = $conn->prepare("
-    SELECT s.song_id, s.name, s.content, s.tempo, s.`key`, s.genre, s.year_publish, s.album, s.time_played
+    SELECT s.song_id, s.name, s.content, s.tempo, s.`key`, s.genre, s.year_publish, s.time_played
     FROM playlist_song ps
     JOIN song s ON ps.song_id = s.song_id
     WHERE ps.playlist_id = ?
-    ORDER BY s.song_id DESC
+    ORDER BY $orderBy
 ");
-
-// Bind playlist ID
 $stmt->bind_param("i", $playlist_id);
-
-// Run the query
 $stmt->execute();
-
-// Get query result
 $result = $stmt->get_result();
 
-// Collect songs into array
-$songs = array();
+$songs = [];
 while ($row = $result->fetch_assoc()) {
-    $songs[] = array(
+    $songs[] = [
         "id" => $row["song_id"],
         "title" => $row["name"],
-        "video" => !empty($row["content"]) ? $row["content"] : null,
+        "video" => $row["content"],
         "tempo" => $row["tempo"],
         "songkey" => $row["key"],
         "genre" => $row["genre"],
         "year" => $row["year_publish"],
-        "album" => $row["album"],
         "timeplayed" => $row["time_played"]
-    );
+    ];
 }
 
-// Return as JSON
-echo json_encode($songs);
+echo json_encode(['success' => true, 'songs' => $songs]);
 
-// Close connection
+$stmt->close();
 $conn->close();

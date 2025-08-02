@@ -1,53 +1,53 @@
 <?php
-// Set response format to JSON
 header('Content-Type: application/json');
 
-// Get album ID from the request
 $albumId = $_GET['id'] ?? null; 
+$sort = $_GET['sort'] ?? '';
+
 if (!$albumId) {
-    echo json_encode(['success' => false, 'message' => 'Missing album ID.']);
+    echo json_encode(['success' => false, 'message' => 'Missing album ID']);
     exit;
 }
 
-// Connect to the database
 $conn = new mysqli("127.0.0.1", "root", "", "music_db");
 if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Failed to connect to database.']);
+    echo json_encode(['success' => false, 'message' => 'DB connection failed']);
     exit;
 }
 
-// Query songs from the album
+$orderBy = match($sort) {
+    'az' => 's.name ASC',
+    'za' => 's.name DESC',
+    'views' => 's.view DESC',
+    'played' => 's.time_played DESC',
+    default => 's.song_id DESC' // newest
+};
+
 $stmt = $conn->prepare("
-    SELECT song_id, name, content, tempo, `key`, genre, year_publish, time_played 
-    FROM song 
+    SELECT song_id, name, content, tempo, `key`, genre, year_publish, time_played
+    FROM song s
     WHERE album = ?
-    ORDER BY name ASC
+    ORDER BY $orderBy
 ");
 $stmt->bind_param("i", $albumId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Build song list
 $songs = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $songs[] = [
-            "id"         => $row["song_id"],
-            "title"      => htmlspecialchars($row["name"]),
-            "video"      => $row["content"],
-            "tempo"      => $row["tempo"],
-            "songkey"    => $row["key"],
-            "genre"      => $row["genre"],
-            "year"       => $row["year_publish"],
-            "timeplayed" => $row["time_played"]
-        ];
-    }
+while ($row = $result->fetch_assoc()) {
+    $songs[] = [
+        "id" => $row["song_id"],
+        "title" => $row["name"],
+        "video" => $row["content"],
+        "tempo" => $row["tempo"],
+        "songkey" => $row["key"],
+        "genre" => $row["genre"],
+        "year" => $row["year_publish"],
+        "timeplayed" => $row["time_played"]
+    ];
 }
 
-// Return JSON response
 echo json_encode(['success' => true, 'songs' => $songs]);
 
-// Close connections
 $stmt->close();
 $conn->close();
-?>

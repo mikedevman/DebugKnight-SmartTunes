@@ -58,22 +58,22 @@ startBtn.addEventListener("click", async () => {
       .then(data => {
         // If score was returned successfully
         if (data.success) {
-          status.innerHTML = `✅ Vocal Similarity Score: <strong>${data.score.toFixed(2)} / 100</strong> 🎯`;
+          status.innerHTML = `Vocal Similarity Score: <strong>${data.score.toFixed(2)} / 100</strong> 🎯`;
         } else {
           // Show clean and user-friendly error message
-          let reason = "❌ An error occurred.";
+          let reason = "An error occurred.";
           const debug = (data.debug || "").toLowerCase();
 
           if (debug.includes("ffmpeg")) {
-            reason = "❌ Audio conversion failed.";
+            reason = "Audio conversion failed.";
           } else if (debug.includes("no detectable pitch")) {
-            reason = "❌ No pitch detected. Try singing louder or clearer.";
+            reason = "No pitch detected. Try singing louder or clearer.";
           } else if (debug.includes("duration mismatch")) {
-            reason = "❌ Your vocal duration doesn't match the reference.";
+            reason = "Your vocal duration doesn't match the reference.";
           } else if (debug.includes("librosa") || debug.includes("traceback")) {
-            reason = "❌ Audio processing error.";
+            reason = "Audio processing error.";
           } else if (data.error) {
-            reason = `❌ ${data.error}`;
+            reason = `${data.error}`;
           }
 
           status.innerHTML = reason;
@@ -81,7 +81,7 @@ startBtn.addEventListener("click", async () => {
       })
       .catch(err => {
         // Upload failed
-        status.innerHTML = "❌ Upload failed. Please try again.";
+        status.innerHTML = "Upload failed. Please try again.";
         console.error(err);
       });
     };
@@ -104,7 +104,7 @@ startBtn.addEventListener("click", async () => {
 
   } catch (err) {
     // Microphone not accessible or blocked
-    status.innerHTML = "❌ Microphone access denied or not supported.";
+    status.innerHTML = "Microphone access denied or not supported.";
     console.error(err);
   }
 });

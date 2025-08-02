@@ -92,23 +92,28 @@ function loadPlaylistVideo(url) {
 }
 
 // Load all songs in the selected playlist
-function loadPlaylistSongs() {
+function loadPlaylistSongs(sort = "") {
     const playlistId = getPlaylistId();
     if (!playlistId) return;
 
-    fetch(`get_playlist_songs.php?id=${playlistId}`)
+    fetch(`display_songs_in_playlist.php?id=${playlistId}&sort=${sort}`)
         .then(res => res.json())
-        .then(songs => {
+        .then(data => {
             const container = document.getElementById("playlist-songs");
             container.innerHTML = "";
 
-            songs.forEach(song => {
+            if (!data.success || data.songs.length === 0) {
+                container.innerHTML = "<p>No songs found.</p>";
+                return;
+            }
+
+            data.songs.forEach(song => {
                 const div = document.createElement("div");
                 div.className = "playlist-song-item";
-                div.dataset.songId = song.song_id;
-                div.dataset.songTitle = song.name;
+                div.dataset.songId = song.id;
+                div.dataset.songTitle = song.title;
 
-                div.innerHTML = `<span style="cursor:pointer; font-size: 17px; color: #fff;">${song.name}</span>`;
+                div.innerHTML = `<span style="cursor:pointer; font-size: 17px; color: #fff;">${song.title}</span>`;
 
                 div.addEventListener("click", () => {
                     document.querySelectorAll(".playlist-song-item").forEach(el => el.classList.remove("active"));
@@ -119,12 +124,13 @@ function loadPlaylistSongs() {
                         title: div.dataset.songTitle
                     };
 
-                    loadPlaylistVideo(song.content);
+                    loadPlaylistVideo(song.video);
                 });
 
                 container.appendChild(div);
             });
-        });
+        })
+        .catch(err => console.error("Error loading playlist songs:", err));
 }
 
 // Delete selected song from playlist
@@ -174,4 +180,11 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAddButton();
     setupDeleteButton();
     loadPlaylistSongs();
+
+    const sortDropdown = document.getElementById("sort-dropdown");
+    if (sortDropdown) {
+        sortDropdown.addEventListener("change", e => {
+            loadPlaylistSongs(e.target.value);
+        });
+    }
 });

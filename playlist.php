@@ -184,6 +184,16 @@ if (!isset($_SESSION['username'])) {
       </div>
     </div>
 
+        <!-- Sort options -->
+        <select id="sort-dropdown">
+          <option value="">Newest</option>
+          <option value="az">A - Z</option>
+          <option value="za">Z - A</option>
+          <option value="views">Most Viewed</option>
+          <option value="played">Most Played</option>
+        </select>
+      </div>
+      
    <!-- Footer section -->
 	<footer class="footer-section">
 		<div class="container">
@@ -257,5 +267,6 @@ if (!isset($_SESSION['username'])) {
     <script src="js/WaveSurferInit.js"></script>
     <script src="js/jplayerInit.js"></script>
     <script src="js/karaoke-recorder.js"></script>
+    <script src="js/search.js"></script>
   </body>
 </html>

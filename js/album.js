@@ -92,18 +92,16 @@ function loadAlbumVideo(url) {
 }
 
 // ---------- Load the list of songs in the album ----------
-function loadAlbumSongs() {
+function loadAlbumSongs(sort = "") {
     const albumId = getAlbumId();
     if (!albumId) return;
 
-    // Use backtick (`) for template literals
-    fetch(`album_get_song.php?id=${albumId}`)
+    fetch(`album_get_song.php?id=${albumId}&sort=${sort}`)
         .then(res => res.json())
         .then(data => {
             if (!data.success) {
                 console.error("Failed to load album songs:", data.message);
-                const container = document.getElementById("album-songs");
-                container.innerHTML = `<li>Error: ${data.message}</li>`;
+                document.getElementById("album-songs").innerHTML = `<li>Error: ${data.message}</li>`;
                 return;
             }
 
@@ -188,4 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
     setupAddButton();
     loadAlbumSongs();
     setupDeleteButton();
+
+    const sortDropdown = document.getElementById("sort-dropdown");
+    if (sortDropdown) {
+        sortDropdown.addEventListener("change", e => {
+            loadAlbumSongs(e.target.value);
+        });
+    }
 });

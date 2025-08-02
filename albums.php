@@ -178,6 +178,15 @@ while ($row = $member_result->fetch_assoc()) {
 	<h2>Albums</h2>
 </div>
 
+<div class="album-search" style="text-align:center; margin:20px 0;">
+  <form id="albumSearchForm">
+    <input type="text" id="albumSearchInput" 
+           placeholder="Search albums by name" 
+           style="padding:10px; width:260px; border-radius:20px; border:1px solid #ccc; font-size:14px;">
+    <button type="submit" class="search-btn">Search</button>
+  </form>
+</div>
+
 <!-- Album Creation Form -->
 <form method="POST" action="create_album.php" style="margin-bottom: 20px;">
 	<input type="text" name="album_name" placeholder="New album name" required>
@@ -292,5 +301,6 @@ while ($row = $result->fetch_assoc()) {
 <script src="js/mixitup.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/user-description.js"></script>
+<script src="js/search.js"></script>
 </body>
 </html>

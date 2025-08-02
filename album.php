@@ -246,6 +246,7 @@ if ($conn->connect_error) {
 	<script src="js/WaveSurferInit.js"></script>
 	<script src="js/jplayerInit.js"></script>
 	<script src="js/karaoke-recorder.js"></script>
+	<script src="js/search.js"></script>
 </body>
 </html>
 

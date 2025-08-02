@@ -164,6 +164,15 @@ $username = $_SESSION['username'];
   <h2>Your Playlists</h2>
 </div>
 
+<div class="playlist-search" style="text-align:center; margin:20px 0;">
+  <form id="playlistSearchForm">
+    <input type="text" id="playlistSearchInput" 
+           placeholder="Search your playlists by name" 
+           style="padding:10px; width:260px; border-radius:20px; border:1px solid #ccc; font-size:14px;">
+    <button type="submit" class="search-btn">Search</button>
+  </form>
+</div>
+
 <div class="playlists">
   <div class="playlist-controls">
     <!-- Button to toggle new playlist form -->
@@ -176,6 +185,9 @@ $username = $_SESSION['username'];
       <button onclick="addPlaylist()">Add</button>
     </div>
   </div>
+
+
+
 
   <!-- Playlist display area -->
   <div id="playlist-grid" class="playlist-grid"></div>
@@ -251,6 +263,7 @@ $username = $_SESSION['username'];
 <script src="js/playlists.js"></script>
 <script src="js/karaoke-recorder.js"></script>
 <script src="js/user-description.js"></script>
+<script src="js/search.js"></script>
 
 </body>
 </html>
