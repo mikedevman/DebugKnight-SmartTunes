@@ -161,6 +161,14 @@ if ($conn->connect_error) {
 				</div>
 				<ul id="album-songs"></ul>
 			</div>
+			        <!-- Sort options -->
+        <select id="sort-dropdown">
+          <option value="">Newest</option>
+          <option value="az">A - Z</option>
+          <option value="za">Z - A</option>
+          <option value="views">Most Viewed</option>
+          <option value="played">Most Played</option>
+        </select>
 		</div>
 
 		<!-- Right panel with video player -->
@@ -172,7 +180,8 @@ if ($conn->connect_error) {
 			</div>
 		</div>
 	</div>
-
+</div>
+	  
 	<!-- Footer section -->
 	<footer class="footer-section">
 		<div class="container">

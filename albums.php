@@ -197,16 +197,28 @@ while ($row = $member_result->fetch_assoc()) {
 // Fetch albums and check authorship
 $user_id = $_SESSION['user_id'];
 $conn = new mysqli("127.0.0.1", "root", "", "music_db");
+// Fetch albums with list of authors and check if current user is one
 $albums = [];
+$sql = "
+    SELECT a.id, a.album_name,
+           GROUP_CONCAT(u.username SEPARATOR ', ') AS authors,
+           CASE WHEN EXISTS (
+                SELECT 1 FROM album_author aa 
+                WHERE aa.album_id = a.id AND aa.author_id = ?
+           ) THEN 1 ELSE 0 END AS is_author
+    FROM album a
+    JOIN album_author aa ON a.id = aa.album_id
+    JOIN user u ON aa.author_id = u.id
+    GROUP BY a.id, a.album_name
+    ORDER BY a.id DESC
+";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$sql = "SELECT album.id, album.album_name, album_author.author_id
-        FROM album
-        JOIN album_author ON album.id = album_author.album_id
-        ORDER BY album.id DESC";
-$result = $conn->query($sql);
-
+$albums = [];
 while ($row = $result->fetch_assoc()) {
-    $row['is_author'] = ($row['author_id'] == $user_id);
     $albums[] = $row;
 }
 ?>
@@ -223,9 +235,15 @@ while ($row = $result->fetch_assoc()) {
 				<?= htmlspecialchars($album['album_name']) ?>
 			</a>
 		</h3>
-		<?php if (!empty($album['is_author'])): ?>
-			<!-- Delete button only for authors -->
-			<form action="delete_albums.php" method="POST" onsubmit="return confirm('Delete?')" style="margin-top: 10px;">
+		
+		<p style="font-size:13px; color:#333;">
+    		Authors: <?= htmlspecialchars($album['authors']) ?>
+		</p>
+
+		<?php if ($album['is_author'] === "1" || $album['is_author'] === 1): ?>
+			<form action="delete_albums.php" method="POST" 
+				onsubmit="return confirm('Delete?')" 
+				style="margin-top: 10px;">
 				<input type="hidden" name="album_id" value="<?= $album['id'] ?>">
 				<button type="submit">x</button>
 			</form>
