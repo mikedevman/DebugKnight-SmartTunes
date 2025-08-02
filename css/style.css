@@ -165,19 +165,6 @@
   color: #fff;
 }
 
-/*=================================
------------------------------------
-  SolMusic HTML Template
-  Version: 1.0
- ---------------------------------
- =================================*/
-
-
-
-/*----------------------------------------*/
-/* Template default CSS
-/*----------------------------------------*/
-
 html,
 body {
 	height: 100%;
@@ -252,11 +239,6 @@ ol {
 	margin: 0;
 }
 
-/*---------------------
-Helper CSS
- -----------------------*/
-
-
 .section-title h2 {
 	font-size: 36px;
 	color: #0a183d;
@@ -294,12 +276,6 @@ Helper CSS
 	color: #fff;
 }
 
-/*---------------------
-Commom elements
- -----------------------*/
-
-/* buttons */
-
 .site-btn {
 	display: inline-block;
 	border: none;
@@ -323,8 +299,6 @@ Commom elements
 .site-btn.sb-c2 {
 	background: #383b70;
 }
-
-/* Preloder */
 
 #preloder {
 	position: fixed;
@@ -387,10 +361,6 @@ Commom elements
 		border-left-color: transparent;
 	}
 }
-
-/*------------------
-Header section
- ---------------------*/
 
 .header-section {
 	padding-left: 55px;
@@ -510,10 +480,6 @@ Header section
 	display: none;
 }
 
-/*------------------
-Hero section
- ---------------------*/
-
 .hero-section {
 	overflow: hidden;
 }
@@ -632,18 +598,10 @@ Hero section
 	background: #fc0254;
 }
 
-/* ----------------
-Intro section
- -------------------*/
-
 .intro-section p {
 	margin-bottom: 35px;
 	padding-top: 10px;
 }
-
-/* ----------------
-How section
- -------------------*/
 
 .how-section {
 	background-color: #0a183d;
@@ -673,10 +631,6 @@ How section
 	opacity: 0.6;
 }
 
-/* ----------------
-Concept section
- -------------------*/
-
 .concept-section p {
 	padding-top: 5px;
 }
@@ -690,10 +644,6 @@ Concept section
 	border-radius: 40px;
 	margin-bottom: 15px;
 }
-
-/* --------------------
-Subscription section
- -----------------------*/
 
 .subscription-section {
 	background: #0a183d;
@@ -740,10 +690,6 @@ Subscription section
 	padding-right: 28px;
 }
 
-/* ----------------
-Premium section 
- -------------------*/
-
 .premium-section p {
 	margin-bottom: 50px;
 }
@@ -767,10 +713,6 @@ Premium section
 .premium-item p {
 	margin-bottom: 0;
 }
-
-/* ----------------
-Responsive
- -------------------*/
 
 .footer-section {
 	background: #0a183d;
@@ -813,14 +755,6 @@ Responsive
 	font-size: 18px;
 	margin-right: 35px;
 }
-
-/* ----------------
-Other pages
- -------------------*/
-
-/* ----------------
-Playlist page
- -------------------*/
 
 .playlist-section {
 	padding: 105px 42px;
@@ -897,10 +831,6 @@ Playlist page
 	background: #fc0254;
 }
 
-/* ----------------
-Blog page
- -------------------*/
-
 .blog-item {
 	margin-bottom: 90px;
 }
@@ -949,10 +879,6 @@ Blog page
 .site-pagination a.active {
 	color: #3c455f;
 }
-
-/* ----------------
-Contact page
- -------------------*/
 
 .map {
 	height: 100%;
@@ -1009,10 +935,6 @@ Contact page
 	height: 177px;
 	margin-bottom: 57px;
 }
-
-/* ----------------
-Category page
- -------------------*/
 
 .category-section {
 	padding: 105px 36px;
@@ -1267,7 +1189,6 @@ Category page
 	bottom: -16px;
 }
 
-/* Add Song */
 .upload-container {
   position: fixed;
   top: 50%;
@@ -1535,7 +1456,6 @@ Category page
   cursor: pointer;
 }
 
-
 .song-item {
   padding: 10px 15px;
   cursor: pointer;
@@ -1588,7 +1508,6 @@ Category page
   border-radius: 12px;
 }
 
-/* Responsive Adjustments */
 @media screen and (max-width: 1024px) {
   .main-karaoke-content {
     flex-direction: column;
@@ -1623,9 +1542,6 @@ Category page
   }
 }
 
-/* --- End General Karaoke Page Styling Improvements --- */
-
-
 #recording-panel h3 {
   font-size: 1.3em;
   color: #fc0254;
@@ -1644,6 +1560,10 @@ Category page
   gap: 1px;
 }
 
+.song-list-header-2 h2 {
+	margin-top: 10px;
+}
+
 .btn-danger-2 {
 	background: linear-gradient(90deg, #fc0254 60%, #ff6a6a 100%);
   	border: none;
@@ -1655,9 +1575,6 @@ Category page
 	margin-left: 170px;
 }
 
-
-/* --- User Description Dropdown Box Display --- */
-/* User Panel - Keep your existing styles */
 .user-panel .register {
     cursor: pointer;
     transition: all 0.2s;
@@ -1712,7 +1629,6 @@ Category page
     visibility: visible;
 }
 
-/* Modal Box */
 .user-modal {
     position: fixed;
     top: 50%;
@@ -2049,9 +1965,6 @@ Category page
     border-radius: 8px;
     outline: none;
   }
-
-
-
 
 .search-form-2 {
 	position: relative;
