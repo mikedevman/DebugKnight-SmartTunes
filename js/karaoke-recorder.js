@@ -2,6 +2,7 @@ let mediaRecorder;
 let recordedChunks = [];
 let timerInterval;
 let elapsedSeconds = 0;
+let isGrading = false;
 
 // Get UI elements
 const startBtn = document.getElementById("start-recording");
@@ -12,6 +13,12 @@ const timerDisplay = document.getElementById("record-timer");
 
 // Handle start recording button click
 startBtn.addEventListener("click", async () => {
+  // Wait for grading to finish
+  if (isGrading) {
+    status.innerHTML = "Grading in progress... Please wait.";
+    return;
+  }
+  
   try {
     // Request microphone access
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -44,6 +51,10 @@ startBtn.addEventListener("click", async () => {
       // Show upload status
       status.innerHTML = "Uploading and scoring... ⏳ (estimated 15-20 seconds)";
 
+      // Disable buttons to prevent multiple submissions
+      isGrading = true;
+      startBtn.disabled = true;
+
       // Prepare form data to send to server
       const formData = new FormData();
       formData.append("audio", blob, "user_recording.webm");
@@ -56,6 +67,10 @@ startBtn.addEventListener("click", async () => {
       })
       .then(res => res.json())
       .then(data => {
+        // When grading is done, re-enable buttons
+          isGrading = false;
+          startBtn.disabled = false;
+
         // If score was returned successfully
         if (data.success) {
           status.innerHTML = `Vocal Similarity Score: <strong>${data.score.toFixed(2)} / 100</strong> 🎯`;
@@ -76,6 +91,7 @@ startBtn.addEventListener("click", async () => {
             reason = `${data.error}`;
           }
 
+          // Display error message
           status.innerHTML = reason;
         }
       })
@@ -83,6 +99,10 @@ startBtn.addEventListener("click", async () => {
         // Upload failed
         status.innerHTML = "Upload failed. Please try again.";
         console.error(err);
+
+        // Re-enable buttons after error
+        isGrading = false;
+        startBtn.disabled = false;
       });
     };
 
@@ -113,7 +133,6 @@ startBtn.addEventListener("click", async () => {
 stopBtn.addEventListener("click", () => {
   if (mediaRecorder && mediaRecorder.state !== "inactive") {
     mediaRecorder.stop();
-    startBtn.disabled = false;
     stopBtn.disabled = true;
   }
 });
