@@ -146,7 +146,7 @@ $result = $conn->query($sql);
 
   <style>
     body {
-        background: #0a1033;
+        background: white;
         font-family: 'Montserrat', sans-serif;
         color: #fff;
     }
