@@ -34,6 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ii", $playlist_id, $user_id);
 
     if ($stmt->execute()) {
+        $update = $conn->prepare("UPDATE user 
+                              SET playlists_created = GREATEST(playlists_created - 1, 0) 
+                              WHERE id = ?");
+        $update->bind_param("i", $user_id);
+        $update->execute();
+        $update->close();
+        
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Delete failed']);

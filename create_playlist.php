@@ -39,10 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare("INSERT INTO playlist (user_created, playlist_name, description) VALUES (?, ?, ?)");
     
     // Bind the parameters (user ID, playlist name, and description)
-    $stmt->bind_param("iss", $user_id, $playlist_name, $description); // ⚠️ $description is not defined yet!
+    $stmt->bind_param("iss", $user_id, $playlist_name, $description); // $description is not defined yet!
 
     // Try to run the query and return success or error
     if ($stmt->execute()) {
+        $update = $conn->prepare("UPDATE user SET playlists_created = playlists_created + 1 WHERE id = ?");
+        $update->bind_param("i", $user_id);
+        $update->execute();
+        $update->close();
+        
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Insert failed']);
