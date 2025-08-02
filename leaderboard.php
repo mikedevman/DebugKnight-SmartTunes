@@ -13,13 +13,15 @@ if ($conn->connect_error) {
 $sql = "
     SELECT 
         u.username, 
+        s.name AS song_played,
         MAX(ph.score) AS max_score, 
         ph.user_recording, 
         ph.date
     FROM playhistory ph
     JOIN user u ON ph.user_id = u.id
-    GROUP BY u.username
-    ORDER BY max_score DESC
+    JOIN song s ON ph.song_played = s.song_id
+    GROUP BY u.username, s.name, ph.user_recording, ph.date
+    ORDER BY max_score DESC;
 ";
 $result = $conn->query($sql);
 ?>
@@ -153,16 +155,17 @@ $result = $conn->query($sql);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 200px); /* leave room for header & footer */
+    min-height: calc(100vh - 200px);
     padding: 40px 20px;
 }
 .leaderboard-container {
-    width: 100%;
-    max-width: 1000px;
+    width: 95%;
+    max-width: 1400px;
     background: #111b4a;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     overflow: hidden;
+    margin: 0 auto;
 }
 .leaderboard-header {
     text-align: center;
@@ -257,6 +260,7 @@ tbody tr:hover {
           <tr>
             <th>Rank</th>
             <th>Username</th>
+            <th>Song</th>
             <th>Score</th>
             <th>Recording</th>
             <th>Date</th>
@@ -276,6 +280,7 @@ tbody tr:hover {
           <tr>
             <td class="rank <?= $rankClass ?>">#<?= $rank ?> <?= $medal ?></td>
             <td><?= htmlspecialchars($row['username']) ?></td>
+            <td><?= htmlspecialchars($row['song_played']) ?></td>
             <td><?= isset($row['max_score']) && is_numeric($row['max_score']) 
                 ? number_format($row['max_score'], 2) 
                 : 'N/A'; ?></td>
