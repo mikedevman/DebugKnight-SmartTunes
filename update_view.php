@@ -22,7 +22,7 @@ if (isset($data['song_id'])) {
     $song_id = (int)$data['song_id'];
 
     // Prepare SQL query to increment view count
-    $sql = "UPDATE songs SET view = view + 1 WHERE id = ?";
+    $sql = "UPDATE song SET view = view + 1 WHERE id = ?";
     $stmt = $conn->prepare($sql);
 
     // Bind the song_id parameter

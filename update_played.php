@@ -22,7 +22,7 @@ if (isset($data['song_id'])) {
     $song_id = (int)$data['song_id'];
 
     // Prepare SQL statement to increment time_played
-    $sql = "UPDATE songs SET time_played = time_played + 1 WHERE id = ?";
+    $sql = "UPDATE song SET time_played = time_played + 1 WHERE id = ?";
     $stmt = $conn->prepare($sql);
 
     // Bind song_id to the prepared statement

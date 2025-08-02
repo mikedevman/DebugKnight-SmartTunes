@@ -34,10 +34,10 @@ $stmt1->execute();
 $result1 = $stmt1->get_result();
 $user_playlists = $result1->fetch_all(MYSQLI_ASSOC);
 
-// Query to get songs uploaded by the user (but note: this line has a bug, see note below)
+// Query to get songs uploaded by the user
 $sql_songs = "SELECT song_id, name AS name FROM song WHERE song_id = ?";
 $stmt2 = $conn->prepare($sql_songs);
-$stmt2->bind_param("i", $user_id); // BUG: This should probably use `uploaded_by` column
+$stmt2->bind_param("i", $user_id);
 $stmt2->execute();
 $result2 = $stmt2->get_result();
 $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
@@ -166,6 +166,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
 		<li><a href="karaoke.php">Karaoke</a></li>
 		<li><a href="playlists.php">Playlists</a></li>
 		<li><a href="albums.php">Albums</a></li>
+		<li><a href="leaderboard.php">Leaderboard</a></li>
 		<li><a href="contact.php">Contact Us</a></li>
 	</ul>
 </header>

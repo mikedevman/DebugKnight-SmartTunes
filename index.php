@@ -25,7 +25,7 @@ if ($conn->connect_error) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-// Database query to get all albums
+// Database query to get all playlists
 $user_id = $_SESSION['user_id'];
 $sql_playlists = "SELECT id, playlist_name AS name FROM playlist WHERE user_created = ?";
 $stmt1 = $conn->prepare($sql_playlists);
@@ -157,6 +157,7 @@ $user_songs = $result2->fetch_all(MYSQLI_ASSOC);
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
 		<li><a href="albums.php">Albums</a></li>
+		<li><a href="leaderboard.php">Leaderboard</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
 	</header>

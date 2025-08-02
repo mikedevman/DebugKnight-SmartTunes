@@ -190,6 +190,7 @@ $song_id = $_GET['id'] ?? 0;
         <li><a href="karaoke.php">Karaoke</a></li>
         <li><a href="playlists.php">Playlists</a></li>
         <li><a href="albums.php">Albums</a></li>
+        <li><a href="leaderboard.php">Leaderboard</a></li>
         <li><a href="contact.php">Contact Us</a></li>
       </ul>
     </header>
