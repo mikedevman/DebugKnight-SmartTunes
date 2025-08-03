@@ -29,24 +29,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Delete playlist only if user is the owner
-    $stmt = $conn->prepare("DELETE FROM playlist WHERE id = ? AND user_created = ?");
-    $stmt->bind_param("ii", $playlist_id, $user_id);
+    // Start transaction
+    $conn->begin_transaction();
 
-    if ($stmt->execute()) {
-        $update = $conn->prepare("UPDATE user 
-                              SET playlists_created = GREATEST(playlists_created - 1, 0) 
-                              WHERE id = ?");
-        $update->bind_param("i", $user_id);
-        $update->execute();
-        $update->close();
-        
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Delete failed']);
+    try {
+        // Delete playlist only if user is the owner
+        $stmt = $conn->prepare("DELETE FROM playlist WHERE id = ? AND user_created = ?");
+        $stmt->bind_param("ii", $playlist_id, $user_id);
+
+        if ($stmt->execute()) {
+            $update = $conn->prepare("UPDATE user 
+                                      SET playlists_created = GREATEST(playlists_created - 1, 0) 
+                                      WHERE id = ?");
+            $update->bind_param("i", $user_id);
+
+            if ($update->execute()) {
+                $conn->commit(); // Commit if both queries succeed
+                echo json_encode(['success' => true]);
+            } else {
+                throw new Exception('User update failed: ' . $update->error);
+            }
+            $update->close();
+        } else {
+            throw new Exception('Delete failed: ' . $stmt->error);
+        }
+
+        $stmt->close();
+
+    } catch (Exception $e) {
+        $conn->rollback(); // Rollback if any error occurs
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
 
-    // Cleanup
-    $stmt->close();
+    // Close connection
     $conn->close();
 }

@@ -33,49 +33,56 @@ if ($conn->connect_error) {
     exit;
 }
 
-// Check if the song is already in the playlist
-$check = $conn->prepare("SELECT 1 FROM playlist_song WHERE playlist_id = ? AND song_id = ?");
-$check->bind_param("ii", $playlistId, $songId);
-$check->execute();
-$result = $check->get_result();
+// Start transaction
+$conn->begin_transaction();
 
-// If the song is already added, stop the process
-if ($result->num_rows > 0) {
-    echo json_encode(['success' => false, 'message' => 'Song already in playlist']);
-    $check->close();
-    $conn->close();
-    exit;
-}
-$check->close();
+try {
+    // Check if the song is already in the playlist
+    $check = $conn->prepare("SELECT 1 FROM playlist_song WHERE playlist_id = ? AND song_id = ?");
+    $check->bind_param("ii", $playlistId, $songId);
+    $check->execute();
+    $result = $check->get_result();
 
-// Insert the song into the playlist_song linking table
-$stmt = $conn->prepare("INSERT INTO playlist_song (playlist_id, song_id) VALUES (?, ?)");
-$stmt->bind_param("ii", $playlistId, $songId);
-
-// If insertion is successful
-if ($stmt->execute()) {
-    $stmt->close();
-
-    // Update the playlist's total_view and total_time_played using the song's values
-    $stmt = $conn->prepare("
-        UPDATE playlist p
-        JOIN song s ON s.song_id = ?
-        SET p.total_view = p.total_view + s.view,
-            p.total_time_played = p.total_time_played + s.time_played
-        WHERE p.id = ?
-    ");
-    $stmt->bind_param("ii", $songId, $playlistId);
-
-    // Execute the update and return success/failure
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Song added and totals updated']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update totals: ' . $stmt->error]);
+    if ($result->num_rows > 0) {
+        echo json_encode(['success' => false, 'message' => 'Song already in playlist']);
+        $check->close();
+        $conn->rollback();
+        $conn->close();
+        exit;
     }
-    $stmt->close();
-} else {
-    // Insert into playlist_song failed
-    echo json_encode(['success' => false, 'message' => 'Insert failed: ' . $stmt->error]);
+    $check->close();
+
+    // Insert the song into the playlist_song linking table
+    $stmt = $conn->prepare("INSERT INTO playlist_song (playlist_id, song_id) VALUES (?, ?)");
+    $stmt->bind_param("ii", $playlistId, $songId);
+
+    if ($stmt->execute()) {
+        $stmt->close();
+
+        // Update playlist totals
+        $stmt = $conn->prepare("
+            UPDATE playlist p
+            JOIN song s ON s.song_id = ?
+            SET p.total_view = p.total_view + s.view,
+                p.total_time_played = p.total_time_played + s.time_played
+            WHERE p.id = ?
+        ");
+        $stmt->bind_param("ii", $songId, $playlistId);
+
+        if ($stmt->execute()) {
+            $conn->commit(); // Commit if everything succeeds
+            echo json_encode(['success' => true, 'message' => 'Song added and totals updated']);
+        } else {
+            throw new Exception('Failed to update totals: ' . $stmt->error);
+        }
+        $stmt->close();
+    } else {
+        throw new Exception('Insert failed: ' . $stmt->error);
+    }
+
+} catch (Exception $e) {
+    $conn->rollback(); // Rollback if any query fails
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
 
 // Close the database connection

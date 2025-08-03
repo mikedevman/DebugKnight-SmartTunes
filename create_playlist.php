@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Get the playlist name from the request, or set to empty if not provided
     $playlist_name = $_POST['playlist_name'] ?? '';
+    $description = $_POST['description'] ?? ''; // make sure description is defined
 
     // If the playlist name is empty, return error
     if ($playlist_name === '') {
@@ -35,25 +36,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Prepare SQL to insert new playlist (NOTE: $description is undefined here)
-    $stmt = $conn->prepare("INSERT INTO playlist (user_created, playlist_name, description) VALUES (?, ?, ?)");
-    
-    // Bind the parameters (user ID, playlist name, and description)
-    $stmt->bind_param("iss", $user_id, $playlist_name, $description); // $description is not defined yet!
+    // Start transaction
+    $conn->begin_transaction();
 
-    // Try to run the query and return success or error
-    if ($stmt->execute()) {
-        $update = $conn->prepare("UPDATE user SET playlists_created = playlists_created + 1 WHERE id = ?");
-        $update->bind_param("i", $user_id);
-        $update->execute();
-        $update->close();
-        
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Insert failed']);
+    try {
+        // Prepare SQL to insert new playlist
+        $stmt = $conn->prepare("INSERT INTO playlist (user_created, playlist_name, description) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $user_id, $playlist_name, $description);
+
+        if ($stmt->execute()) {
+            // Update user playlists_created count
+            $update = $conn->prepare("UPDATE user SET playlists_created = playlists_created + 1 WHERE id = ?");
+            $update->bind_param("i", $user_id);
+            $update->execute();
+            $update->close();
+
+            // Commit transaction
+            $conn->commit();
+
+            echo json_encode(['success' => true]);
+        } else {
+            throw new Exception('Insert failed');
+        }
+
+        $stmt->close();
+    } catch (Exception $e) {
+        // Rollback transaction if something fails
+        $conn->rollback();
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
 
-    // Close the statement and database connection
-    $stmt->close();
+    // Close connection
     $conn->close();
 }

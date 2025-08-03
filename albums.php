@@ -197,8 +197,6 @@ while ($row = $member_result->fetch_assoc()) {
 <?php
 // Fetch albums and check authorship
 $user_id = $_SESSION['user_id'];
-$conn = new mysqli("127.0.0.1", "root", "", "music_db");
-// Fetch albums with list of authors and check if current user is one
 $albums = [];
 $sql = "
     SELECT a.id, a.album_name,
