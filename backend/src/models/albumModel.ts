@@ -1,5 +1,5 @@
 import { prisma } from '../utils/prisma';
-import { Prisma } from "../generated/prisma";
+import { Prisma } from "../../prisma/generated/prisma";
 
 export const createAlbum = (data: Prisma.albumCreateInput) => {
   return prisma.album.create({ data });

@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model album {
+  id                     Int            @id @default(autoincrement())
+  album_name             String         @db.VarChar(255)
+  album_author           album_author[]
+  song_song_albumToalbum song[]         @relation("song_albumToalbum")
+}
+
+model album_author {
+  id        Int   @id @default(autoincrement())
+  author_id Int
+  album_id  Int
+  user      user  @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "album_author_ibfk_1")
+  album     album @relation(fields: [album_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "album_author_ibfk_2")
+
+  @@index([album_id], map: "album_id")
+  @@index([author_id], map: "author_id")
+}
+
+model playhistory {
+  id             Int      @id @default(autoincrement())
+  user_id        Int
+  song_played    Int
+  date           DateTime @db.DateTime(0)
+  score          Decimal? @db.Decimal(10, 0)
+  user_recording String?  @db.Text
+  user           user     @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "playhistory_ibfk_1")
+  song           song     @relation(fields: [song_played], references: [song_id], onUpdate: Restrict, map: "playhistory_ibfk_2")
+
+  @@index([user_id], map: "playhistory_ibfk_1")
+  @@index([song_played], map: "playhistory_ibfk_2")
+}
+
+model playlist {
+  id                Int             @id @default(autoincrement())
+  user_created      Int
+  playlist_name     String          @db.VarChar(255)
+  description       String?         @db.Text
+  total_time_played Int?            @default(0)
+  total_view        Int?            @default(0)
+  user              user            @relation(fields: [user_created], references: [id], onUpdate: Restrict, map: "playlist_ibfk_1")
+  playlist_song     playlist_song[]
+
+  @@index([id, user_created], map: "idx_playlist_id_user_created")
+  @@index([user_created], map: "playlist_ibfk_1")
+}
+
+model playlist_song {
+  id          Int      @id @default(autoincrement())
+  playlist_id Int
+  song_id     Int
+  playlist    playlist @relation(fields: [playlist_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "playlist_song_ibfk_1")
+  song        song     @relation(fields: [song_id], references: [song_id], onDelete: Cascade, onUpdate: Restrict, map: "playlist_song_ibfk_2")
+
+  @@index([playlist_id], map: "playlist_id")
+  @@index([song_id], map: "song_id")
+}
+
+model song {
+  song_id                 Int             @id @default(autoincrement())
+  name                    String          @db.VarChar(255)
+  content                 String          @db.Text
+  view                    Int?            @default(0)
+  time_played             Int?            @default(0)
+  key                     String?         @db.VarChar(255)
+  tempo                   String?         @db.VarChar(255)
+  genre                   String?         @db.VarChar(255)
+  year_publish            Int?
+  album                   Int?
+  playhistory             playhistory[]
+  playlist_song           playlist_song[]
+  album_song_albumToalbum album?          @relation("song_albumToalbum", fields: [album], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_album")
+  song_author             song_author[]
+
+  @@index([album], map: "fk_album")
+  @@index([name], map: "idx_song_name")
+  @@index([time_played], map: "idx_song_played")
+  @@index([view], map: "idx_song_view")
+}
+
+model song_author {
+  id        Int  @id @default(autoincrement())
+  author_id Int
+  song_id   Int
+  user      user @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "song_author_ibfk_1")
+  song      song @relation(fields: [song_id], references: [song_id], onDelete: Cascade, onUpdate: Restrict, map: "song_author_ibfk_2")
+
+  @@index([author_id], map: "idx_author_id")
+  @@index([song_id], map: "song_id")
+}
+
+model user {
+  id                Int            @id @default(autoincrement())
+  username          String         @unique(map: "username") @db.VarChar(255)
+  password_hash     String         @db.Char(128)
+  playlists_created Int?           @default(0)
+  album_author      album_author[]
+  playhistory       playhistory[]
+  playlist          playlist[]
+  song_author       song_author[]
+
+  @@index([username], map: "idx_username")
+}
