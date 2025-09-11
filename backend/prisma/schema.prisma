@@ -34,7 +34,7 @@ model playhistory {
   score          Decimal? @db.Decimal(10, 0)
   user_recording String?  @db.Text
   user           user     @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "playhistory_ibfk_1")
-  song           song     @relation(fields: [song_played], references: [song_id], onUpdate: Restrict, map: "playhistory_ibfk_2")
+  song           song     @relation(fields: [song_played], references: [id], onUpdate: Restrict, map: "playhistory_ibfk_2")
 
   @@index([user_id], map: "playhistory_ibfk_1")
   @@index([song_played], map: "playhistory_ibfk_2")
@@ -59,14 +59,14 @@ model playlist_song {
   playlist_id Int
   song_id     Int
   playlist    playlist @relation(fields: [playlist_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "playlist_song_ibfk_1")
-  song        song     @relation(fields: [song_id], references: [song_id], onDelete: Cascade, onUpdate: Restrict, map: "playlist_song_ibfk_2")
+  song        song     @relation(fields: [song_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "playlist_song_ibfk_2")
 
   @@index([playlist_id], map: "playlist_id")
   @@index([song_id], map: "song_id")
 }
 
 model song {
-  song_id                 Int             @id @default(autoincrement())
+  id                      Int             @id @default(autoincrement())
   name                    String          @db.VarChar(255)
   content                 String          @db.Text
   view                    Int?            @default(0)
@@ -92,7 +92,7 @@ model song_author {
   author_id Int
   song_id   Int
   user      user @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "song_author_ibfk_1")
-  song      song @relation(fields: [song_id], references: [song_id], onDelete: Cascade, onUpdate: Restrict, map: "song_author_ibfk_2")
+  song      song @relation(fields: [song_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "song_author_ibfk_2")
 
   @@index([author_id], map: "idx_author_id")
   @@index([song_id], map: "song_id")
