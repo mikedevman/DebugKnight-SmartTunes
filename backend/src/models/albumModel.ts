@@ -36,6 +36,10 @@ export const findAlbums = (where: Prisma.albumWhereInput) => {  //find album usi
   return prisma.album.findMany({ where });
 };
 
+export const findSortedAlbums = (where: Prisma.albumWhereInput, sortField: Prisma.AlbumScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find album using X criteria then sort it
+  return prisma.album.findMany({ where, orderBy: { [sortField]: sortOrder } });
+};
+
 export const deleteAlbums = (where: Prisma.albumWhereInput) => {  //delete album using X criteria
   return prisma.album.deleteMany({ where });
 };

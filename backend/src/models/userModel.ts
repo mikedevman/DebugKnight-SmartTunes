@@ -36,6 +36,10 @@ export const findUsers = (where: Prisma.userWhereInput) => {  //find user using 
   return prisma.user.findMany({ where });
 };
 
+export const findSortedUser = (where: Prisma.userWhereInput, sortField: Prisma.UserScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find user using X criteria then sort it
+  return prisma.user.findMany({ where, orderBy: { [sortField]: sortOrder } });
+};
+
 export const deleteUsers = (where: Prisma.userWhereInput) => {  //delete user using X criteria
   return prisma.user.deleteMany({ where });
 };

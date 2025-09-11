@@ -32,6 +32,10 @@ export const findPlayhistories = (where: Prisma.playhistoryWhereInput) => {  //f
   return prisma.playhistory.findMany({ where });
 };
 
+export const findSortedPlayhistories = (where: Prisma.playhistoryWhereInput, sortField: Prisma.PlayhistoryScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find playhistory using X criteria then sort it
+  return prisma.playhistory.findMany({ where, orderBy: { [sortField]: sortOrder } });
+};
+
 export const deletePlayhistories = (where: Prisma.playhistoryWhereInput) => {  //delete playhistory using X criteria
   return prisma.playhistory.deleteMany({ where });
 };

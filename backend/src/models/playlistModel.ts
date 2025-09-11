@@ -36,6 +36,10 @@ export const findPlaylists = (where: Prisma.playlistWhereInput) => {  //find pla
   return prisma.playlist.findMany({ where });
 };
 
+export const findSortedPlaylists = (where: Prisma.playlistWhereInput, sortField: Prisma.PlaylistScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find playlist using X criteria then sort it
+  return prisma.playlist.findMany({ where, orderBy: { [sortField]: sortOrder } });
+};
+
 export const deletePlaylists = (where: Prisma.playlistWhereInput) => {  //delete playlist using X criteria
   return prisma.playlist.deleteMany({ where });
 };

@@ -36,6 +36,10 @@ export const findSongs = (where: Prisma.songWhereInput) => {  //find song using 
   return prisma.song.findMany({ where });
 };
 
+export const findSortedSongs = (where: Prisma.songWhereInput, sortField: Prisma.SongScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find song using X criteria then sort it
+  return prisma.song.findMany({ where, orderBy: { [sortField]: sortOrder } });
+};
+
 export const deleteSongs = (where: Prisma.songWhereInput) => {  //delete song using X criteria
   return prisma.song.deleteMany({ where });
 };
