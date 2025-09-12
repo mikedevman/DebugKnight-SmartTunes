@@ -1,4 +1,5 @@
 <?php
+//done
 $conn = new mysqli("127.0.0.1", "root", "", "music_db");
 
 // Check if database connection is successful

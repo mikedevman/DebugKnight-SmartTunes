@@ -1,6 +1,7 @@
 import { prisma } from '../utils/prisma';
 import { Prisma } from "../../prisma/generated/prisma";
 
+
 export const createPlayHistory = (data: Prisma.playhistoryCreateInput) => {
   return prisma.playhistory.create({ data });
 };

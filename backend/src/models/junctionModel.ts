@@ -6,6 +6,7 @@ import * as PlaylistModel from '../models/playlistModel';
 import * as UserModel from '../models/userModel';
 import * as PlayhistoryModel from '../models/playhistoryModel';
 
+
 export const createAlbumAuthor = (albumId: number, userId: number) => {
   const album = AlbumModel.albumExists(albumId);
   if (!album) throw new Error(`Album with ID ${albumId} does not exist`);
@@ -51,5 +52,26 @@ export const createSongAuthor = (songId: number, userId: number) => {
   });
 };
 
+export const findAlbumAuthor = (where: Prisma.album_authorWhereInput) => {  //find album_author using X criteria
+  return prisma.album_author.findMany({ where });
+};
 
+export const findSongAuthor = (where: Prisma.song_authorWhereInput) => {  //find song_author using X criteria
+  return prisma.song_author.findMany({ where });
+};
 
+export const findPlaylistSong = (where: Prisma.playlist_songWhereInput) => {  //find playlist_song using X criteria
+  return prisma.playlist_song.findMany({ where });
+};
+
+export const deleteAlbumAuthor = (albumId: number, userId: number) => {
+  return prisma.album_author.deleteMany({ where: { album_id: albumId, author_id: userId } });
+};
+
+export const deleteSongAuthor = (songId: number, userId: number) => {
+  return prisma.song_author.deleteMany({ where: { song_id: songId, author_id: userId } });
+};
+
+export const deletePlaylistSong = (playlistId: number, songId: number) => {
+  return prisma.playlist_song.deleteMany({ where: { playlist_id: playlistId, song_id: songId } });
+};

@@ -1,6 +1,7 @@
 import { prisma } from '../utils/prisma';
 import { Prisma } from "../../prisma/generated/prisma";
 
+
 export const createUser = (data: Prisma.userCreateInput) => {
   return prisma.user.create({ data });
 };

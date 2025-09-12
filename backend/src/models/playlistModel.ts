@@ -1,6 +1,7 @@
 import { prisma } from '../utils/prisma';
 import { Prisma } from "../../prisma/generated/prisma";
 
+
 export const createPlaylist = (data: Prisma.playlistCreateInput) => {
   return prisma.playlist.create({ data });
 };
