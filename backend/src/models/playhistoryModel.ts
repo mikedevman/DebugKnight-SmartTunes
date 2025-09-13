@@ -29,8 +29,8 @@ export const playhistoryExists = async (Id: number): Promise<boolean> => {     /
   return !!playhistory;
 };
 
-export const findPlayhistories = (where: Prisma.playhistoryWhereInput) => {  //find playhistory using X criteria
-  return prisma.playhistory.findMany({ where });
+export const findPlayhistories = (where: Prisma.playhistoryFindManyArgs) => {  //find playhistory using X criteria
+  return prisma.playhistory.findMany( where );
 };
 
 export const findSortedPlayhistories = (where: Prisma.playhistoryWhereInput, sortField: Prisma.PlayhistoryScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find playhistory using X criteria then sort it

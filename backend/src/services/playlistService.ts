@@ -1,8 +1,10 @@
 import * as SongModel from '../models/songModel';
 import * as PlaylistModel from '../models/playlistModel';
 import * as JunctionModel from '../models/junctionModel';
+import * as AlbumModel from '../models/albumModel';
 import { Prisma } from "../../prisma/generated/prisma";
 import { prisma } from '../utils/prisma';
+import { toNamespacedPath } from 'path/posix';
 
 export const createPlaylistService = async (
   data: { playlist_name: string; description: string; user_created: number }
@@ -20,7 +22,7 @@ export const displayAllSongsInPlaylistService = async (playlistId: number) => {
   const playlist = await PlaylistModel.findPlaylistById(playlistId);
   if (!playlist) throw new Error(`Playlist with ID ${playlistId} not found`);
 
-  const songs = await JunctionModel.findPlaylistSong({ playlist_id: playlistId });
+  const songs = await JunctionModel.findPlaylistSong({ where: { playlist_id: playlistId } });
   return { songs };
 };
 
@@ -60,11 +62,38 @@ export const updatePlaylistStatsForUser = async (userId: number) => { //this que
     WHERE p.user_created = ?
   `, userId);
 
-  const playlists = await PlaylistModel.findPlaylists({ user_created: userId });
+  const playlists = await PlaylistModel.findPlaylists({ where: { user_created: userId } });
   return playlists;
 };
 
 export const displayAllPlaylistOfUserService = async (userId: number) => {
-  const playlists = await PlaylistModel.findPlaylists({ user_created: userId });
+  const playlists = await PlaylistModel.findPlaylists({ where: { user_created: userId } });
   return playlists;
+};
+
+export const addSongToPlaylistService = async (playlistId: number, songId: number) => {
+  // 1. Fetch the song values
+  const song = await SongModel.findSongById(songId);
+  if (!song) throw new Error("Song not found");
+
+  // 2. Check if the playlist exists
+  const playlist = await PlaylistModel.playlistExists(playlistId);
+  if (!playlist) throw new Error("Playlist not found");
+
+  // 3. Check if song already in playlist
+  const songInPlaylist = await JunctionModel.findPlaylistSong({ where: { playlist_id: playlistId, song_id: songId } });
+  if (songInPlaylist.length > 0) throw new Error("Song already in playlist");
+
+  // 4. Add song to playlist + update playlist stats
+  await JunctionModel.createPlaylistSong(playlistId, songId);
+
+  const results = await prisma.$transaction([
+  JunctionModel.createPlaylistSong(playlistId, songId),
+  PlaylistModel.updatePlaylist(playlistId, {
+    total_view: { increment: song.view ?? 0 },
+    total_time_played: { increment: song.time_played ?? 0 },
+  }),
+]);
+
+  return results[1]; // return the updated playlist
 };

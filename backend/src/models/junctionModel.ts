@@ -52,16 +52,16 @@ export const createSongAuthor = (songId: number, userId: number) => {
   });
 };
 
-export const findAlbumAuthor = (where: Prisma.album_authorWhereInput) => {  //find album_author using X criteria
-  return prisma.album_author.findMany({ where });
+export const findAlbumAuthor = (where: Prisma.album_authorFindManyArgs) => {  //find album_author using X criteria
+  return prisma.album_author.findMany(where);
 };
 
-export const findSongAuthor = (where: Prisma.song_authorWhereInput) => {  //find song_author using X criteria
-  return prisma.song_author.findMany({ where });
+export const findSongAuthor = (where: Prisma.song_authorFindManyArgs) => {  //find song_author using X criteria
+  return prisma.song_author.findMany(where);
 };
 
-export const findPlaylistSong = (where: Prisma.playlist_songWhereInput) => {  //find playlist_song using X criteria
-  return prisma.playlist_song.findMany({ where });
+export const findPlaylistSong = (where: Prisma.playlist_songFindManyArgs) => {  //find playlist_song using X criteria
+  return prisma.playlist_song.findMany(where);
 };
 
 export const deleteAlbumAuthor = (albumId: number, userId: number) => {

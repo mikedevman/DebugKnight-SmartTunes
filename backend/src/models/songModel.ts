@@ -33,8 +33,8 @@ export const songExists = async (songId: number): Promise<boolean> => {     //ch
   return !!song;
 };
 
-export const findSongs = (where: Prisma.songWhereInput) => {  //find song using X criteria
-  return prisma.song.findMany({ where });
+export const findSongs = (where: Prisma.songFindManyArgs) => {  //find song using X criteria
+  return prisma.song.findMany( where );
 };
 
 export const findSortedSongs = (where: Prisma.songWhereInput, sortField: Prisma.SongScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find song using X criteria then sort it

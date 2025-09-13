@@ -33,8 +33,8 @@ export const playlistExists = async (playlistId: number): Promise<boolean> => { 
   return !!playlist;
 };
 
-export const findPlaylists = (where: Prisma.playlistWhereInput) => {  //find playlist using X criteria
-  return prisma.playlist.findMany({ where });
+export const findPlaylists = (where: Prisma.playlistFindManyArgs) => {  //find playlist using X criteria
+  return prisma.playlist.findMany(where);
 };
 
 export const findSortedPlaylists = (where: Prisma.playlistWhereInput, sortField: Prisma.PlaylistScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find playlist using X criteria then sort it

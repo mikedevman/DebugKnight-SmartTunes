@@ -33,8 +33,8 @@ export const albumExists = async (albumId: number): Promise<boolean> => {     //
   return !!album;
 };
 
-export const findAlbums = (where: Prisma.albumWhereInput) => {  //find album using X criteria
-  return prisma.album.findMany({ where });
+export const findAlbums = (where: Prisma.albumFindManyArgs) => { //find album using X criteria
+  return prisma.album.findMany(where); 
 };
 
 export const findSortedAlbums = (where: Prisma.albumWhereInput, sortField: Prisma.AlbumScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find album using X criteria then sort it
