@@ -97,3 +97,23 @@ export const addSongToPlaylistService = async (playlistId: number, songId: numbe
 
   return results[1]; // return the updated playlist
 };
+
+export async function findPlaylistsByNameForUserService( //use rawsql for lowercase search
+  userId: number,
+  name: string
+): Promise<{ id: number; playlist_name: string; description: string | null; total_view: number; total_time_played: number }[]> {
+  // Add wildcards and lowercase for case-insensitive search
+  const search = `%${name.toLowerCase()}%`;
+
+  const playlists = await prisma.$queryRaw<
+    { id: number; playlist_name: string; description: string | null; total_view: number; total_time_played: number }[]
+  >`
+    SELECT p.id, p.playlist_name, p.description, p.total_view, p.total_time_played
+    FROM playlist p
+    WHERE p.user_created = ${userId}
+      AND LOWER(p.playlist_name) LIKE ${search}
+    ORDER BY p.playlist_name ASC
+  `;
+
+  return playlists;
+}
