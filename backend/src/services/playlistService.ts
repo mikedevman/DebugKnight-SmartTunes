@@ -2,21 +2,23 @@ import * as SongModel from '../models/songModel';
 import * as PlaylistModel from '../models/playlistModel';
 import * as JunctionModel from '../models/junctionModel';
 import * as AlbumModel from '../models/albumModel';
+import * as UserModel from '../models/userModel';
 import { Prisma } from "../../prisma/generated/prisma";
 import { prisma } from '../utils/prisma';
 import { toNamespacedPath } from 'path/posix';
 
-export const createPlaylistService = async (
-  data: { playlist_name: string; description: string; user_created: number }
+export const createPlaylistService = async (userId: number,
+  data: Prisma.playlistCreateInput
 ) => {
-  const playlist = await PlaylistModel.createPlaylist({
-    playlist_name: data.playlist_name,
-    description: data.description,
-    user: { connect: { id: data.user_created } }, // relational field
-  });
+  const user = await UserModel.userExists(userId);
+  if (!user) throw new Error(`User with ID ${userId} does not exist`);
+
+  const playlist = await PlaylistModel.createPlaylist(data);
   if (!playlist) throw new Error(`Playlist failed to create`);
+
   return playlist;
 };
+
 
 export const displayAllSongsInPlaylistService = async (playlistId: number) => {
   const playlist = await PlaylistModel.findPlaylistById(playlistId);
@@ -116,4 +118,25 @@ export async function findPlaylistsByNameForUserService( //use rawsql for lowerc
   `;
 
   return playlists;
+}
+
+export async function findSongsInPlaylistService(
+  name: string
+): Promise<{ name: string; genre: string; year_publish: number; playlist_name: string }[]> {
+  // Add wildcards and lowercase for case-insensitive search
+  const search = `%${name.toLowerCase()}%`;
+
+  const songs = await prisma.$queryRaw<
+    { name: string; genre: string; year_publish: number; playlist_name: string }[]
+  >`
+    SELECT s.name, s.genre, s.year_publish, p.playlist_name
+    FROM song s
+    JOIN playlist_song ps ON s.id = ps.song_id
+    JOIN playlist p ON ps.playlist_id = p.id
+    WHERE LOWER(s.name) LIKE ${search}
+    GROUP BY s.id, p.id
+    ORDER BY s.name ASC
+  `;
+
+  return songs;
 }

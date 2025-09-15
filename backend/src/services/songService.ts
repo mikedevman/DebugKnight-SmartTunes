@@ -58,5 +58,60 @@ export const deleteSongService = async (songId: number, playlistId: number) => {
   ]);
 };
 
+export async function findSongsByNameService( //use rawsql to support lowercase search
+  name: string
+): Promise<{ name: string; content: string }[]> {
+  // Add wildcards and lowercase for case-insensitive search
+  const search = `%${name.toLowerCase()}%`;
+
+  const songs = await prisma.$queryRaw<
+    { name: string; content: string }[]
+  >`
+    SELECT name, content
+    FROM song
+    WHERE LOWER(name) LIKE ${search}
+    ORDER BY name ASC
+  `;
+
+  return songs;
+}
+
+export const updateSongDetailService = async (songId: number, data: Prisma.songUpdateInput) => {
+    const songExists = await SongModel.songExists(songId);
+    if (!songExists) throw new Error(`Song with ID ${songId} does not exist`);
+
+    const updatedSong = await SongModel.updateSong(songId, data);
+    if (!updatedSong) throw new Error(`Song with ID ${songId} not found`);
+    return updatedSong;
+};
+
+export const updateSongTimePlayedService = async (songId: number) => {
+    const songExists = await SongModel.songExists(songId);
+    if (!songExists) throw new Error(`Song with ID ${songId} does not exist`);
+
+    const updatedSong = await SongModel.updateSong(songId, {
+        time_played: { increment: 1 },
+    });
+    if (!updatedSong) throw new Error(`Song with ID ${songId} not found`);
+    return updatedSong;
+};
+
+export const updateSongViewService = async (songId: number) => {
+    const songExists = await SongModel.songExists(songId);
+    if (!songExists) throw new Error(`Song with ID ${songId} does not exist`);
+
+    const updatedSong = await SongModel.updateSong(songId, {
+        view: { increment: 1 },
+    });
+    if (!updatedSong) throw new Error(`Song with ID ${songId} not found`);
+    return updatedSong;
+};
+
+export const createSongService = async (data: Prisma.songCreateInput) => {
+    const createdSong = await SongModel.createSong(data);
+    if (!createdSong) throw new Error(`Failed to create song`);
+    return createdSong;
+};
+
 
 
