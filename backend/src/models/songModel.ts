@@ -1,5 +1,6 @@
 import { prisma } from '../utils/prisma';
-import { Prisma } from "../../prisma/generated/prisma";
+import { Prisma } from "@prisma/client";
+
 
 
 export const createSong = (data: Prisma.songCreateInput) => {

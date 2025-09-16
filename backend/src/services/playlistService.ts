@@ -3,7 +3,7 @@ import * as PlaylistModel from '../models/playlistModel';
 import * as JunctionModel from '../models/junctionModel';
 import * as AlbumModel from '../models/albumModel';
 import * as UserModel from '../models/userModel';
-import { Prisma } from "../../prisma/generated/prisma";
+import { Prisma } from "@prisma/client";
 import { prisma } from '../utils/prisma';
 import { toNamespacedPath } from 'path/posix';
 

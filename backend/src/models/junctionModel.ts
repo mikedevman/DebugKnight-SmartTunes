@@ -1,5 +1,6 @@
 import { prisma } from '../utils/prisma';
-import { Prisma } from "../../prisma/generated/prisma";
+import { Prisma } from "@prisma/client";
+
 import * as SongModel from '../models/songModel';
 import * as AlbumModel from '../models/albumModel';
 import * as PlaylistModel from '../models/playlistModel';

@@ -2,7 +2,7 @@ import * as SongModel from '../models/songModel';
 import * as AlbumModel from '../models/albumModel';
 import * as JunctionModel from '../models/junctionModel';
 import * as UserModel from '../models/userModel';
-import { Prisma } from "../../prisma/generated/prisma";
+import { Prisma } from "@prisma/client";
 import { prisma } from '../utils/prisma';
 
 export const createAlbumService = async (data: Prisma.albumCreateInput, userId: number) => {

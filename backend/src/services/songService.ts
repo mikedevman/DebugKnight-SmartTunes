@@ -3,7 +3,7 @@ import * as AlbumModel from '../models/albumModel';
 import * as PlaylistModel from '../models/playlistModel';
 import * as JunctionModel from '../models/junctionModel';
 import * as PlayhistoryModel from '../models/playhistoryModel';
-import { Prisma } from "../../prisma/generated/prisma";
+import { Prisma } from "@prisma/client";
 import { prisma } from '../utils/prisma';
 
 export const getUniqueSongService = async (songId: number) => {
