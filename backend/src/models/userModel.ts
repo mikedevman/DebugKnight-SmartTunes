@@ -34,8 +34,8 @@ export const userExists = async (userId: number): Promise<boolean> => {     //ch
   return !!user;
 };
 
-export const findUsers = (where: Prisma.userFindManyArgs) => {  //find user using X criteria
-  return prisma.user.findMany(where);
+export const findUserByUsername = (username: string) => {  //find user using X criteria
+  return prisma.user.findUnique({ where: { username } });
 };
 
 export const findSortedUser = (where: Prisma.userWhereInput, sortField: Prisma.UserScalarFieldEnum, sortOrder: 'asc' | 'desc' = 'asc') => {  //find user using X criteria then sort it
