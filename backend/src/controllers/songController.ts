@@ -74,7 +74,7 @@ export const updateSongAlbum = async (req: Request, res: Response) => {
 export const deleteSong = async (req: Request, res: Response) => {
   try {
     const { songId, playlistId } = req.body;
-    await SongService.deleteSongService(Number(songId), Number(playlistId));
+    await SongService.deleteSongService(Number(songId));
     res.status(204).send(); // No content after successful deletion
   } catch (err: any) {
     res.status(400).json({ error: err.message });

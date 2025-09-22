@@ -48,12 +48,12 @@ export const updateSongAlbumService = async (songId: number, albumId: number) =>
     return updatedSong;
 };
 
-export const deleteSongService = async (songId: number, playlistId: number) => {
+export const deleteSongService = async (songId: number) => {
   const song = await SongModel.findSongById(songId);
   if (!song) throw new Error(`Song with ID ${songId} not found`);
 
   await prisma.$transaction([
-    PlayhistoryModel.deletePlayhistory(songId),
+    PlayhistoryModel.deletePlayhistories({ song_played: songId }),
     SongModel.deleteSong(songId),
   ]);
 };
