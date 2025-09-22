@@ -13,6 +13,7 @@ const createSongSchema = z.object({
 });
 
 const updateSongSchema = z.object({
+  id: z.number().min(1),
   name: z.string().min(1).optional(),
   content: z.string().min(1).optional(),
   key: z.string().optional(),
