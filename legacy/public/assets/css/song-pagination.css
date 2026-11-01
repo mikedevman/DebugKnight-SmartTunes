@@ -1,0 +1,10 @@
+.song-pagination { flex: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid #ffffff1a; }
+.song-pagination p { margin: 0 0 10px; color: #a7b4cb; font-size: 11px; line-height: 1.6; }
+.song-pagination nav { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.song-pagination button { min-width: 30px; padding: 7px 9px; border: 1px solid #ffffff20; border-radius: 6px; background: #202b40; color: #e7edf9; font: inherit; font-size: 11px; cursor: pointer; }
+.song-pagination button:hover:not(:disabled) { border-color: #ff568c; background: #fc025426; }
+.song-pagination button[aria-current="page"] { border-color: #fc0254; background: #fc0254; color: #fff; opacity: 1; }
+.song-pagination button:disabled { opacity: .45; cursor: default; }
+.song-pagination button:focus-visible { outline: 2px solid #ff91b3; outline-offset: 2px; }
+.song-pagination nav > span { padding: 0 2px; color: #a7b4cb; }
+.karaoke-page #song-list li.song-list-empty::before { content: none; }

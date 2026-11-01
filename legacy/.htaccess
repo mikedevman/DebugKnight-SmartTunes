@@ -1,0 +1,27 @@
+# Keep local secrets and CA certificates out of Apache responses.
+<FilesMatch "(?i)^(?:\.env(?:\..*)?|.*\.pem)$">
+    Require all denied
+</FilesMatch>
+
+# Preserve existing asset and media URLs after organizing the physical files.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(css|js|img|icon-fonts)/(.*)$ public/assets/$1/$2 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^reference-audio/(.*)$ resources/reference-audio/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^Source/(.*)$ resources/vendor-archives/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^bin/(.*)$ tools/bin/$1 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^artifacts/(.*)$ storage/previews/$1 [L]
+RewriteRule ^log\.txt$ storage/logs/log.txt [L]
+RewriteRule ^LEGACY_REVIEW\.md$ docs/LEGACY_REVIEW.md [L]
+RewriteRule ^README\.md$ docs/README.md [L]
+RewriteRule ^ARCHITECTURE\.md$ docs/ARCHITECTURE.md [L]
+
+# Route existing PHP URLs through the single structured entry point.
+RewriteRule ^$ public/index.php [L]
+RewriteRule ^(?:DeleteKaraoke|album|album_add_song|album_get_song|albums|collection\-studio|contact|create_album|create_playlist|database|delete_album_song|delete_albums|delete_playlist_song|delete_playlists|display_songs|display_songs_in_playlist|get_playlist_songs|get_playlists|get_songs|get_user_playlists|get_user_songs|history|index|karaoke|leaderboard|login|logout|playlist|playlist_add_song|playlists|register|search_albums|search_playlists|search_songs|search_songs_in_album|search_songs_in_playlist|song\-forms|song_pagination|studio\-stage|update_played|update_song_details|update_song_stats|update_view|upload_and_score|upload_song|user_description)\.php$ public/index.php [NC,L]

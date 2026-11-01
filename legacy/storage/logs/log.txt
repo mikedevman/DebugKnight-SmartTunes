@@ -1,0 +1,6 @@
+CMD: "C:\xampp\htdocs\DebugKnight-SmartTunes\legacy/tools/bin/soundalgo.exe" "C:\xampp\htdocs\DebugKnight-SmartTunes\legacy/resources/reference-audio/Recording.wav" "C:\xampp\htdocs\DebugKnight-SmartTunes\legacy/public/uploads/user_recording.wav"
+
+OUTPUT:
+
+
+EXIT CODE: 1
