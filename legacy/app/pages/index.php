@@ -53,6 +53,7 @@ $username = $_SESSION['username'];
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
+  <link rel="stylesheet" href="public/assets/css/responsive.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/responsive.css') ?>" />
 </head>
 <body>
 	<!-- Page Preloder -->

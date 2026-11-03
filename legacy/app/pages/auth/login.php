@@ -160,8 +160,9 @@ $conn->close();
       box-shadow: 0 0 8px rgba(255, 61, 87, 0.3);
     }
   </style>
+  <link rel="stylesheet" href="public/assets/css/responsive.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/responsive.css') ?>" />
 </head>
-<body>
+<body class="auth-page">
   <!-- Login form container -->
   <div class="form-container">
     <h2>Login</h2>

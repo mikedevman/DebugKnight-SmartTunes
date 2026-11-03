@@ -200,6 +200,7 @@ $result = $stmt->get_result();
   .leaderboard-page .leaderboard-table tbody tr { transition: none; }
 }
 </style>
+  <link rel="stylesheet" href="public/assets/css/responsive.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/responsive.css') ?>" />
 </head>
 <body class="leaderboard-page">
 	<!-- Page Preloder -->

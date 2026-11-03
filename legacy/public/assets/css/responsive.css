@@ -1,0 +1,154 @@
+/* Shared layout overrides. Keep this after page styles. */
+*, *::before, *::after { box-sizing: border-box; }
+img, video { max-width: 100%; }
+input, select, textarea { min-width: 0; }
+.header-section {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 16px max(24px, calc((100% - 1440px) / 2));
+}
+.header-section::after { display: none; }
+.header-section > .site-logo { flex: 0 0 auto; padding: 0; }
+.site-logo img { width: 150px; height: auto; }
+.header-section > .header-right {
+  order: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  float: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  min-width: 0;
+}
+.header-section > .main-menu {
+  order: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  float: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+}
+.main-menu li a { margin-left: 0; padding: 14px 10px; font-size: 14px; }
+.main-menu .sub-menu { left: 0; }
+.header-section > .header-right > span { padding: 0; }
+.user-panel .user-welcome-btn { max-width: 220px; }
+.hs-item { height: auto; min-height: 600px; padding: 64px 0 90px; }
+.hs-item .hs-text { padding-top: 0; }
+.hs-item h2 { font-size: clamp(36px, 5vw, 70px); line-height: 1.12; overflow-wrap: anywhere; }
+.hr-img img { min-width: 0; width: 100%; left: 0; }
+.section-title h2, .sub-text h2 { font-size: clamp(30px, 4vw, 60px); overflow-wrap: anywhere; }
+.albums-header h2, .playlists-header h2 {
+  margin: 36px 16px 20px;
+  text-align: center;
+  font-size: clamp(28px, 4vw, 45px);
+}
+.album-search, .playlist-search { padding: 0 16px; }
+#albumSearchForm, #playlistSearchForm {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 520px;
+  margin: auto;
+}
+#albumSearchInput, #playlistSearchInput { flex: 1; min-width: 0; max-width: 100%; }
+form[action="create_album.php"] { width: calc(100% - 32px); flex-wrap: wrap; }
+form[action="create_album.php"] input[type="text"] { flex: 1 1 200px; min-width: 0; }
+.playlist-controls { margin: 24px 16px; text-align: center; }
+.create-btn { margin: 0; }
+.create-form { margin: 18px auto 0; flex-wrap: wrap; justify-content: center; }
+.create-form input { min-width: 0; max-width: 100%; }
+.album-grid, .playlist-grid {
+  width: 100%;
+  max-width: 1440px;
+  margin: 30px auto 48px;
+  padding: 0 clamp(16px, 3vw, 40px);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 24px;
+}
+.album-card, .playlist-card { min-width: 0; overflow-wrap: anywhere; }
+.history-container {
+  width: calc(100% - 32px);
+  max-width: 1100px;
+  margin: 24px auto 64px;
+  overflow-x: auto;
+}
+.history-title { margin: 32px 16px 20px; font-size: clamp(28px, 4vw, 40px); }
+.history-table { min-width: 650px; }
+.history-table td { overflow-wrap: anywhere; }
+.history-table audio { min-width: 240px; }
+.contact-warp { padding: clamp(28px, 5vw, 80px); overflow-wrap: anywhere; }
+.contact-warp ul { margin-bottom: 36px; }
+.map { min-height: 360px; position: relative; }
+.footer-section { padding: 56px 0 40px; }
+.footer-widget { margin-bottom: 28px; }
+.karaoke-page .karaoke-heading > div, .karaoke-page .library-heading,
+.karaoke-page .recorder-heading > div { min-width: 0; }
+.karaoke-page .karaoke-heading p, .karaoke-page #library-heading,
+.karaoke-page #current-song-name { overflow-wrap: anywhere; }
+.karaoke-page .stage-heading { flex-wrap: wrap; }
+.karaoke-page .recording-mixer label { min-width: 0; flex-wrap: wrap; }
+.karaoke-page #karaoke-container { min-height: 0; }
+.auth-page { height: auto; min-height: 100vh; min-height: 100dvh; padding: 24px 16px; }
+.auth-page .form-container { width: 100%; max-width: 400px; margin: auto; }
+
+@media (max-width: 1199px) {
+  .header-section > .main-menu { flex: 1 0 100%; order: 3; margin: 0; }
+  .header-section > .header-right { order: 2; }
+}
+@media (max-width: 767px) {
+  .header-section { padding: 16px; gap: 16px 10px; }
+  .site-logo img { width: 120px; }
+  .header-section > .header-right { gap: 6px; }
+  .header-right .hr-btn { font-size: 12px; }
+  .user-panel .user-welcome-btn { max-width: 180px; }
+  .header-section > .main-menu { display: none; }
+  .header-section > .slicknav_menu { display: block; order: 3; width: 100%; padding: 0; background: transparent; }
+  .slicknav_btn { float: none; display: inline-block; margin: 0 0 8px; padding: 13px; }
+  .slicknav_nav { clear: both; border-radius: 8px; background: #111f36; }
+  .slicknav_nav a { padding: 12px 14px; }
+  /* The original account controls stay visible above the mobile navigation. */
+  .slicknav_nav .header-right-warp { display: none; }
+  .hs-item { min-height: 0; padding: 48px 0 70px; }
+  .hs-item .hs-text { max-width: none; }
+  .hs-item p { margin-bottom: 28px; }
+  .hs-item .site-btn { min-width: 0; padding: 18px 24px; }
+  .hs-item .hr-img { max-width: 420px; margin: 24px auto 0; }
+  .spad { padding-top: 48px; padding-bottom: 48px; }
+  .sub-text { margin-bottom: 32px; }
+  .sub-list { padding: 32px 24px; border-radius: 24px; }
+  .sub-list li { display: flex; align-items: center; font-size: 16px; }
+  .sub-list li img { flex: 0 0 auto; padding-right: 16px; }
+  .site-btn { max-width: 100%; min-width: 0; white-space: normal; }
+  .contact-warp p { padding-top: 24px; margin-bottom: 28px; }
+  .map { min-height: 300px; }
+  .history-container { padding: 12px; }
+  .search-form-2 input { padding-left: 20px; padding-right: 115px; }
+  .search-form-2 button { padding: 0 16px; font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .header-section > .site-logo { flex: 1 0 100%; text-align: center; }
+  .header-section > .header-right { margin: 0 auto; max-width: 100%; }
+  .user-panel .user-welcome-btn { max-width: 210px; }
+  .create-form label { flex-basis: 100%; }
+  .album-grid, .playlist-grid { gap: 16px; }
+  .search-btn { padding: 10px 14px; }
+  .karaoke-page .karaoke-heading h1 { font-size: clamp(30px, 9vw, 42px); }
+  .karaoke-page .library-heading { flex-wrap: wrap; gap: 12px; }
+  .karaoke-page #record-controls button { flex: 1 1 120px; min-height: 44px; }
+  .karaoke-page .stage-empty { gap: 4px; }
+  .karaoke-page .stage-empty h3 { font-size: 15px; }
+  .karaoke-page .stage-empty p { margin-bottom: 0; }
+  .auth-page .form-container { padding: 30px 22px; }
+}
+/* Avoid automatic input zoom on touch devices. */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="range"]):not([type="checkbox"]):not([type="hidden"]),
+  select, textarea, .karaoke-page .search-input-wrapper input,
+  .karaoke-page .collection-add input:not([type="hidden"]),
+  .karaoke-page #sort-dropdown, .song-dialog .song-form-field input,
+  .song-dialog .song-form-field select { font-size: 16px; }
+  .album-card button, .playlist-card .delete-btn { width: 40px; height: 40px; }
+}

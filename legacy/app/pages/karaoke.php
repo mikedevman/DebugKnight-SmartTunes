@@ -48,6 +48,7 @@ $song_id = $_GET['id'] ?? 0;
     <link rel="stylesheet" href="public/assets/css/karaoke.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/karaoke.css') ?>" />
     <link rel="stylesheet" href="public/assets/css/song-pagination.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/song-pagination.css') ?>" />
       <link rel="stylesheet" href="public/assets/css/song-forms.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/song-forms.css') ?>" />
+  <link rel="stylesheet" href="public/assets/css/responsive.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/responsive.css') ?>" />
 </head>
   <body class="karaoke-page">
 

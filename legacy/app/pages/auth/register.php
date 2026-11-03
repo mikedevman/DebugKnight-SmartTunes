@@ -160,8 +160,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       box-shadow: 0 0 8px rgba(255, 61, 87, 0.3);
     }
   </style>
+  <link rel="stylesheet" href="public/assets/css/responsive.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/responsive.css') ?>" />
 </head>
-<body>
+<body class="auth-page">
   <div class="form-container">
     <h2>Register</h2>
 

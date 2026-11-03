@@ -49,6 +49,7 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="public/assets/css/owl.carousel.min.css"/>
     <link rel="stylesheet" href="public/assets/css/slicknav.min.css"/>
     <link rel="stylesheet" href="public/assets/css/style.css"/>
+  <link rel="stylesheet" href="public/assets/css/responsive.css?v=<?= filemtime(LEGACY_ROOT . '/public/assets/css/responsive.css') ?>" />
 </head>
 <body>
 
