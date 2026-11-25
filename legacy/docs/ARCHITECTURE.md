@@ -25,11 +25,8 @@ legacy/
 |-- resources/
 |   |-- reference-audio/
 |   `-- vendor-archives/            # Original dependency archives
-|-- tools/
-|   `-- bin/                        # FFmpeg executables for mixed-audio WAV export
 |-- storage/
-|   |-- logs/log.txt
-|   `-- previews/                   # Local screenshots; ignored by Git
+|   `-- recordings/                 # Temporary upload staging; cleaned after processing
 `-- docs/
 ```
 
@@ -49,7 +46,6 @@ Pages retain their existing SQL and HTML rather than being rewritten into a fram
 - Page assets live in `public/assets/`. Asset contents and CSS-relative image/font paths are unchanged.
 - Apache maps former `css/`, `js/`, `img/`, `icon-fonts/`, `uploads/`, `reference-audio/`, `Source/`, `bin/` and `artifacts/` URLs to their structured locations.
 - Existing recording URLs stored in the database retain their `uploads/...` format. No database migration or data update is part of this cleanup.
-- The recording handler writes WAV mixes into `public/uploads/`, uses private temporary microphone/PCM files under `storage/recordings/`, and calls FFmpeg from `tools/bin/`. Reference audio and earlier logs are retained as legacy resources; they are not used for voice-level scoring.
-- The Python scoring implementation has been removed. Recording export now uses FFmpeg, with clearly labeled microphone-level scores; see `docs/RECORDING_EXPORT.md`.
+- The recording handler stores and uploads the original browser MediaRecorder file without transcoding. The PHP handler generates a random score from 60 to 100 and persists it to the existing history table. See `docs/RECORDING_EXPORT.md`.
 
 Apache `mod_rewrite` and `.htaccess` overrides must remain enabled, as they already are in XAMPP. Keep the existing project URL/document root; no virtual-host change is required.

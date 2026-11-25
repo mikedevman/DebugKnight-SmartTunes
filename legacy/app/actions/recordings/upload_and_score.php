@@ -20,6 +20,7 @@ function recording_storage_config()
     if ($mode !== 'supabase') {
         throw new RuntimeException('Set RECORDING_STORAGE to supabase or local in app/config/.env.');
     }
+
     $url = rtrim(trim(smarttunes_env('SUPABASE_URL', '')), '/');
     $key = trim(smarttunes_env('SUPABASE_SECRET_KEY', ''));
     $bucket = trim(smarttunes_env('SUPABASE_RECORDINGS_BUCKET', 'karaoke-recordings'));
@@ -29,6 +30,7 @@ function recording_storage_config()
     if (!preg_match('/^[a-z0-9][a-z0-9_-]{0,62}$/D', $bucket)) {
         throw new RuntimeException('Use a Supabase bucket name containing lowercase letters, numbers, underscores or hyphens.');
     }
+
     // New secret keys are not JWTs; only legacy service_role keys use Bearer auth.
     if (str_starts_with($key, 'eyJ')) {
         if (!preg_match('/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/D', $key)) {
@@ -42,9 +44,11 @@ function recording_storage_config()
     } elseif (!preg_match('/^sb_secret_[A-Za-z0-9_-]+$/D', $key)) {
         throw new RuntimeException('Use a server-side Supabase secret key, not a publishable or anon key.');
     }
+
     if (!is_callable('curl_init')) {
         throw new RuntimeException('Enable the PHP cURL extension to upload recordings to Supabase.');
     }
+
     $headers = ['apikey: ' . $key];
     if (str_starts_with($key, 'eyJ')) {
         $headers[] = 'Authorization: Bearer ' . $key;
@@ -74,7 +78,7 @@ function recording_storage_request($method, $url, $headers, $file = null)
         if ($file !== null) {
             $handle = fopen($file, 'rb');
             if (!$handle) {
-                throw new RuntimeException('Unable to read the mixed recording for upload.');
+                throw new RuntimeException('Unable to read the recording for upload.');
             }
             curl_setopt_array($request, [
                 CURLOPT_UPLOAD => true,
@@ -102,35 +106,49 @@ function recording_storage_request($method, $url, $headers, $file = null)
         }
         return $body;
     } finally {
-        if (is_resource($handle)) fclose($handle);
+        if (is_resource($handle)) {
+            fclose($handle);
+        }
         curl_close($request);
     }
 }
 
-function recording_store_mix($config, $input, $userId, $token)
+/** Identify the browser-native recording format; no transcoding or conversion is performed. */
+function recording_audio_format($input)
+{
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($input);
+    $formats = [
+        'audio/webm' => ['webm', 'audio/webm'],
+        'video/webm' => ['webm', 'audio/webm'],
+        'audio/mp4' => ['m4a', 'audio/mp4'],
+        'video/mp4' => ['m4a', 'audio/mp4'],
+        'audio/x-m4a' => ['m4a', 'audio/mp4'],
+        'audio/ogg' => ['ogg', 'audio/ogg'],
+        'application/ogg' => ['ogg', 'audio/ogg'],
+    ];
+    if (!isset($formats[$mime])) {
+        throw new RuntimeException('Unsupported recording format. Please record again using desktop Chrome or Edge.');
+    }
+    return $formats[$mime];
+}
+
+function recording_store_mix($config, $input, $userId, $token, $extension, $contentType)
 {
     $bucketPath = rawurlencode($config['bucket']);
     $bucket = json_decode(recording_storage_request('GET', $config['url'] . '/storage/v1/bucket/' . $bucketPath, $config['headers']), true);
     if (!is_array($bucket) || ($bucket['public'] ?? false) !== true) {
         throw new RuntimeException('Make the Supabase recordings bucket Public so leaderboard and history can play its audio.');
     }
-    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($input);
-    $formats = [
-        'audio/webm' => ['webm', 'audio/webm'], 'video/webm' => ['webm', 'audio/webm'],
-        'audio/mp4' => ['m4a', 'audio/mp4'], 'video/mp4' => ['m4a', 'audio/mp4'],
-        'audio/x-m4a' => ['m4a', 'audio/mp4'],
-        'audio/ogg' => ['ogg', 'audio/ogg'], 'application/ogg' => ['ogg', 'audio/ogg'],
-    ];
-    if (!isset($formats[$mime])) {
-        throw new RuntimeException('Unsupported mixed recording format. Record again using desktop Chrome or Edge.');
-    }
-    [$extension, $contentType] = $formats[$mime];
+
     $objectPath = $userId . '/voice_' . $token . '.' . $extension;
     $encodedPath = implode('/', array_map('rawurlencode', explode('/', $objectPath)));
     $headers = array_merge($config['headers'], [
-        'Content-Type: ' . $contentType, 'Cache-Control: max-age=31536000', 'x-upsert: false',
+        'Content-Type: ' . $contentType,
+        'Cache-Control: max-age=31536000',
+        'x-upsert: false',
     ]);
-    // Stream the original high-bitrate mix, avoiding another lossy encoding and oversized WAV objects.
+
+    // Upload the original MediaRecorder file directly. No WAV conversion or external audio tool.
     recording_storage_request('POST', $config['url'] . '/storage/v1/object/' . $bucketPath . '/' . $encodedPath, $headers, $input);
     return $config['url'] . '/storage/v1/object/public/' . $bucketPath . '/' . $encodedPath;
 }
@@ -139,13 +157,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST');
     recording_reply(405, ['success' => false, 'error' => 'Use POST to upload a recording.']);
 }
+
 $userId = filter_var($_SESSION['user_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if (!$userId) {
     recording_reply(401, ['success' => false, 'error' => 'Please log in before uploading a recording.']);
 }
 $songId = filter_var($_POST['song_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 $audio = $_FILES['audio'] ?? null;
-$voice = $_FILES['voice_audio'] ?? null;
 if (!$audio || ($audio['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
     $tooLarge = $audio && in_array($audio['error'], [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true);
     recording_reply($tooLarge ? 413 : 400, ['success' => false, 'error' => $tooLarge ? 'Recording is too large. Keep it under 32 MB.' : 'No complete audio recording was received.']);
@@ -153,77 +171,56 @@ if (!$audio || ($audio['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
 if (!$songId || ($_POST['audio_mix'] ?? '') !== 'voice_and_backing') {
     recording_reply(400, ['success' => false, 'error' => 'Select a song and record both your microphone and the backing track.']);
 }
-if (!$voice || ($voice['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || $voice['size'] <= 0) {
-    recording_reply(400, ['success' => false, 'error' => 'Microphone audio is required for a voice-level score. Reload the studio and record again.']);
-}
-if ($audio['size'] <= 0 || $audio['size'] + $voice['size'] > 32 * 1024 * 1024) {
-    recording_reply(413, ['success' => false, 'error' => 'Combined recording uploads must be under 32 MB.']);
+if (($audio['size'] ?? 0) <= 0 || $audio['size'] > 32 * 1024 * 1024) {
+    recording_reply(413, ['success' => false, 'error' => 'Recording must be under 32 MB.']);
 }
 
 $input = null;
-$voiceInput = null;
-$voicePcm = null;
-$measurement = null;
-$output = null;
-$conversionError = null;
 $audioUrl = null;
+$extension = null;
+$historySaved = false;
+$conversionError = null;
+
 try {
     require_once LEGACY_ROOT . '/app/config/database.php';
     $storage = recording_storage_config();
     set_time_limit(300);
-    $ffmpeg = trim(smarttunes_env('FFMPEG_PATH', '')) ?: LEGACY_ROOT . '/tools/bin/ffmpeg.exe';
-    if (!is_file($ffmpeg) || !is_callable('exec')) {
-        throw new RuntimeException('Audio export is unavailable. Set FFMPEG_PATH in app/config/.env to your installed ffmpeg executable.');
-    }
-    $uploadDir = LEGACY_ROOT . '/public/uploads/';
+
     $tempDir = LEGACY_ROOT . '/storage/recordings/';
-    foreach ([$uploadDir, $tempDir] as $directory) {
+    $uploadDir = LEGACY_ROOT . '/public/uploads/';
+    foreach ([$tempDir, $uploadDir] as $directory) {
         if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
             throw new RuntimeException('Unable to prepare recording storage.');
         }
     }
+
     $token = bin2hex(random_bytes(16));
-    $input = $tempDir . $token . '.input';
-    $voiceInput = $tempDir . $token . '.voice.input';
-    $voicePcm = $tempDir . $token . '.voice.pcm';
-    $filename = 'voice_' . $token . '.wav';
-    $output = $uploadDir . $filename;
+    [$extension, $contentType] = recording_audio_format($audio['tmp_name']);
+    $filename = 'voice_' . $token . '.' . $extension;
+    $input = $tempDir . $filename;
+
     if (!move_uploaded_file($audio['tmp_name'], $input)) {
         throw new RuntimeException('Unable to save the uploaded recording.');
     }
-    if (!move_uploaded_file($voice['tmp_name'], $voiceInput)) {
-        throw new RuntimeException('Unable to save the microphone recording.');
-    }
-    // Preserve the high-bitrate browser capture without another lossy encoding stage.
-    $command = escapeshellarg($ffmpeg) . ' -nostdin -hide_banner -loglevel error -y -i ' . escapeshellarg($input)
-        . ' -t 600 -vn -af alimiter=limit=0.94:level=false -ar 48000 -c:a pcm_s16le ' . escapeshellarg($output) . ' 2>&1';
-    exec($command, $conversionOutput, $exitCode);
-    if ($exitCode !== 0 || !is_file($output) || filesize($output) === 0) {
-        error_log('Recording conversion failed: ' . implode("\n", $conversionOutput));
-        throw new RuntimeException('Unable to convert this audio recording. Please try again.');
-    }
-    $voiceCommand = escapeshellarg($ffmpeg) . ' -nostdin -hide_banner -loglevel error -y -i ' . escapeshellarg($voiceInput)
-        . ' -t 600 -vn -af highpass=f=70 -ac 1 -ar 16000 -f s16le ' . escapeshellarg($voicePcm) . ' 2>&1';
-    exec($voiceCommand, $voiceOutput, $voiceExit);
-    if ($voiceExit !== 0 || !is_file($voicePcm)) {
-        throw new RuntimeException('Unable to measure microphone audio. Please record again.');
-    }
-    require_once LEGACY_ROOT . '/app/support/voice_level.php';
-    $measurement = smarttunes_voice_level_score($voicePcm);
-    $audioUrl = $storage['mode'] === 'supabase'
-        ? recording_store_mix($storage, $input, $userId, $token)
-        : 'uploads/' . $filename;
 
-} catch (Throwable $error) {
-    if ($output && is_file($output)) {
-        unlink($output);
+    if ($storage['mode'] === 'supabase') {
+        $audioUrl = recording_store_mix($storage, $input, $userId, $token, $extension, $contentType);
+    } else {
+        $localPath = $uploadDir . $filename;
+        if (!rename($input, $localPath)) {
+            throw new RuntimeException('Unable to save the recording for playback.');
+        }
+        $input = null;
+        $audioUrl = 'uploads/' . $filename;
     }
+
+    // This project now uses a simple random entertainment score, not audio analysis.
+    $score = random_int(60, 100);
+} catch (Throwable $error) {
     $conversionError = $error->getMessage();
 } finally {
-    foreach ([$input, $voiceInput, $voicePcm] as $temporary) {
-        if ($temporary && is_file($temporary)) {
-            unlink($temporary);
-        }
+    if ($input && is_file($input)) {
+        unlink($input);
     }
 }
 
@@ -231,13 +228,8 @@ if ($conversionError !== null) {
     recording_reply(422, ['success' => false, 'error' => $conversionError]);
 }
 
-// Measured from the dry microphone recording, never from the backing mix or sliders.
-$score = $measurement['score'];
-$downloadUrl = 'uploads/' . $filename;
-$historySaved = false;
 $conn = null;
 try {
-    require_once LEGACY_ROOT . '/app/config/database.php';
     $conn = @smarttunes_db_connect();
     $stmt = $conn->prepare('INSERT INTO playhistory (user_id, song_played, date, score, user_recording) VALUES (?, ?, NOW(), ?, ?)');
     $stmt->bind_param('iiis', $userId, $songId, $score, $audioUrl);
@@ -247,7 +239,6 @@ try {
     }
     $stmt->close();
 } catch (Throwable $error) {
-    // A database outage must not lose the already saved performance or prevent export.
     error_log('Recording history unavailable: ' . $error->getMessage());
 } finally {
     if ($conn instanceof mysqli) {
@@ -258,14 +249,12 @@ try {
 recording_reply(200, [
     'success' => true,
     'score' => $score,
-    'score_type' => 'voice_level',
-    'voice_level_dbfs' => $measurement['dbfs'],
+    'score_type' => 'random',
     'audio_mix' => 'voice_and_backing',
     'audio_url' => $audioUrl,
-    'download_url' => $downloadUrl,
     'storage' => $storage['mode'],
-    'format' => 'wav',
+    'format' => $extension,
     'history_saved' => (bool) $historySaved,
     'message' => $historySaved ? 'Upload completed' : 'Audio saved; history pending',
-    'notice' => $historySaved ? '' : 'Audio saved, but it is not listed in leaderboard or history yet. Retry to save your history.',
+    'notice' => $historySaved ? '' : 'Audio saved, but it is not listed in leaderboard or history yet. Retry to save its history.',
 ]);

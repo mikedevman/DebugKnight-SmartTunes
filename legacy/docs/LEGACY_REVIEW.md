@@ -25,6 +25,6 @@ Inventoried the PHP, JavaScript, CSS and Python source files in `legacy`, checke
 - Browser verification intercepts mutation requests. Tests do not upload songs, edit production rows, delete collection contents, or submit recordings to the live database.
 - Desktop and mobile screenshots are available locally in `artifacts/`, which is ignored by Git.
 
-## Existing scoring limitation
+## Recording implementation update
 
-`upload_and_score.php` calls `bin/soundalgo.exe`, but that executable is absent. `soundalgo.py` is present. Full recording-to-score processing therefore remains unverified; these changes do not build or replace the scoring executable.
+The former executable-based scoring flow has been replaced. The current application records one mixed browser audio stream, uploads the original MediaRecorder file, generates a random score from 60 to 100 in PHP, and displays it after a three-second delay. No audio conversion or external audio-processing executable is used. See [the recording guide](RECORDING_EXPORT.md).

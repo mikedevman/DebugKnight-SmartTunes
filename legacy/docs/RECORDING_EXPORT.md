@@ -1,87 +1,71 @@
-# Recording export and voice-level scores
+# Browser-native recording, downloads and random scores
 
 ## User flow
 
-The shared recording panel appears on karaoke, album and playlist pages. Select and play a track, share this studio tab with audio, allow microphone access, and use headphones. Press **Stop & download** to save the mix and start the WAV download. The result retains the audio preview and Download again control.
+The shared recording panel appears on karaoke, album and playlist pages. Select and play a track, share this studio tab with audio, allow microphone access, and use headphones. Press **Stop & download** to save the mixed performance in the browser's original audio format. The result retains the audio preview and **Download again** control.
 
-The score is now based on the microphone's own volume, from 0 to 100. Stronger voice levels receive a higher score; a comfortable clear microphone level reaches 100. It is a microphone-level score, not pitch or singing-accuracy grading. The former random scoring and Just for fun message have been removed from the interface.
+After the original recording has been uploaded successfully, the application waits three seconds and displays a randomly generated integer score from 60 to 100. This score is for entertainment only. It does not analyse singing, pitch, lyrics, microphone volume or musical accuracy.
 
-## Audio path
+## Audio capture and download
 
-- Requests microphone capture without automatic gain control, speech noise suppression or echo cancellation. These settings preserve singing dynamics; headphones are important to prevent speaker audio being picked up a second time.
-- Gently removes microphone rumble below 70 Hz.
-- Uses lower mix gains with headroom. Even at maximum slider settings, the nominal voice-plus-backing gain remains below full scale.
-- Adds a compressor and output headroom to protect against loud combined peaks. Slider changes use short ramps to avoid clicks.
-- Captures the stereo mix at a requested 256 kbps rather than the previous 96 kbps.
-- Exports 48 kHz, 16-bit PCM WAV with a final peak limiter instead of recompressing the already encoded browser audio to MP3. The WAV cannot restore detail lost by the microphone or browser capture, but it avoids an additional lossy encoding stage.
-- Pauses the backing player on Stop and when the exported take is played, preventing the live backing and recorded backing from playing over each other. YouTube control uses the IFrame API; if controls are unavailable, the embedded player is reloaded without autoplay.
-- A live microphone meter warns about input clipping. Lower the device's microphone input if this warning appears; a later mix cannot repair an already clipped microphone signal.
+- The browser captures the microphone and shared tab audio using the built-in Web Audio API and MediaRecorder APIs.
+- Microphone and backing-track gain sliders, the live microphone level meter, high-pass filter, compressor and output headroom remain in place. The meter is only a live input aid; it does not affect the score.
+- The browser records one mixed voice-and-backing stream. A separate microphone-only recording is no longer created or uploaded.
+- The original MediaRecorder Blob is previewed and downloaded directly by the browser. Its format is selected from the browser's supported MediaRecorder types (normally WebM/Opus in desktop Chrome or Edge, with MP4/M4A or OGG where supported).
+- No audio transcoding, WAV creation, PCM conversion or external audio executable is used. The file downloaded by the user is the same original recording that is uploaded.
+- The recording remains limited to ten minutes and 32 MB.
 
-## Score calculation
+## Random score
 
-The browser also records the dry microphone separately at a requested 96 kbps. This private upload is used only to measure voice level, then deleted with the other temporary files. Neither the backing track nor either mix-volume slider affects the score.
+The PHP upload handler generates the score with PHP's built-in cryptographically secure random integer function:
 
-PHP decodes the microphone with FFmpeg into mono 16 kHz signed 16-bit PCM. `app/support/voice_level.php` calculates RMS levels in 100 ms windows. Windows below -55 dBFS are ignored, and at least three active windows are required. The 80th percentile of active windows represents the stronger normal voice level, avoiding long pauses dominating the result.
-
-```text
-score = clamp(round((voice_dBFS + 55) / 27 * 100), 0, 100)
+```php
+$score = random_int(60, 100);
 ```
 
-Silence scores zero; -28 dBFS or louder reaches 100. Ambient sound can still contribute to microphone level. This deliberately does not attempt to recognize lyrics or evaluate whether notes are correct.
+The score is saved in the existing `playhistory.score` field. The browser waits 3,000 milliseconds after receiving a successful upload response before displaying the score. Existing history and leaderboard pages continue to read the same database field.
 
 ## Implementation and storage
 
-- `app/views/studio/studio-stage.php`: shared panel, level meter, result and controls.
-- `public/assets/js/karaoke-recorder.js`: independent voice/mix capture, level meter, export and retries.
-- `public/assets/js/studio-player.js`: shared player and pause controls.
-- `app/actions/recordings/upload_and_score.php`: authenticated upload, WAV export, microphone measurement and history persistence.
-- `app/support/voice_level.php`: deterministic microphone-level scoring.
-- Each WAV download has a unique `voice_<random-token>.wav` filename under `public/uploads/`. With `RECORDING_STORAGE=supabase`, the original browser mix is uploaded to a public Supabase bucket under `<user-id>/voice_<random-token>.webm` (or `.m4a`/`.ogg` according to its detected format). Its permanent HTTPS URL is saved in Aiven `playhistory.user_recording`, so the existing leaderboard/history players work across computers. Tokens make filenames unique; scores themselves are not random.
-- Private input/PCM files under `storage/recordings/` are inaccessible over HTTP and cleaned up after processing.
-- Existing recordings and historical scores are retained. New history rows contain the measured voice-level score and unique WAV URL.
-- No Python scorer or Python dependencies are used.
+- `app/views/studio/studio-stage.php`: existing recording panel and result layout. Only the descriptive copy and score label have changed.
+- `public/assets/js/karaoke-recorder.js`: one mixed browser recording, preview, original-format download, upload, three-second score delay and retry behavior.
+- `public/assets/js/studio-player.js`: existing shared player and pause controls.
+- `app/actions/recordings/upload_and_score.php`: authenticated upload, browser-format detection, direct storage upload, random score generation and history persistence.
+- `app/config/.env.example`: Aiven and optional Supabase settings. There is no audio-tool path setting.
 
-Recordings remain limited to ten minutes and combined uploads to 32 MB. The current XAMPP PHP upload/post limits are 40 MB. WAV downloads are larger than MP3 downloads.
+With `RECORDING_STORAGE="supabase"`, PHP streams the original MediaRecorder file directly to the existing public Supabase Storage bucket. Its permanent HTTPS URL is saved in Aiven `playhistory.user_recording`, so history and leaderboard playback continue working across computers. With `RECORDING_STORAGE="local"`, the original file is saved under `public/uploads/` and its relative URL is stored in the same database field.
 
-## Failure handling
+The Supabase secret remains server-side in `app/config/.env`; it is never sent to browser JavaScript. The application uses its existing PHP cURL extension for direct object upload and does not require the Supabase JavaScript SDK or another framework.
 
-Missing tab audio prevents recording. Cancelled permissions, missing microphone uploads and conversion failures return clear errors. A local mixed browser-format download is retained if upload fails, with a retry button and no false Upload completed status. If WAV retrieval fails after a successful upload, the original mixed capture is downloaded with its correct extension.
-
-The browser controls the download location and may ask the user to accept saving. Upload completed means the server saved the take and the download was initiated. Database outages do not discard the take; the UI shows Audio saved; history pending and offers Retry upload when history could not be saved. Links to history/leaderboard appear only after history is saved. Page/catalog loading still needs a reachable database.
-
+Existing database rows and historical scores are retained. New history rows use the random score and a URL to the original browser recording. No database schema migration is required.
 
 ## Supabase setup (local development and deployment)
 
-The PHP website can stay on XAMPP/localhost. Only mixed recordings are hosted by Supabase; accounts, songs, scores and history stay in the existing Aiven MySQL database. No Supabase database tables, Supabase Auth integration, JavaScript SDK or new project files are needed.
-
-1. Sign in at https://supabase.com/dashboard and create a project. Wait until it is ready.
-2. Open **Storage**, create a bucket named **karaoke-recordings**, and enable **Public bucket**. Public audio is accessible to anyone who has its URL, which is required for the current leaderboard playback model.
-3. In that bucket's settings, set its upload size limit to **50 MB**, and make sure the project's global limit allows 50 MB. Allow these MIME types: `audio/webm`, `audio/mp4`, `audio/ogg`. The server detects the actual file format rather than trusting a filename. It streams the original mixed capture to Supabase, avoiding an extra lossy encode and large WAV objects. The local download remains a 48 kHz WAV.
-4. Copy the project URL (`https://<project-ref>.supabase.co`) from the **Connect** dialog or project API settings. Under **Project Settings > API Keys**, create/copy a backend **secret key** beginning with `sb_secret_`. A legacy `service_role` JWT also works, but a publishable/anon key cannot authorize these server uploads.
-5. Edit the existing `legacy/app/config/.env` and fill the following settings, preserving all `DB_*` values:
+1. Open the Supabase project dashboard and create a Storage bucket named `karaoke-recordings`.
+2. Make the bucket Public because the current history and leaderboard playback model uses public audio URLs. Anyone with a recording URL can access that audio.
+3. Set the bucket and project upload limits to at least 50 MB. Allow the MIME types `audio/webm`, `audio/mp4` and `audio/ogg`.
+4. Copy the project URL and create/copy a backend secret key. A legacy `service_role` JWT also works. Do not use a publishable/anon key for the server-side upload.
+5. Copy `app/config/.env.example` to `app/config/.env`, then fill in the actual Aiven database values and the Supabase settings:
 
    ```ini
    RECORDING_STORAGE="supabase"
    SUPABASE_URL="https://YOUR_PROJECT_REF.supabase.co"
    SUPABASE_SECRET_KEY="sb_secret_YOUR_SERVER_KEY"
    SUPABASE_RECORDINGS_BUCKET="karaoke-recordings"
-   FFMPEG_PATH="C:/ffmpeg/bin/ffmpeg.exe"
    ```
 
-   Put the secret directly in your local `.env`; never put it in browser JavaScript or send it through chat. This file is ignored by Git and denied by Apache. Hosting environment variables override its values.
-6. Install FFmpeg if needed, using a Windows build linked from https://ffmpeg.org/download.html. You can extract it outside the project (for example under `C:/ffmpeg`); point `FFMPEG_PATH` at the actual `ffmpeg.exe`. The previous `legacy/tools/bin/ffmpeg.exe` path is still a fallback if no path is configured. On Linux, set an absolute path such as `/usr/bin/ffmpeg` instead.
-7. Use Apache's PHP configuration (XAMPP: `C:/xampp/php/php.ini`). It needs `curl`, `fileinfo`, `mysqli` and `openssl`, an executable FFmpeg, and writable recording directories. Combined input uploads are capped at 32 MiB, so leave `upload_max_filesize` and `post_max_size` at **40M** or higher. If PHP reports TLS verification errors, configure `curl.cainfo` to a trusted CA bundle; keep certificate verification enabled. Restart Apache after changes to `php.ini` or system environment variables. Editing this project's `.env` does not normally need a restart.
-8. Run XAMPP Apache, open the local website in desktop Chrome/Edge, log in, select a song on karaoke/album/playlist, and record a short performance with tab audio and microphone. Stop recording and wait for **Upload completed**. The browser starts the WAV download and shows **Your recordings** and **Leaderboard** links.
-9. Open Supabase **Storage > karaoke-recordings**. A folder named after the user's numeric ID should contain the saved mix. Copy its public URL and test it in a private browser window. Open **History** to hear the new take; find the same entry in the paginated **Leaderboard** by its score/rank. Check that the new Aiven `playhistory.user_recording` value starts with your Supabase project URL, rather than `uploads/`.
+   Keep the secret in `.env`; never put it in browser JavaScript or commit it to source control.
+6. PHP needs the existing `curl`, `fileinfo`, `mysqli` and `openssl` extensions. Set `upload_max_filesize` and `post_max_size` to 40M or higher. The application enforces its own 32 MB recording limit. If PHP reports TLS verification errors, configure `curl.cainfo` with a trusted CA bundle; keep certificate verification enabled.
+7. Run Apache, open the site in desktop Chrome or Edge, log in, select a song and share the studio tab with audio. Record a short performance and press **Stop & download**. The original-format download starts, and after the upload succeeds the score appears after three seconds.
+8. Check Supabase Storage for the user's folder and original recording. Open History and the Leaderboard to verify playback and score persistence.
 
-Public read access is enough: the PHP server authenticates with a server secret, so you do not need public INSERT/UPDATE policies. Existing PHP sessions still control who can upload. New secret keys are sent only in the `apikey` header; legacy service_role JWTs additionally use Bearer auth. Browser download fetches stay on the PHP server, so no browser secret or special CORS setup is required.
+Public read access is required by the current playback approach. The PHP server authenticates uploads with its server secret, so public INSERT/UPDATE policies are not required.
 
-## Storage errors and old recordings
+## Failure handling and compatibility
 
-- Missing settings, invalid server keys, private/missing buckets, rejected MIME types and size limits produce actionable recording errors. The browser preserves its original mixed local download and offers Retry upload. Failed cloud uploads do not insert broken recording URLs into history.
-- A history insert failure leaves the already uploaded audio available but shows history pending. Check Aiven connectivity and retry before leaving the studio. Retrying reprocesses the retained take and may leave an unused cloud object if the prior history save failed.
-- `RECORDING_STORAGE="local"` retains local-only behavior for development; it saves `uploads/...wav` to the database. This does not share audio across separate computers/servers.
-- Existing `uploads/...` entries are not automatically migrated. Upload their original audio files to Supabase and update only the corresponding recording URLs if you need to migrate them. Missing audio cannot be recovered from a database URL alone.
-- WAV copies currently remain on the PHP server for downloading; cloud storage contains the original high-bitrate browser-format mix. Deployment must retain writable recording directories and FFmpeg, plus the same server-side settings.
-
-Official references: [bucket creation](https://supabase.com/docs/guides/storage/buckets/creating-buckets), [public buckets](https://supabase.com/docs/guides/storage/buckets/fundamentals), [API keys](https://supabase.com/docs/guides/getting-started/api-keys), [storage access control](https://supabase.com/docs/guides/storage/security/access-control), [upload limits](https://supabase.com/docs/guides/storage/uploads/file-limits).
+- If tab audio or microphone permission is missing, recording does not begin and the user receives an explanatory message.
+- If upload fails, the browser still previews and downloads the original local Blob and offers **Retry upload**. The interface does not claim that cloud upload or history persistence succeeded.
+- If history insertion fails after audio storage succeeds, the score and saved audio remain available in the response; the UI shows history pending and offers retry.
+- The browser controls the download location and may ask the user to accept saving.
+- Existing `uploads/...` recording URLs and historical scores are not migrated or overwritten.
+- The browser and server must support the selected MediaRecorder format. Desktop Chrome or Edge is the supported recording target described by the current UI.

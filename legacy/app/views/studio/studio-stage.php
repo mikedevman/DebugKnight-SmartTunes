@@ -26,7 +26,7 @@
       <div>
         <p class="karaoke-eyebrow">02 / YOUR VOICE</p>
         <h3 id="recorder-heading">Your voice. The full mix.</h3>
-        <p>A cleaner voice-and-backing mix, saved as a high-quality WAV download.</p>
+        <p>A cleaner voice-and-backing mix, saved in your browser's original audio format.</p>
       </div>
     </div>
     <div class="recording-guide">
@@ -49,7 +49,7 @@
     <div class="recording-result" id="recording-result" hidden>
       <div class="recording-result-top">
         <div class="recording-score"><span id="recording-score-value">--</span><span>/ 100</span></div>
-        <div><p class="recording-result-label">VOICE LEVEL SCORE</p><h4 id="recording-result-heading">Your performance is ready.</h4><p id="recording-result-description">Voice + backing track</p></div>
+        <div><p class="recording-result-label">PERFORMANCE SCORE</p><h4 id="recording-result-heading">Your performance is ready.</h4><p id="recording-result-description">Voice + backing track</p></div>
       </div>
       <audio id="playback" controls preload="metadata"></audio>
       <div class="recording-result-actions">
